@@ -5,8 +5,8 @@ const syncPackCfg = {
   versionGroups: [
     {
       isIgnored: true,
-      packages: ['@i-360/**'],
-      dependencies: ['@i-360/**'],
+      packages: ['@mgen/**'],
+      dependencies: ['@mgen/**'],
       label: 'Workspace packages not updated',
     },
   ],
