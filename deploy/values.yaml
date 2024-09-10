@@ -1,0 +1,5 @@
+env:
+  NODE_ENV: local
+  MG_BASE_PATH: /
+  MG_API_PORT: 8080
+  MG_API_URL: http://localhost

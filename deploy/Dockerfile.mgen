@@ -1,0 +1,21 @@
+ARG IMAGE_FROM=node:20-alpine3.17
+
+# ---- Base Stage  ---- #
+FROM $IMAGE_FROM AS mgen-base
+RUN npm i -g pnpm
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="${PATH}:${PNPM_HOME}"
+RUN npm install --global pnpm@8.3.1 && \
+    pnpm add --global serve
+# ---- End Stage ---- #
+
+
+# ---- Serve Stage  ---- #
+FROM mgen-base AS mgen-serve
+WORKDIR /mgen
+COPY /serve/. .
+RUN chmod +x ./start.sh
+COPY . .
+
+ENTRYPOINT ["./start.sh"]
+# ---- End Stage  ---- #

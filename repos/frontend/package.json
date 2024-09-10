@@ -1,0 +1,56 @@
+{
+  "name": "@mgen/frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build -c configs/vite.config.ts --force",
+    "host": "vite --open --host -c configs/vite.config.ts",
+    "preview": "vite preview -c configs/vite.config.ts",
+    "start": "NODE_ENV=local vite -c configs/vite.config.ts",
+    "proxy": "nginx-proxy -c configs/nginx.conf",
+    "test": "vitest --config configs/vite.config.ts",
+    "clean": "rm -rf dist",
+    "clean:nm": "rm -rf node_modules",
+    "clean:full": "pnpm clean && pnpm clean:nm"
+  },
+  "dependencies": {
+    "@keg-hub/jsutils": "^10.0.0",
+    "@keg-hub/parse-config": "2.1.0",
+    "@vitejs/plugin-react-swc": "^3.3.2",
+    "alias-hq": "6.2.2",
+    "cors": "^2.8.5",
+    "esbuild": "0.19.3",
+    "esbuild-register": "3.5.0",
+    "highlight.js": "11.10.0",
+    "micromark": "4.0.0",
+    "micromark-extension-gfm": "3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
+    "route-event": "6.0.0",
+    "sweetalert2": "11.13.3",
+    "tsconfig-paths": "4.2.0",
+    "vite": "^5.0.12",
+    "vite-plugin-svgr-component": "1.0.1",
+    "vite-tsconfig-paths": "^4.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
+    "@types/node": "^20.11.16",
+    "@types/react": "^18.2.53",
+    "@types/react-dom": "^18.2.18",
+    "@types/react-router-dom": "^5.3.3",
+    "jsdom": "^24.0.0",
+    "sass-embedded": "1.78.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.4.0"
+  }
+}

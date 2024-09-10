@@ -1,0 +1,12 @@
+{
+  "public": "",
+  "logReq": true,
+  "logRes": true,
+  "symlinks": true,
+  "cleanUrls": true,
+  "renderSingle": true,
+  "unlisted": [
+    "serve.json",
+    ".mgen"
+  ]
+}

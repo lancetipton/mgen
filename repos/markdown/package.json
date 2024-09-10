@@ -1,0 +1,24 @@
+{
+  "name": "@mgen/markdown",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "mgen": "markdown.js"
+  },
+  "scripts": {
+    "start": "node markdown.js ./sites",
+    "serve": "node node_modules/serve/build/main.js",
+    "clean": "rm -rf dist",
+    "clean:nm": "rm -rf node_modules",
+    "clean:full": "pnpm clean && pnpm clean:nm"
+  },
+  "dependencies": {
+    "@keg-hub/jsutils": "^10.0.0",
+    "@keg-hub/parse-config": "2.1.0",
+    "@warren-bank/serve": "130002.18.6",
+    "alias-hq": "6.2.2",
+    "fdir": "6.3.0"
+  }
+}
