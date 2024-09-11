@@ -1,8 +1,9 @@
-import type { SweetAlertOptions } from 'sweetalert2'
-import Swal from 'sweetalert2'
 
+export type TAlertOptions = {
+  icon:string
+  titleText:string
+}
 
-import 'sweetalert2/src/sweetalert2.scss'
 
 export class Alert {
   
@@ -10,34 +11,36 @@ export class Alert {
     
   }
 
-  alert = (opts:SweetAlertOptions) => Swal.fire(opts)
+  alert = (opts:TAlertOptions) => {
+    
+  }
 
-  success = (opts:SweetAlertOptions) => {
-    Swal.fire({
+  success = (opts:TAlertOptions) => {
+    this.alert({
       icon: `success`,
       titleText: `Success`,
       ...opts
     })
   }
 
-  warn = (opts:SweetAlertOptions) => {
-    Swal.fire({
+  warn = (opts:TAlertOptions) => {
+    this.alert({
       icon: `warning`,
       titleText: `Warning`,
       ...opts
     })
   }
 
-  error = (opts:SweetAlertOptions) => {
-    Swal.fire({
+  error = (opts:TAlertOptions) => {
+    this.alert({
       icon: `error`,
       titleText: `Error`,
       ...opts
     })
   }
 
-  info = (opts:SweetAlertOptions) => {
-    Swal.fire({
+  info = (opts:TAlertOptions) => {
+    this.alert({
       icon: `info`,
       titleText: `Info`,
       ...opts
