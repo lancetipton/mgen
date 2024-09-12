@@ -1,7 +1,22 @@
+import type { ToastT } from 'sonner'
+
+import { toast } from 'sonner'
+import { EAlertType, EAlertPos } from '@MG/types'
+import { isFunc } from '@keg-hub/jsutils'
+
+
+type TAlertAction = ToastT[`action`]
 
 export type TAlertOptions = {
-  icon:string
-  titleText:string
+  icon?:any
+  id?:string
+  text?:string
+  duration?:number
+  type?:EAlertType
+  position?: EAlertPos
+  action?:TAlertAction
+  cancel?:TAlertAction
+  success?:TAlertAction
 }
 
 
@@ -12,37 +27,35 @@ export class Alert {
   }
 
   alert = (opts:TAlertOptions) => {
-    
+    const {type=EAlertType.info, text=``,  ...rest} = opts
+    const func = isFunc(toast[type]) ? toast[type] : toast.info
+    func(text, rest)
   }
 
   success = (opts:TAlertOptions) => {
     this.alert({
-      icon: `success`,
-      titleText: `Success`,
+      type: EAlertType.success,
       ...opts
     })
   }
 
   warn = (opts:TAlertOptions) => {
     this.alert({
-      icon: `warning`,
-      titleText: `Warning`,
+      type: EAlertType.warning,
       ...opts
     })
   }
 
   error = (opts:TAlertOptions) => {
     this.alert({
-      icon: `error`,
-      titleText: `Error`,
+      type: EAlertType.error,
       ...opts
     })
   }
 
   info = (opts:TAlertOptions) => {
     this.alert({
-      icon: `info`,
-      titleText: `Info`,
+      type: EAlertType.info,
       ...opts
     })
   }
