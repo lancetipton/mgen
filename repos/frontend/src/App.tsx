@@ -11,9 +11,7 @@ const App = (props:TApp) => {
   return (
     <div className={cls(`mg-app`, `min-h-screen`, `w-screen max-w-screen`)} >
       <Toaster />
-      <Layout>
-        <MGContent />
-      </Layout>
+      <Layout />
     </div>
   )
 }

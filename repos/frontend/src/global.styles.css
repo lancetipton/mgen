@@ -9,6 +9,7 @@
   --mgen-menu-height: 3.75rem;
   --mgen-banner-height: 2.5rem;
   --mgen-sidebar-width: 260px;
+  --mgen-outline-width: 260px;
   --mgen-header-height: 66px;
 }
 
@@ -35,10 +36,15 @@
   max-width: var(--mgen-sidebar-width);
 }
 
-.side-bar-offset {
+.outline-width {
+  width: var(--mgen-outline-width);
+  max-width: var(--mgen-outline-width);
+}
+
+.content-center-offset {
   position: relative;
   left: var(--mgen-sidebar-width);
-  max-width: calc(100% - var(--mgen-sidebar-width));
+  max-width: calc(100% - var(--mgen-sidebar-width) - var(--mgen-outline-width));
 }
 
 

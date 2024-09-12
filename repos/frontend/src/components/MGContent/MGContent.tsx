@@ -14,28 +14,37 @@ export const MGContent = (props:TContent) => {
   return (
     <div className={cls(
       `mg-content`,
-      `side-bar-offset`,
+      `content-center-offset`,
       `max-content-height`,
       `nav-height-offset`,
-      `py-10`,
-      `px-10`,
+      `py-8`,
+      `px-8`,
+      `lg:py-10`,
+      `lg:px-10`,
       `w-full`,
+      `flex`,
+      `justify-center`,
     )} >
-      <article
-        id={MGenId}
-        className={cls(
-          `mg-content-article`,
-          `prose`,
-          `pb-24`,
-          `w-full`,
-          `h-full`,
-          `min-w-full`,
-          `prose-a:text-blue-600`,
-          `hover:prose-a:text-blue-500`,
-        )}
-      >
-        {!mm && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
-      </article>
+      <div className={cls(
+        `mb-content-container`,
+        `xl:w-10/12`,
+      )} >
+        <article
+          id={MGenId}
+          className={cls(
+            `mg-content-article`,
+            `prose`,
+            `pb-24`,
+            `w-full`,
+            `h-full`,
+            `min-w-full`,
+            `prose-a:text-blue-600`,
+            `hover:prose-a:text-blue-500`,
+          )}
+        >
+          {!mm && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
+        </article>
+      </div>
     </div>
   )
 }

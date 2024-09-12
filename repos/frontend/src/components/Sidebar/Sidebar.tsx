@@ -1,6 +1,5 @@
 import { cls } from '@keg-hub/jsutils/cls'
 
-import { SidebarNav } from '@MG/components/Sidebar/SidebarNav'
 import { SidebarList } from '@MG/components/Sidebar/SidebarList'
 
 

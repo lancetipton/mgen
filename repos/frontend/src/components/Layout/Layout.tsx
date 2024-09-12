@@ -5,6 +5,7 @@ import { Header } from '@MG/components/Header'
 import { Footer } from '@MG/components/Footer'
 import { Sidebar } from '@MG/components/Sidebar'
 import { Outline } from '@MG/components/Outline'
+import { MGContent } from '@MG/components/MGContent'
 
 export type TLayout = {
   className?:string
@@ -32,9 +33,9 @@ export const Layout = (props:TLayout) => {
         )}
       >
         <Sidebar />
-        {children}
+        {children || <MGContent />}
+        <Outline />
       </main>
-      <Outline />
       <Footer />
     </div>
   )
