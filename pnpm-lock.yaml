@@ -60,12 +60,18 @@ importers:
       highlight.js:
         specifier: 11.10.0
         version: 11.10.0
+      i:
+        specifier: 0.3.7
+        version: 0.3.7
       micromark:
         specifier: 4.0.0
         version: 4.0.0
       micromark-extension-gfm:
         specifier: 3.0.0
         version: 3.0.0
+      pnpm:
+        specifier: 9.10.0
+        version: 9.10.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -78,6 +84,9 @@ importers:
       route-event:
         specifier: 6.0.0
         version: 6.0.0
+      sonner:
+        specifier: 1.5.0
+        version: 1.5.0(react-dom@18.3.1)(react@18.3.1)
       tsconfig-paths:
         specifier: 4.2.0
         version: 4.2.0
@@ -4111,6 +4120,11 @@ packages:
       - supports-color
     dev: true
 
+  /i@0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+    dev: false
+
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -5346,6 +5360,12 @@ packages:
       find-up: 3.0.0
     dev: false
 
+  /pnpm@9.10.0:
+    resolution: {integrity: sha512-c6Ka+jag0JLs5Scd5Rd+y/gxjUVOzXATQxMbjrwMGpHEh9pGq3fI5ZbWrPFGHjWUztS+zt+JIbB0+9hlPtcFHA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+    dev: false
+
   /posix-character-classes@0.1.1:
     resolution: {integrity: sha512-xTgYBc3fuo7Yt7JbiuFxSYGToMoz8fLoE6TC9Wx1P/u+LfeThMOAqmuyECnlBaaJb+u1m9hHiXUEtwW4OzfUJg==}
     engines: {node: '>=0.10.0'}
@@ -5894,6 +5914,16 @@ packages:
       use: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /sonner@1.5.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-FBjhG/gnnbN6FY0jaNnqZOMmB73R+5IiyYAw8yBj7L54ER7HB3fOSE5OFiQiE2iXWxeXKvg6fIP4LtVppHEdJA==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     dev: false
 
   /source-map-js@1.2.0:
