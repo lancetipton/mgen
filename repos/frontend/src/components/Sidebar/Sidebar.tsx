@@ -1,11 +1,14 @@
 import { cls } from '@keg-hub/jsutils/cls'
 
+import { useMGen } from '@MG/contexts/MGenContext'
 import { SidebarList } from '@MG/components/Sidebar/SidebarList'
-
 
 export type TSidebar = {}
 
 export const Sidebar = (props:TSidebar) => {
+  const { mm } = useMGen()
+
+
   return (
     <div
       className={cls(

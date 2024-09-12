@@ -1,2 +1,2 @@
 export * from './Alert'
-export * from './Micromark'
+export * from './MGen'

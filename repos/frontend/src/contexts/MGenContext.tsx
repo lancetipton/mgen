@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 
+import { MGen } from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
 import { useEffect, useState, memo } from 'react'
 import { MGenId } from '@MG/constants/constants'
-import { Micromark } from '@MG/services/Micromark'
 import { useContext, createContext } from "react"
 
 export type TMemoChildren = {
@@ -18,7 +18,7 @@ export type TMGenProvider = TMemoChildren & {
 export const MemoChildren = memo((props:TMemoChildren) => <>{props.children}</>)
 
 export type TMGenCtx = {
-  mm: Micromark
+  mm: MGen
 }
 
 const MMContext = createContext<TMGenCtx | null>(null)
@@ -28,13 +28,13 @@ export const useMGen = () => useContext(MMContext)
 export const MGenProvider = (props:TMGenProvider) => {
 
   const { children, ...rest } = props
-  const [mm, setMM] = useState<Micromark>()
+  const [mm, setMM] = useState<MGen>()
 
   useEffect(() => {
     if(mm) return
 
     ife(async () => {
-      const mkdn = new Micromark({...rest, selector: props.selector || `#${MGenId}`})
+      const mkdn = new MGen({...rest, selector: props.selector || `#${MGenId}`})
       await mkdn.init()
       setMM(mkdn)
     })

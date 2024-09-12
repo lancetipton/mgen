@@ -4,14 +4,14 @@ import { APIPort } from './constants.js'
 import { genMConfig, genSConfig } from './config.js'
 import { getRootLoc, getBinLoc, getSitesLoc } from './paths.js'
 
+
 export const start = () => {
   const bin = getBinLoc()
-
   const sites = getSitesLoc()
-  const sitemap = crawl(sites)
+  const config = crawl(sites)
 
-  const { config } = genMConfig(sites, {}, sitemap)
-  const { location } = genSConfig(sites, config)
+  genMConfig(sites, config)
+  const { location } = genSConfig(sites)
 
   const proc = serve({
     bin,

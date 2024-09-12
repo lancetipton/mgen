@@ -3,11 +3,10 @@ import { Loading } from '@MG/components/Loading'
 import { MGenId } from '@MG/constants/constants'
 import { useMGen } from '@MG/contexts/MGenContext'
 
-export type TContent = {
-  
-}
 
-export const MGContent = (props:TContent) => {
+export type TMGContent = {}
+
+export const MGContent = (props:TMGContent) => {
 
   const { mm } = useMGen()
 

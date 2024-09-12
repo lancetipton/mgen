@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from 'react'
 import { ife } from '@keg-hub/jsutils/ife'
-import { Micromark } from '@MG/services/Micromark'
+import { Micromark } from '@MG/services/MGen'
 
 export type TMGen = {}
 

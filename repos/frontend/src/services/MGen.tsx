@@ -1,17 +1,20 @@
 import type { Listener } from 'route-event'
+import type { TSitesConfig, TMGenCfg } from '@MG/types'
 
 import Route from 'route-event'
 import {micromark} from 'micromark'
 import { Alert }  from '@MG/services/Alert'
 import { limbo } from '@keg-hub/jsutils/limbo'
+import { buildNav } from '@MG/utils/sites/buildNav'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { ConfigFile } from '@MG/constants/constants'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
 
-type TMicromarkOpts = {
+type TMGenOpts = {
   selector?:string
   autoStart?:boolean
+  sitesConfig?:TSitesConfig
   micromark?:Record<any, any>
   pathMap?:Record<string, string>
   getPath?:(loc?:string) => string
@@ -19,17 +22,14 @@ type TMicromarkOpts = {
   onRender?:(content:string, selector?:string) => any
 }
 
-type TMicromarkCfg = {
-  sitemap: Record<string, string>
-}
 
-
-export class Micromark {
+export class MGen {
 
   #alert:Alert
   baseUrl:string
   selector:string
-  config:TMicromarkCfg
+  config:TMGenCfg
+  sitemap:Record<string, string>={}
   getPath?: (loc?:string, base?:string) => string
   onRender?:(content:string, selector?:string) => any
   pathMap:Record<string, string> = {
@@ -40,12 +40,12 @@ export class Micromark {
   #stopRouter:() => void
   #router:ReturnType<typeof Route>
 
-  constructor(opts?:TMicromarkOpts){
+  constructor(opts?:TMGenOpts){
     this.#setup(opts)
   }
 
 
-  #setup = (opts?:TMicromarkOpts) => {
+  #setup = (opts?:TMGenOpts) => {
     this.selector = opts?.selector
     this.#alert = new Alert()
     this.baseUrl = buildApiUrl()
@@ -65,7 +65,7 @@ export class Micromark {
   }
 
 
-  #loc = (loc:string) => this.pathMap?.[loc] || this.config?.sitemap?.[loc] || loc
+  #loc = (loc:string) => this.pathMap?.[loc] || this.sitemap?.[loc] || loc
 
 
   #route:Listener = async (path, data) => {
@@ -102,6 +102,11 @@ export class Micromark {
     const [err, content] = await limbo(this.#request(full, {headers: {[`Accept`]: `text/json`}}))
     if(err) return this.onError(err, path)
     this.config = parseJSON(content)
+    
+    this.sitemap = Object.values(this.config.sites)
+      .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.config.sitemap})
+
+    buildNav(this.config)
   }
 
 
@@ -120,7 +125,7 @@ export class Micromark {
   onError = (err:Error, loc?:string) => {
     loc = loc || location.pathname
     const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
-    this.#alert.error({html: msg})
+    this.#alert.error({text: msg})
     this.render(`<code class="error">${msg}</code>`)
   }
 
