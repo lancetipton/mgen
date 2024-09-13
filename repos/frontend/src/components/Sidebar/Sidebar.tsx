@@ -1,8 +1,8 @@
 import { cls } from '@keg-hub/jsutils/cls'
 
 import { useMemo } from 'react'
+import { Menu } from '@MG/components/Menu/Menu'
 import { useMGen } from '@MG/contexts/MGenContext'
-import { SidebarList } from '@MG/components/Sidebar/SidebarList'
 
 export type TSidebar = {}
 
@@ -16,6 +16,12 @@ export const Sidebar = (props:TSidebar) => {
     site,
     mg?.config,
   ])
+
+  const onClick = (evt:any, id?:string, href?:string) => {
+    evt.stopPropagation()
+    evt.preventDefault()
+    href && mg.navigate(href)
+  }
 
   return (
     <div
@@ -38,12 +44,10 @@ export const Sidebar = (props:TSidebar) => {
           `flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto`
         )}
       >
-
-        Sidebar
-        <div className="flex flex-col justify-between flex-1">
-          <SidebarList items={nav?.children} />
-        </div>
-
+        <Menu
+          onClick={onClick}
+          items={nav?.children}
+        />
       </aside>
 
     </div>

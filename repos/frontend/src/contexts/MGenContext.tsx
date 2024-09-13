@@ -6,6 +6,7 @@ import { ife } from '@keg-hub/jsutils/ife'
 import { useEffect, useState, memo } from 'react'
 import { MGenId } from '@MG/constants/constants'
 import { useContext, createContext } from "react"
+import { useEffectOnce } from '@MG/hooks/components/useEffectOnce'
 
 export type TMemoChildren = {
   children:ReactNode
@@ -33,7 +34,7 @@ export const MGenProvider = (props:TMGenProvider) => {
   const [mg, setMM] = useState<MGen>()
   const [site, setSite] = useState<TSiteConfig>()
 
-  useEffect(() => {
+  useEffectOnce(() => {
     if(mg) return
 
     ife(async () => {
@@ -48,7 +49,7 @@ export const MGenProvider = (props:TMGenProvider) => {
       setMM(mgen)
     })
 
-  }, [])
+  })
 
 
   return (

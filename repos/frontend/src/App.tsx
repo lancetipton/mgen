@@ -1,7 +1,6 @@
 import { Toaster } from 'sonner'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Layout } from '@MG/components/Layout'
-import { MGContent } from '@MG/components/MGContent'
 
 
 export type TApp = {}

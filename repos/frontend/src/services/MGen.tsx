@@ -1,9 +1,11 @@
 import type { Listener } from 'route-event'
-import type { TSitesConfig, TMGenCfg, TSiteConfig } from '@MG/types'
+import type { TAnyCB, TRouteData, TSitesConfig, TMGenCfg, TSiteConfig } from '@MG/types'
 
 import Route from 'route-event'
 import {micromark} from 'micromark'
+import { EMGenEvts } from '@MG/types'
 import { Alert }  from '@MG/services/Alert'
+import { Events } from '@MG/services/Events'
 import { limbo } from '@keg-hub/jsutils/limbo'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { ConfigFile } from '@MG/constants/constants'
@@ -20,52 +22,65 @@ type TMGenOpts = {
   getPath?:(loc?:string) => string
   onSite?:(site?:TSiteConfig) => any
   onError?:(error?:Error, loc?:string) => any
-  onRender?:(content:string, selector?:string) => any
+  onRoute?:(path?:string, data?:TRouteData, loc?:string) => any
+  onRender?:(content:string, selector?:string, path?:string) => any
 }
 
-
-export class MGen {
+export class MGen extends Events {
 
   #site:string
   baseUrl:string
   selector:string
   config:TMGenCfg
-  onSite?:(site?:TSiteConfig) => any
-  sitemap:Record<string, string>={[`/`]: `index.mdx`}
+  events=EMGenEvts
   getPath?: (loc?:string, base?:string) => string
-  onRender?:(content:string, selector?:string) => any
+  sitemap:Record<string, string>={[`/`]: `index.mdx`}
 
   #alert:Alert
   #init?:boolean
   #stopRouter:() => void
   #router:ReturnType<typeof Route>
+  #opts:TMGenOpts
 
   constructor(opts?:TMGenOpts){
+    super()
     this.#setup(opts)
   }
 
 
   #setup = (opts?:TMGenOpts) => {
+    this.#opts = opts
     this.selector = opts?.selector
     this.#alert = new Alert()
     this.#site = getSiteName()
     this.baseUrl = buildApiUrl()
-    if(opts?.onSite) this.onSite = opts?.onSite
+    this.#events(opts)
     if(opts?.getPath) this.getPath = opts?.getPath
-    if(opts?.onError) this.onError = opts?.onError
-    if(opts?.onRender) this.onRender = opts?.onRender
-    
     if(opts?.sitemap) this.sitemap = {...this.sitemap, ...opts?.sitemap}
     
-
     ;(opts?.autoStart !== false) && this.start()
   }
 
+  #events = (opts?:TMGenOpts) => {
+    opts?.onSite && this.on(this.events.onSite, opts?.onSite)
+    opts?.onError && this.on(this.events.onError, opts?.onError)
+    opts?.onRoute && this.on(this.events.onRoute, opts?.onRoute)
+    opts?.onRender && this.on(this.events.onRender, opts?.onRender)
+  }
 
   start = () => {
     if(this.#stopRouter) return
     this.#router = Route()
     this.#stopRouter = this.#router(this.#route)
+    this.#events(this.#opts)
+  }
+
+  #error = (err:Error, loc?:string) => {
+    loc = loc || location.pathname
+    this.dispatch(this.events.onError, err, loc)
+    const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
+    this.#alert.error({text: msg})
+    this.render(`<code class="error">${msg}</code>`)
   }
 
 
@@ -73,6 +88,7 @@ export class MGen {
 
 
   #route:Listener = async (path, data) => {
+
     if(!this.config) await this.#config()
 
     if(data.popstate){
@@ -83,7 +99,9 @@ export class MGen {
     }
 
     window.scrollTo(0, 0)
-    this.load(this.#loc(path))
+    const loc = this.#loc(path)
+    this.load(loc)
+    this.dispatch(this.events.onRoute, path, data, loc)
   }
 
 
@@ -105,13 +123,13 @@ export class MGen {
 
     const {path, full=path} = this.#path(ConfigFile, this.baseUrl)
     const [err, content] = await limbo(this.#request(full, {headers: {[`Accept`]: `text/json`}}))
-    if(err) return this.onError(err, path)
+    if(err) return this.#error(err, path)
     this.config = parseJSON(content)
     
     this.sitemap = Object.values(this.config.sites)
       .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.sitemap, ...this.config.sitemap})
 
-    this.onSite?.(this.site())
+    this.dispatch(this.events.onSite, this.site())
 
   }
 
@@ -129,7 +147,7 @@ export class MGen {
     if(!site || !this.#site || !this?.config?.sites || site === this.#site) return
 
     this.#site = site
-    this.onSite?.(this.site())
+    this.dispatch(this.events.onSite, this.site())
   }
 
   site = ():TSiteConfig => {
@@ -154,26 +172,19 @@ export class MGen {
 
   navigate = (location:string) => this.#router.setRoute(location)
 
-  onError = (err:Error, loc?:string) => {
-    loc = loc || location.pathname
-    const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
-    this.#alert.error({text: msg})
-    this.render(`<code class="error">${msg}</code>`)
-  }
 
-
-  onMarkdown = (content:string) => {
+  onMarkdown = (content:string, selector?:string, path?:string) => {
     const html = micromark(content, {
       extensions: [gfm()],
       allowDangerousHtml: true,
       htmlExtensions: [gfmHtml()]
     })
-    this.render(html)
+    this.render(html, selector, path)
   }
 
 
-  render = (content:string, selector?:string) => {
-    if(this.onRender) return this.onRender(content, selector)
+  render = (content:string, selector?:string, path?:string) => {
+    this.dispatch(this.events.onRender, content, selector, path)
 
     const sel = selector || this.selector
     const el = sel && document.querySelector(sel)
@@ -187,12 +198,12 @@ export class MGen {
   }
 
 
-  load = async (loc?:string) => {
+  load = async (loc?:string, selector?:string) => {
     const {path, full=path} = this.#path(loc, this.baseUrl)
     const [err, content] = await limbo(this.#request(full))
-    if(err) return this.onError(err, path)
-    
-    this.onMarkdown(content)
+    if(err) return this.#error(err, path)
+
+    this.onMarkdown(content, selector, path)
     this.#updateSite(path)
   }
 
@@ -203,6 +214,7 @@ export class MGen {
     this.#stopRouter()
     this.#router = undefined
     this.#stopRouter = undefined
+    this.reset()
   }
 
 }
