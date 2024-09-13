@@ -20,11 +20,11 @@ export const Loading = (props:TLoading) => {
 
   return (
     <div className={cls(`mg-loading`, className)} >
-      {icon && (
-        <div className={cls(`mg-loading-icon`)} >
-          {icon}
-        </div>
-      )}
+
+      <div className={cls(`mg-loading-icon`)} >
+        {icon || (<span className='loading loading-ring loading-lg'></span>)}
+      </div>
+
       {text && (
         <div className={cls(`mg-loading-text`)} >
           {text}

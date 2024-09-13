@@ -21,6 +21,7 @@
     "clean:full": "pnpm clean && pnpm clean:nm"
   },
   "dependencies": {
+    "@heroicons/react": "2.1.5",
     "@keg-hub/jsutils": "^10.0.0",
     "@keg-hub/parse-config": "2.1.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
@@ -53,6 +54,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "10.4.20",
+    "daisyui": "4.12.10",
     "globals": "^15.9.0",
     "jsdom": "^24.0.0",
     "postcss": "8.4.45",

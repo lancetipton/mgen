@@ -6,18 +6,24 @@ export type TSiteNav = {
   children?:TSiteNavItems
 }
 
-export type TSiteNavItems = TSiteNav[]
+export type TSiteNavItems = Record<string, TSiteNav>
 
 export type TSitePages = {
   hidden?:string[],
   ignore?: string[],
 }
 
+export type TSiteLogo = {
+  url?:string
+  alt?:string
+}
+
 export type TSiteConfig = {
   name:string
   dir:string
+  nav:TSiteNav
+  logo:TSiteLogo
   pages:TSitePages
-  nav:TSiteNavItems
   sitemap:Record<string, string>
 }
 

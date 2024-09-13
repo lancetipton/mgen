@@ -1,23 +1,24 @@
 import type { Listener } from 'route-event'
-import type { TSitesConfig, TMGenCfg } from '@MG/types'
+import type { TSitesConfig, TMGenCfg, TSiteConfig } from '@MG/types'
 
 import Route from 'route-event'
 import {micromark} from 'micromark'
 import { Alert }  from '@MG/services/Alert'
 import { limbo } from '@keg-hub/jsutils/limbo'
-import { buildNav } from '@MG/utils/sites/buildNav'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { ConfigFile } from '@MG/constants/constants'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
+import { getSiteName } from '@MG/utils/sites/getSiteName'
 
 type TMGenOpts = {
   selector?:string
   autoStart?:boolean
   sitesConfig?:TSitesConfig
   micromark?:Record<any, any>
-  pathMap?:Record<string, string>
+  sitemap?:Record<string, string>
   getPath?:(loc?:string) => string
+  onSite?:(site?:TSiteConfig) => any
   onError?:(error?:Error, loc?:string) => any
   onRender?:(content:string, selector?:string) => any
 }
@@ -25,17 +26,16 @@ type TMGenOpts = {
 
 export class MGen {
 
-  #alert:Alert
+  #site:string
   baseUrl:string
   selector:string
   config:TMGenCfg
-  sitemap:Record<string, string>={}
+  onSite?:(site?:TSiteConfig) => any
+  sitemap:Record<string, string>={[`/`]: `index.mdx`}
   getPath?: (loc?:string, base?:string) => string
   onRender?:(content:string, selector?:string) => any
-  pathMap:Record<string, string> = {
-    [`/`]: `index.mdx`,
-  }
 
+  #alert:Alert
   #init?:boolean
   #stopRouter:() => void
   #router:ReturnType<typeof Route>
@@ -48,11 +48,15 @@ export class MGen {
   #setup = (opts?:TMGenOpts) => {
     this.selector = opts?.selector
     this.#alert = new Alert()
+    this.#site = getSiteName()
     this.baseUrl = buildApiUrl()
+    if(opts?.onSite) this.onSite = opts?.onSite
     if(opts?.getPath) this.getPath = opts?.getPath
     if(opts?.onError) this.onError = opts?.onError
     if(opts?.onRender) this.onRender = opts?.onRender
-    if(opts?.pathMap) this.pathMap = {...this.pathMap, ...opts?.pathMap}
+    
+    if(opts?.sitemap) this.sitemap = {...this.sitemap, ...opts?.sitemap}
+    
 
     ;(opts?.autoStart !== false) && this.start()
   }
@@ -65,7 +69,7 @@ export class MGen {
   }
 
 
-  #loc = (loc:string) => this.pathMap?.[loc] || this.sitemap?.[loc] || loc
+  #loc = (loc:string) => this.sitemap?.[loc] || loc
 
 
   #route:Listener = async (path, data) => {
@@ -87,10 +91,11 @@ export class MGen {
     if(this.getPath) return {full: undefined, path: this.getPath(path, base)}
 
     const loc = this.#loc(path || location.pathname)
+    const clean = loc.startsWith(`/`) ? loc.replace(`/`, ``) : loc
 
     return {
       path,
-      full: `${this.baseUrl}${loc.startsWith(`/`) ? loc.replace(`/`, ``) : loc}`
+      full: `${this.baseUrl}${clean}`
     }
   }
 
@@ -104,9 +109,10 @@ export class MGen {
     this.config = parseJSON(content)
     
     this.sitemap = Object.values(this.config.sites)
-      .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.config.sitemap})
+      .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.sitemap, ...this.config.sitemap})
 
-    buildNav(this.config)
+    this.onSite?.(this.site())
+
   }
 
 
@@ -118,9 +124,35 @@ export class MGen {
     return res.text()
   }
 
+  #updateSite = (loc:string) => {
+    const site = getSiteName(loc)
+    if(!site || !this.#site || !this?.config?.sites || site === this.#site) return
+
+    this.#site = site
+    this.onSite?.(this.site())
+  }
+
+  site = ():TSiteConfig => {
+    const siteCfg = this.#site && this.config?.sites?.[this.#site]
+    if(siteCfg) return siteCfg
+
+    if(this.#site){
+      // TODO: Show warning that site does not exist, so it can't be loaded
+      // Show a custom 404 page?
+    }
+
+    // Return the default MGen site config when on the Root Index Page
+    return {
+      dir: ``,
+      nav: {},
+      pages: {},
+      name: `MGen`,
+      sitemap: this.config.sitemap
+    } as TSiteConfig
+  }
+
 
   navigate = (location:string) => this.#router.setRoute(location)
-
 
   onError = (err:Error, loc?:string) => {
     loc = loc || location.pathname
@@ -158,7 +190,10 @@ export class MGen {
   load = async (loc?:string) => {
     const {path, full=path} = this.#path(loc, this.baseUrl)
     const [err, content] = await limbo(this.#request(full))
-    err ? this.onError(err, path) : this.onMarkdown(content)
+    if(err) return this.onError(err, path)
+    
+    this.onMarkdown(content)
+    this.#updateSite(path)
   }
 
 

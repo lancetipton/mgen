@@ -1,0 +1,1 @@
+export const ThemeStorageKey = `mgen-theme-storage-key`

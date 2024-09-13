@@ -26,7 +26,8 @@ const parse = (location) => {
 const buildItem = (siteCfg, location, parsed) => {
   if(parsed.name === `index` && parsed.siteRoot){
     siteCfg.nav = {
-      url: location,
+      path: location,
+      url: parsed.dir,
       text: wordCaps(parsed.siteDir),
       ...siteCfg.nav,
     }
@@ -47,7 +48,8 @@ const buildItem = (siteCfg, location, parsed) => {
     // If on the last item, add it to the currents children
     if(idx === split.length - 1){
       if(parsed.name === `index`){
-        current.url = location
+        current.url = parsed.dir
+        current.path = location
         current.text = wordCaps(parsed.dir.split(`/`).pop())
         return
       }
@@ -55,8 +57,9 @@ const buildItem = (siteCfg, location, parsed) => {
       current.children = {
         ...current.children,
         [parsed.name]: {
-          url: location,
+          path: location,
           text: wordCaps(parsed.name),
+          url: `${parsed.dir}/${parsed.name}`,
         }
       }
 

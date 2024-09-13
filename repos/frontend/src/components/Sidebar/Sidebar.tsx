@@ -1,13 +1,21 @@
 import { cls } from '@keg-hub/jsutils/cls'
 
+import { useMemo } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { SidebarList } from '@MG/components/Sidebar/SidebarList'
 
 export type TSidebar = {}
 
 export const Sidebar = (props:TSidebar) => {
-  const { mm } = useMGen()
+  const { mg, site } = useMGen()
 
+  const nav = useMemo(() => {
+    // TODO: build root site nav, if no site exists
+    return site?.nav || {}
+  }, [
+    site,
+    mg?.config,
+  ])
 
   return (
     <div
@@ -23,10 +31,17 @@ export const Sidebar = (props:TSidebar) => {
       )}
     >
 
-      <aside className="mg-sidebar-aside flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
+      <aside
+        className={cls(
+          `mg-sidebar-aside`,
+          `border-base-200 border-r rtl:border-r-0 rtl:border-l `,
+          `flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto`
+        )}
+      >
 
+        Sidebar
         <div className="flex flex-col justify-between flex-1">
-          <SidebarList />
+          <SidebarList items={nav?.children} />
         </div>
 
       </aside>

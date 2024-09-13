@@ -9,9 +9,8 @@ export const Button = ({
   return (
     <button
       className={cls(
-        'mgen-button transition-all active:opacity-50',
-        'bg-primary-700/5 border border-black/5 text-gray-600 hover:text-gray-900 rounded-md p-1.5',
-        'dark:bg-primary-300/10 dark:border-white/10 dark:text-gray-400 dark:hover:text-gray-50',
+        `mgen-button transition-all active:opacity-50`,
+        `rounded-md p-1.5`,
         className
       )}
       {...props}

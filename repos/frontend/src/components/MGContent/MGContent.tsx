@@ -8,7 +8,7 @@ export type TMGContent = {}
 
 export const MGContent = (props:TMGContent) => {
 
-  const { mm } = useMGen()
+  const { mg } = useMGen()
 
   return (
     <div className={cls(
@@ -41,7 +41,7 @@ export const MGContent = (props:TMGContent) => {
             `hover:prose-a:text-blue-500`,
           )}
         >
-          {!mm && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
+          {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
         </article>
       </div>
     </div>

@@ -22,9 +22,8 @@ export const Outline = (props:TOutline) => {
       <aside
         className={cls(
           `mg-outline-aside`,
-          `bg-white dark:bg-gray-900 dark:border-gray-700`,
           `flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto`,
-          `border-l rtl:border-l-0 rtl:border-l`
+          `border-base-200 border-l rtl:border-l-0 rtl:border-l`
         )}
       >
 

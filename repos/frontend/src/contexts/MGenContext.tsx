@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { TMGenCfg, TSiteConfig } from '@MG/types'
 
 import { MGen } from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
@@ -18,7 +19,8 @@ export type TMGenProvider = TMemoChildren & {
 export const MemoChildren = memo((props:TMemoChildren) => <>{props.children}</>)
 
 export type TMGenCtx = {
-  mm: MGen
+  mg?:MGen
+  site?:TSiteConfig
 }
 
 const MMContext = createContext<TMGenCtx | null>(null)
@@ -28,22 +30,29 @@ export const useMGen = () => useContext(MMContext)
 export const MGenProvider = (props:TMGenProvider) => {
 
   const { children, ...rest } = props
-  const [mm, setMM] = useState<MGen>()
+  const [mg, setMM] = useState<MGen>()
+  const [site, setSite] = useState<TSiteConfig>()
 
   useEffect(() => {
-    if(mm) return
+    if(mg) return
 
     ife(async () => {
-      const mkdn = new MGen({...rest, selector: props.selector || `#${MGenId}`})
-      await mkdn.init()
-      setMM(mkdn)
+      const mgen = new MGen({
+        ...rest,
+        onSite: (siteCfg) => setSite(siteCfg),
+        selector: props.selector || `#${MGenId}`,
+      })
+      // @ts-ignore
+      window.MGen = mgen
+      await mgen.init()
+      setMM(mgen)
     })
 
   }, [])
 
 
   return (
-    <MMContext.Provider value={{mm}}>
+    <MMContext.Provider value={{mg, site}}>
       <MemoChildren children={children} />
     </MMContext.Provider>
   )
