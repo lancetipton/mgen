@@ -1,14 +1,16 @@
 import { fdir } from 'fdir'
 import path from 'node:path'
-import { loadSiteCfg } from './config.js'
+import { loadCfgFile } from './config.js'
 import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
-import { SiteCfgFile, MConfigFile, SConfigFile } from './constants.js'
+import { MGCfgFinalLoc, ServeFinalLoc, MGCfgName } from './constants.js'
 
 const configFiles = [
-  MConfigFile,
-  SConfigFile,
+  MGCfgFinalLoc,
+  ServeFinalLoc,
 ]
+
+const emptySite = () => ({ sitemap: {}, nav: {} })
 
 const parse = (location) => {
   const parsed = path.parse(location)
@@ -36,7 +38,7 @@ const buildItem = (siteCfg, location, parsed) => {
 
   const split = location.split(`/`)
   split.shift()
-  
+
   let current = siteCfg.nav
   current.children = current.children || {}
 
@@ -87,21 +89,23 @@ const buildPaths = (dir) => (acc, file) => {
   const clean = file.replace(dir, '')
   const parsed = parse(clean)
 
-  if(file.endsWith(SiteCfgFile) && parsed.siteRoot){
-    const siteCfg = loadSiteCfg(file, clean)
+  if(parsed.name.startsWith(MGCfgName) && parsed.siteRoot){
+    const siteCfg = loadCfgFile(file, clean)
     siteCfg.dir = parsed.siteDir
-    acc.sites[parsed.siteDir] = deepMerge(siteCfg, acc.sites?.[parsed.siteDir] || { sitemap: {}, nav: {} })
+    acc.sites[parsed.siteDir] = deepMerge(siteCfg, acc.sites?.[parsed.siteDir] || emptySite())
 
     return acc
   }
 
-  const isRoot = parsed.dir === `/`
-  if(isRoot){
-    acc.sitemap[`/${parsed.name}`] = clean
+  const isSitesRoot = parsed.dir === `/`
+  if(isSitesRoot){
+    acc.sites.__default.sitemap[`/${parsed.name}`] = clean
+    if(parsed.name === `index`) acc.sites.__default.sitemap[parsed.dir] = clean
+
     return acc
   }
 
-  const siteCfg = acc.sites?.[parsed.siteDir] || { sitemap: {}, nav: {} }
+  const siteCfg = acc.sites?.[parsed.siteDir] || emptySite()
 
   siteCfg.sitemap[clean] = clean
   siteCfg.sitemap[`${parsed.dir}/${parsed.name}`] = clean
@@ -125,5 +129,5 @@ export const crawl = (dir) => {
     .withFullPaths()
     .crawl(dir)
     .sync()
-    .reduce(buildPaths(dir), { sitemap: {}, sites: {} })
+    .reduce(buildPaths(dir), { sites: { __default: emptySite() } })
 }

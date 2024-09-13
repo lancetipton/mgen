@@ -4,13 +4,13 @@ import * as url from 'node:url'
 import { existsSync } from 'node:fs'
 import { ife } from '@keg-hub/jsutils/ife'
 import { execSync } from "node:child_process"
-import { ServeCfgFile, ServeCfgLoc, SitesDir } from './constants.js'
+import { MGCfgFile, MGCfgLoc, ServeCfgFile, ServeCfgLoc, SitesDir } from './constants.js'
 
 const homedir = os.homedir()
 
 let rootLoc = undefined
 
-const resolveLoc = (loc, rootDir=undefined) => {
+const resolveLoc = (loc, exists=true, rootDir) => {
   const root = rootDir || getRootLoc()
   const resolved = loc.startsWith(`~/`)
     ? path.join(homedir, loc.replace(`~/`, ``))
@@ -18,7 +18,9 @@ const resolveLoc = (loc, rootDir=undefined) => {
       ? loc
       : path.join(root, loc)
 
-  return existsSync(resolved) ? resolved : undefined
+  return exists
+    ? existsSync(resolved) ? resolved : undefined
+    : resolved
 }
 
 export const getRootLoc = () => {
@@ -55,4 +57,11 @@ export const getSrvCfgLoc = () => {
   return ServeCfgLoc
     ? resolveLoc(ServeCfgLoc)
     : path.join(root, ServeCfgFile)
+}
+
+export const getMgCfgLoc = () => {
+  const root = getRootLoc()
+  return MGCfgLoc
+    ? resolveLoc(MGCfgLoc, false)
+    : path.join(root, MGCfgFile)
 }

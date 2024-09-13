@@ -21,6 +21,7 @@ export type TSiteLogo = {
 export type TSiteConfig = {
   name:string
   dir:string
+  css?:string
   nav:TSiteNav
   logo:TSiteLogo
   pages:TSitePages

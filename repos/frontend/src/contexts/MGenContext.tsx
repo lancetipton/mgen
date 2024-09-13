@@ -40,6 +40,8 @@ export const MGenProvider = (props:TMGenProvider) => {
     ife(async () => {
       const mgen = new MGen({
         ...rest,
+        mdToHtml: false,
+        renderToDom: false,
         onSite: (siteCfg) => setSite(siteCfg),
         selector: props.selector || `#${MGenId}`,
       })

@@ -32,6 +32,7 @@ export const Sidebar = (props:TSidebar) => {
         `side-bar-width`,
         `overflow-x-hidden`,
         `overflow-y-auto`,
+        `scrollbar-thin scrollbar-track-base-content/5 scrollbar-thumb-base-content/40 scrollbar-track-rounded-md scrollbar-thumb-rounded`,
         `nav-height-offset`,
         `max-content-height`,
       )}

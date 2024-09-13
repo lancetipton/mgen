@@ -1,0 +1,8 @@
+
+sites:
+  __default:
+    name: MGen
+    css: |
+      .mg-content .prose :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)){
+        padding: 0px;
+      }

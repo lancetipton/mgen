@@ -23,6 +23,7 @@ export const Outline = (props:TOutline) => {
         className={cls(
           `mg-outline-aside`,
           `flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto`,
+          `scrollbar-thin scrollbar-track-base-content/5 scrollbar-thumb-base-content/40 scrollbar-track-rounded-md scrollbar-thumb-rounded`,
           `border-base-200 border-l rtl:border-l-0 rtl:border-l`
         )}
       >

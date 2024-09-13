@@ -15,7 +15,9 @@ import { getSiteName } from '@MG/utils/sites/getSiteName'
 
 type TMGenOpts = {
   selector?:string
+  mdToHtml?:boolean
   autoStart?:boolean
+  renderToDom?:boolean
   sitesConfig?:TSitesConfig
   micromark?:Record<any, any>
   sitemap?:Record<string, string>
@@ -38,15 +40,16 @@ export class MGen extends Events {
 
   #alert:Alert
   #init?:boolean
-  #stopRouter:() => void
-  #router:ReturnType<typeof Route>
   #opts:TMGenOpts
+  #stopRouter:() => void
+  #mdToHtml:boolean=true
+  #renderToDom:boolean=false
+  #router:ReturnType<typeof Route>
 
   constructor(opts?:TMGenOpts){
     super()
     this.#setup(opts)
   }
-
 
   #setup = (opts?:TMGenOpts) => {
     this.#opts = opts
@@ -56,8 +59,10 @@ export class MGen extends Events {
     this.baseUrl = buildApiUrl()
     this.#events(opts)
     if(opts?.getPath) this.getPath = opts?.getPath
+    if(opts?.mdToHtml === false) this.#mdToHtml = false
+    if(opts?.renderToDom === false) this.#renderToDom = false
     if(opts?.sitemap) this.sitemap = {...this.sitemap, ...opts?.sitemap}
-    
+
     ;(opts?.autoStart !== false) && this.start()
   }
 
@@ -127,7 +132,7 @@ export class MGen extends Events {
     this.config = parseJSON(content)
     
     this.sitemap = Object.values(this.config.sites)
-      .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.sitemap, ...this.config.sitemap})
+      .reduce((acc, site) => ({...acc, ...site?.sitemap}), {...this.sitemap})
 
     this.dispatch(this.events.onSite, this.site())
 
@@ -150,6 +155,15 @@ export class MGen extends Events {
     this.dispatch(this.events.onSite, this.site())
   }
 
+  __default = ():TSiteConfig => {
+    return {
+      dir: `/`,
+      nav: {},
+      pages: {},
+      ...this.config?.sites?.__default,
+    } as TSiteConfig
+  }
+
   site = ():TSiteConfig => {
     const siteCfg = this.#site && this.config?.sites?.[this.#site]
     if(siteCfg) return siteCfg
@@ -160,13 +174,7 @@ export class MGen extends Events {
     }
 
     // Return the default MGen site config when on the Root Index Page
-    return {
-      dir: ``,
-      nav: {},
-      pages: {},
-      name: `MGen`,
-      sitemap: this.config.sitemap
-    } as TSiteConfig
+    return this.__default()
   }
 
 
@@ -174,17 +182,21 @@ export class MGen extends Events {
 
 
   onMarkdown = (content:string, selector?:string, path?:string) => {
-    const html = micromark(content, {
-      extensions: [gfm()],
-      allowDangerousHtml: true,
-      htmlExtensions: [gfmHtml()]
-    })
+    const html = this.#mdToHtml
+      ? micromark(content, {
+          extensions: [gfm()],
+          allowDangerousHtml: true,
+          htmlExtensions: [gfmHtml()]
+        })
+      : content
+
     this.render(html, selector, path)
   }
 
 
   render = (content:string, selector?:string, path?:string) => {
     this.dispatch(this.events.onRender, content, selector, path)
+    if(!this.#renderToDom) return
 
     const sel = selector || this.selector
     const el = sel && document.querySelector(sel)

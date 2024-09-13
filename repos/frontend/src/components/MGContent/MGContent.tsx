@@ -1,9 +1,17 @@
 import { cls } from '@keg-hub/jsutils/cls'
 import { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { Loading } from '@MG/components/Loading'
-import { MGenId } from '@MG/constants/constants'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { Breadcrumbs } from '@MG/components/Breadcrumbs'
+import { Code } from '@MG/components/Code'
+
+
+// TODO: add these plugins
+//import rehypeRaw from 'rehype-raw'
+//import remarkGfm from 'remark-gfm'
+//import remarkMath from 'remark-math'
+//import rehypeKatex from 'rehype-katex'
 
 
 export type TMGContent = {}
@@ -11,12 +19,8 @@ export type TMGContent = {}
 export const MGContent = (props:TMGContent) => {
 
   const { mg, site } = useMGen()
-  const [parts, setParts] = useState<string|string[]>(window.location.pathname)
-
-  // TODO: bypass the render method of mgen
-  // Set the content to the article element instead
-  // My want to bypass the markdown conversion to allow customizing it
   const [content, setContent] = useState<string>(``)
+  const [parts, setParts] = useState<string|string[]>(window.location.pathname)
   
 
   useEffect(() => {
@@ -59,7 +63,6 @@ export const MGContent = (props:TMGContent) => {
     
       
         <article
-          id={MGenId}
           className={cls(
             `mg-content-article`,
             `prose`,
@@ -72,6 +75,13 @@ export const MGContent = (props:TMGContent) => {
           )}
         >
           {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
+          <ReactMarkdown
+            components={{
+              code:Code
+            }}
+          >
+            {content}
+          </ReactMarkdown>
         </article>
       </div>
     </div>
