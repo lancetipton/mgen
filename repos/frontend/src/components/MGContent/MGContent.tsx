@@ -1,27 +1,34 @@
+import type { PluggableList } from '@MG/types'
+import type { AllowElement } from 'react-markdown'
+
 import { cls } from '@keg-hub/jsutils/cls'
-import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { useEffect, useState } from 'react'
 import { Loading } from '@MG/components/Loading'
+import { Code } from '@MG/components/Code/Code'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { Breadcrumbs } from '@MG/components/Breadcrumbs'
-import { Code } from '@MG/components/Code'
+import { PreCode } from '@MG/components/Code/PreCode'
+import { useMarkdown } from '@MG/hooks/components/useMarkdown'
 
 
-// TODO: add these plugins
-//import rehypeRaw from 'rehype-raw'
-//import remarkGfm from 'remark-gfm'
-//import remarkMath from 'remark-math'
-//import rehypeKatex from 'rehype-katex'
+export type TMGContent = {
+  latex?: boolean
+  allowHtml?: boolean
+}
 
-
-export type TMGContent = {}
 
 export const MGContent = (props:TMGContent) => {
+
+
+  const {
+    rehypePlugins,
+    remarkPlugins
+  } = useMarkdown(props)
 
   const { mg, site } = useMGen()
   const [content, setContent] = useState<string>(``)
   const [parts, setParts] = useState<string|string[]>(window.location.pathname)
-  
 
   useEffect(() => {
     if(!mg) return
@@ -57,11 +64,9 @@ export const MGContent = (props:TMGContent) => {
         <Breadcrumbs
           capitalize
           parts={parts}
-          ignore={[site?.dir]}
+          map={{ [site?.dir]: `Home` }}
         />
       </div>
-    
-      
         <article
           className={cls(
             `mg-content-article`,
@@ -76,8 +81,11 @@ export const MGContent = (props:TMGContent) => {
         >
           {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
           <ReactMarkdown
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
             components={{
-              code:Code
+              code:Code,
+              pre:PreCode,
             }}
           >
             {content}

@@ -2,7 +2,14 @@
 sites:
   __default:
     name: MGen
+    pages:
+      latex: true
+      allowHtml: true
     css: |
       .mg-content .prose :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)){
         padding: 0px;
+        background-color: initial;
+      }
+      .mg-content .prose :where(code):not(:where([class~="not-prose"] *, pre *)) {
+        background-color: initial;
       }

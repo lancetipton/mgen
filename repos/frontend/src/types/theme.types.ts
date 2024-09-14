@@ -1,7 +1,7 @@
 
 
-export enum EThemeTypes {
-  dark=`dark`,
+export enum EThemeType {
+  dark=`business`,
   light=`emerald`,
   emerald=`emerald`,
 }

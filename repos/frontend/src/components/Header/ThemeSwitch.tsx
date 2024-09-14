@@ -1,27 +1,26 @@
+import { useMemo } from 'react'
+import { EThemeType } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
-import { useThemeSwitch } from '@MG/hooks/theme/useThemeSwitch'
+import { useTheme } from '@MG/contexts/ThemeContext'
 
 export type TThemeSwitch = {
   
 }
 
 export const ThemeSwitch = (props:TThemeSwitch) => {
-  
-  const {
-    lightCls,
-    darkCls,
-    inputRef,
-    onThemeSwitch
-  } = useThemeSwitch()
-  
+
+  const { theme, defTheme, setTheme } = useTheme()
+  const [lightCls, darkCls] = useMemo(
+    () => defTheme !== EThemeType.dark ? [`swap-off`, `swap-on`] : [`swap-on`, `swap-off`],
+    []
+  )
+
   return (
     <label
       className="swap swap-rotate"
-      onClick={() => onThemeSwitch()}
+      onMouseUp={() => setTheme(theme === EThemeType.dark ? EThemeType.light : EThemeType.dark)}
     >
-
       <input
-        ref={inputRef}
         type="checkbox"
         value="synthwave"
         className="theme-controller"

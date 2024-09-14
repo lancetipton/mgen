@@ -1,4 +1,4 @@
-import { EThemeTypes } from '@MG/types'
+import { EThemeType } from '@MG/types'
 import { ThemeStorageKey } from '@MG/constants/storage'
 
 export class Storage {
@@ -52,7 +52,7 @@ export class Storage {
 
   getTheme = () => this.get(ThemeStorageKey)
   rmTheme = () => this.remove(ThemeStorageKey)
-  setTheme = (name:EThemeTypes) => this.set(ThemeStorageKey, name)
+  setTheme = (name:EThemeType) => this.set(ThemeStorageKey, name)
 
 
 }

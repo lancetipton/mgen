@@ -11,6 +11,8 @@ export type TSiteNavItems = Record<string, TSiteNav>
 export type TSitePages = {
   hidden?:string[],
   ignore?: string[],
+  latex?: boolean
+  allowHtml?: boolean
 }
 
 export type TSiteLogo = {

@@ -165,8 +165,16 @@ export class MGen extends Events {
   }
 
   site = ():TSiteConfig => {
+    const defCfg = this.__default()
     const siteCfg = this.#site && this.config?.sites?.[this.#site]
-    if(siteCfg) return siteCfg
+    if(siteCfg)
+      return {
+        ...siteCfg,
+        pages: {
+          ...defCfg?.pages,
+          ...siteCfg?.pages
+        }
+      }
 
     if(this.#site){
       // TODO: Show warning that site does not exist, so it can't be loaded

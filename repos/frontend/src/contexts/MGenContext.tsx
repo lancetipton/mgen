@@ -1,23 +1,19 @@
-import type { ReactNode } from 'react'
-import type { TMGenCfg, TSiteConfig } from '@MG/types'
+import type { TSiteConfig } from '@MG/types'
+import type { TMemoChildren } from '@MG/components/MemoChildren'
 
+import { useState } from 'react'
 import { MGen } from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
-import { useEffect, useState, memo } from 'react'
 import { MGenId } from '@MG/constants/constants'
 import { useContext, createContext } from "react"
+import { MemoChildren } from '@MG/components/MemoChildren'
 import { useEffectOnce } from '@MG/hooks/components/useEffectOnce'
 
-export type TMemoChildren = {
-  children:ReactNode
-}
 
 export type TMGenProvider = TMemoChildren & {
   selector?:string
 }
 
-
-export const MemoChildren = memo((props:TMemoChildren) => <>{props.children}</>)
 
 export type TMGenCtx = {
   mg?:MGen

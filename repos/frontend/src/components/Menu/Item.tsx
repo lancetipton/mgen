@@ -1,5 +1,6 @@
-import { cls } from '@keg-hub/jsutils/cls'
 import { useState } from 'react'
+import { cls } from '@keg-hub/jsutils/cls'
+import { Link } from '@MG/components/Link/Link'
 
 export type TItem = {
   id?:string
@@ -23,15 +24,16 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
   } = props
 
   return (
-    <a
+    <Link
       href={url}
       onClick={(evt:any) => !url && children ? setOpen?.(!open) : onClick?.(evt, id, url)}
       className={cls(
-        `mg-menu-item-text`
+        `mg-menu-item-text`,
+        `no-underline`,
       )}
     >
       {text}
-    </a>
+    </Link>
   )
 }
 

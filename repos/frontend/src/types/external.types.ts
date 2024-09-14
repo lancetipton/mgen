@@ -1,3 +1,5 @@
+export type { PluggableList } from '../../node_modules/react-markdown/lib/index.js'
+
 export type TMarked = {
   Renderer: any,
   setOptions: (opts:Record<any, any>) => any
