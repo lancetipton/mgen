@@ -1,7 +1,9 @@
 import type { TTOC } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
-import { useLayoutEffect, useState, useTransition } from 'react'
+import { Link } from '@MG/components/Link'
+import { useLayoutEffect, useState } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
+import { useTheme } from '@MG/contexts/ThemeContext'
 
 export type TOutline = {
   
@@ -9,16 +11,12 @@ export type TOutline = {
 
 export const Outline = (props:TOutline) => {
   const { site, mg } = useMGen()
-  
+
   const [toc, setToc] = useState<TTOC[]>([])
-   const [isPending, startTransition] = useTransition();
+  const { isDark } = useTheme()
 
   useLayoutEffect(() => {
-    const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => {
-      startTransition(() => {
-        setToc(toc)
-      })
-    })
+    const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => setToc(toc))
     return () => {
       offToc?.()
     }
@@ -51,19 +49,36 @@ export const Outline = (props:TOutline) => {
       >
 
         <div className="flex flex-col prose">
-          <div>
-            <h3 className="bold" >
-              Outline
-            </h3>
+          <div >
+            <h4 className={cls(
+              `mt-0 bold`,
+              isDark ? `text-gray-300` : `text-gray-600`,
+              
+            )}
+            >
+              On This Page
+            </h4>
           </div>
-          <ul>
+          <ul className='list-none pl-0 mt-1' >
             {toc?.map?.(item => {
               const { type, url, value } = item
               return (
-                <li key={`${type}-${url}-${value}`} >
-                  <a className='link link-hover' href={item.url || `#`} >
+                <li className='mt-1 mb-0 pl-0'  key={`${type}-${url}-${value}`} >
+                  <Link
+                    href={item.url || `#`}
+                    className={cls(
+                      `no-underline`,
+                      `text-base`,
+                      `opacity-70`,
+                      `!text-sm`,
+                      `leading-none`,
+                      `hover:opacity-100`,
+                      `hover:text-info`,
+                      
+                    )}
+                  >
                     {value}
-                  </a>
+                  </Link>
                 </li>
               )
             })}
