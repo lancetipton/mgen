@@ -102,8 +102,17 @@ export class MGen extends Events {
       // So set the flag and return
       //if(this.#init) return (this.#init = false)
     }
+    
+    if(path.includes(`#`) || path.includes(`?`))
+      path = window.location.pathname
 
-    window.scrollTo(0, 0)
+
+    if(window.location.hash){
+      const el = document.querySelector(window.location.hash) as HTMLElement
+      el && window.scrollTo({ top: el.offsetTop, behavior: `smooth`});
+    }
+    else window.scrollTo(0, 0)
+
     const loc = this.#loc(path)
     this.load(loc)
     this.dispatch(this.events.onRoute, path, data, loc)

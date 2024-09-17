@@ -12,6 +12,7 @@ export type TMGenCfg = {
 }
 
 export enum EMGenEvts {
+  onToc=`onMGToc`,
   onSite=`onMGSite`,
   onError=`onMGError`,
   onRoute=`onMGRoute`,

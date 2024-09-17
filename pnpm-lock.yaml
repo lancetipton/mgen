@@ -96,6 +96,9 @@ importers:
       remark-gfm:
         specifier: 4.0.0
         version: 4.0.0
+      remark-heading-id:
+        specifier: 1.0.1
+        version: 1.0.1
       remark-math:
         specifier: 6.0.0
         version: 6.0.0
@@ -6365,6 +6368,14 @@ packages:
       - supports-color
     dev: false
 
+  /remark-heading-id@1.0.1:
+    resolution: {integrity: sha512-GmJjuCeEkYvwFlvn/Skjc/1Qafj71412gbQnrwUmP/tKskmAf1cMRlZRNoovV+aIvsSRkTb2rCmGv2b9RdoJbQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      lodash: 4.17.21
+      unist-util-visit: 1.4.1
+    dev: false
+
   /remark-math@6.0.0:
     resolution: {integrity: sha512-MMqgnP74Igy+S3WwnhQ7kqGlEerTETXMvJhrUzDikVZ2/uogJCb+WHUg97hK9/jcfc0dkD73s3LN8zU49cTEtA==}
     dependencies:
@@ -7129,6 +7140,10 @@ packages:
       unist-util-is: 6.0.0
     dev: false
 
+  /unist-util-is@3.0.0:
+    resolution: {integrity: sha512-sVZZX3+kspVNmLWBPAB6r+7D9ZgAFPNWm66f7YNb420RlQSbn+n8rG8dGZSkrER7ZIXGQYNm5pqC3v3HopH24A==}
+    dev: false
+
   /unist-util-is@6.0.0:
     resolution: {integrity: sha512-2qCTHimwdxLfz+YzdGfkqNlH0tLi9xjTnHddPmJwtIG9MGsdbutfTc4P+haPD7l7Cjxf/WZj+we5qfVPvvxfYw==}
     dependencies:
@@ -7154,11 +7169,23 @@ packages:
       '@types/unist': 3.0.3
     dev: false
 
+  /unist-util-visit-parents@2.1.2:
+    resolution: {integrity: sha512-DyN5vD4NE3aSeB+PXYNKxzGsfocxp6asDc2XXE3b0ekO2BaRUpBicbbUygfSvYfUz1IkmjFR1YF7dPklraMZ2g==}
+    dependencies:
+      unist-util-is: 3.0.0
+    dev: false
+
   /unist-util-visit-parents@6.0.1:
     resolution: {integrity: sha512-L/PqWzfTP9lzzEa6CKs0k2nARxTdZduw3zyh8d2NVBnsyvHjSX4TWse388YrrQKbvI8w20fGjGlhgT96WwKykw==}
     dependencies:
       '@types/unist': 3.0.3
       unist-util-is: 6.0.0
+    dev: false
+
+  /unist-util-visit@1.4.1:
+    resolution: {integrity: sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==}
+    dependencies:
+      unist-util-visit-parents: 2.1.2
     dev: false
 
   /unist-util-visit@5.0.0:

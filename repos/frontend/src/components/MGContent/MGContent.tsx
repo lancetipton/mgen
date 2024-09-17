@@ -1,6 +1,3 @@
-import type { PluggableList } from '@MG/types'
-import type { AllowElement } from 'react-markdown'
-
 import { cls } from '@keg-hub/jsutils/cls'
 import ReactMarkdown from 'react-markdown'
 import { useEffect, useState } from 'react'
@@ -21,13 +18,13 @@ export type TMGContent = {
 export const MGContent = (props:TMGContent) => {
 
 
+  const [content, setContent] = useState<string>(``)
   const {
     rehypePlugins,
     remarkPlugins
-  } = useMarkdown(props)
+  } = useMarkdown({...props, content})
 
   const { mg, site } = useMGen()
-  const [content, setContent] = useState<string>(``)
   const [parts, setParts] = useState<string|string[]>(window.location.pathname)
 
   useEffect(() => {

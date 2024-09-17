@@ -1,4 +1,6 @@
+import type { TTOC } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
+import { useLayoutEffect, useState, useTransition } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 
 export type TOutline = {
@@ -6,8 +8,24 @@ export type TOutline = {
 }
 
 export const Outline = (props:TOutline) => {
-  const { site } = useMGen()
+  const { site, mg } = useMGen()
+  
+  const [toc, setToc] = useState<TTOC[]>([])
+   const [isPending, startTransition] = useTransition();
+
+  useLayoutEffect(() => {
+    const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => {
+      startTransition(() => {
+        setToc(toc)
+      })
+    })
+    return () => {
+      offToc?.()
+    }
+  }, [mg])
+
   if(!site?.dir) return null
+
 
   return (
     <div
@@ -32,10 +50,25 @@ export const Outline = (props:TOutline) => {
         )}
       >
 
-        <div className="flex flex-col justify-between flex-1">
-          Outline
+        <div className="flex flex-col prose">
+          <div>
+            <h3 className="bold" >
+              Outline
+            </h3>
+          </div>
+          <ul>
+            {toc?.map?.(item => {
+              const { type, url, value } = item
+              return (
+                <li key={`${type}-${url}-${value}`} >
+                  <a className='link link-hover' href={item.url || `#`} >
+                    {value}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
         </div>
-
       </aside>
 
     </div>
