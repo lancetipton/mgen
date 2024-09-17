@@ -1,10 +1,14 @@
 import { cls } from '@keg-hub/jsutils/cls'
+import { useMGen } from '@MG/contexts/MGenContext'
+
 export type TOutline = {
   
 }
 
 export const Outline = (props:TOutline) => {
-  
+  const { site } = useMGen()
+  if(!site?.dir) return null
+
   return (
     <div
       className={cls(

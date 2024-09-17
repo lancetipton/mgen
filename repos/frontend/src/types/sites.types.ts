@@ -18,6 +18,13 @@ export type TSitePages = {
 export type TSiteLogo = {
   url?:string
   alt?:string
+  svg?:string
+  fontFamily?:string
+  foreground?:string
+  background?:string
+  width?:string|number
+  height?:string|number
+  fontSize?:string|number
 }
 
 export type TSiteConfig = {
@@ -31,3 +38,12 @@ export type TSiteConfig = {
 }
 
 export type TSitesConfig = Record<string, TSiteConfig>
+
+export type TLogoMeta = {
+  href?:string
+  alt?:string
+  src?:string
+  svg?:string
+  width?:number
+  height?:number
+}

@@ -80,7 +80,7 @@ export const Breadcrumbs = (props:TBreadcrumbs) => {
               </Link>
             </li>
           )
-        })}
+        }) || null}
       </ul>
     </div>
   )

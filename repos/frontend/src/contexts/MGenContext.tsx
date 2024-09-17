@@ -1,4 +1,4 @@
-import type { TSiteConfig } from '@MG/types'
+import type { TSiteConfig, TLogoMeta } from '@MG/types'
 import type { TMemoChildren } from '@MG/components/MemoChildren'
 
 import { useState } from 'react'
@@ -6,6 +6,7 @@ import { MGen } from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
 import { MGenId } from '@MG/constants/constants'
 import { useContext, createContext } from "react"
+import { getSiteLogo } from '@MG/utils/sites/getSiteLogo'
 import { MemoChildren } from '@MG/components/MemoChildren'
 import { useEffectOnce } from '@MG/hooks/components/useEffectOnce'
 
@@ -17,6 +18,7 @@ export type TMGenProvider = TMemoChildren & {
 
 export type TMGenCtx = {
   mg?:MGen
+  logo?:TLogoMeta
   site?:TSiteConfig
 }
 
@@ -29,6 +31,7 @@ export const MGenProvider = (props:TMGenProvider) => {
   const { children, ...rest } = props
   const [mg, setMM] = useState<MGen>()
   const [site, setSite] = useState<TSiteConfig>()
+  const [logo, setLogo] = useState<TLogoMeta>(getSiteLogo())
 
   useEffectOnce(() => {
     if(mg) return
@@ -38,7 +41,11 @@ export const MGenProvider = (props:TMGenProvider) => {
         ...rest,
         mdToHtml: false,
         renderToDom: false,
-        onSite: (siteCfg) => setSite(siteCfg),
+        onSite: (siteCfg) => {
+          if(site?.name === siteCfg?.name) return
+          setSite(siteCfg)
+          setLogo(getSiteLogo(siteCfg))
+        },
         selector: props.selector || `#${MGenId}`,
       })
       // @ts-ignore
@@ -49,9 +56,8 @@ export const MGenProvider = (props:TMGenProvider) => {
 
   })
 
-
   return (
-    <MMContext.Provider value={{mg, site}}>
+    <MMContext.Provider value={{mg, site, logo}}>
       <MemoChildren children={children} />
     </MMContext.Provider>
   )

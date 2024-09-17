@@ -1,29 +1,29 @@
-import { useMemo } from 'react'
-import Logo from '@MG/assets/logo.png'
+import { useEffect } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 
 export type TSiteLogo = {}
 
-export const SiteLogo = (props:TSiteLogo) => {
-  
-  const {site} = useMGen()
 
-  const {src, alt, href} =useMemo(() => {
-    return {
-      href: site?.nav?.url || `/`,
-      src: site?.logo?.url || Logo,
-      alt: site?.logo?.alt || `MGen Docs`,
-    }
-    
-  }, [
-    site?.nav?.url,
-    site?.logo?.url,
-    site?.logo?.alt
-  ])
+export const SiteLogo = (props:TSiteLogo) => {
+  const {logo} = useMGen()
+
+  // TODO: update the favicon with the correct logo
+  //useEffect(() => {}, [logo])
 
   return (
-    <a href={href}>
-      <img className="w-auto h-7 min-w-7" src={src} alt={alt} />
+    <a href={logo.href}>
+      {logo?.svg ? (
+        <div
+          style={{
+            background: logo?.svg,
+            backgroundSize: `cover`,
+            width: `${logo.width}px`,
+            height: `${logo.height}px`,
+          }}
+        />
+      ) : (
+        <img className="w-auto h-7 min-w-7" src={logo.src} alt={logo.alt} />
+      )}
     </a>
   )
 }

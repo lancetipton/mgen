@@ -3,14 +3,25 @@ import path from 'node:path'
 import { loadCfgFile } from './config.js'
 import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
-import { MGCfgFinalLoc, ServeFinalLoc, MGCfgName } from './constants.js'
+import { MGIdxName, MGCfgFinalLoc, ServeFinalLoc, MGCfgName } from './constants.js'
 
 const configFiles = [
   MGCfgFinalLoc,
   ServeFinalLoc,
 ]
 
-const emptySite = () => ({ sitemap: {}, nav: {} })
+const emptySite = () => ({ sitemap: {}, nav: {}, logo: {} })
+
+const rootSite = () => ({
+  nav: {},
+  dir: ``,
+  pages: {},
+  name: `MGen`,
+  logo: {},
+  sitemap: {
+    [`/`]: MGIdxName,
+  },
+})
 
 const parse = (location) => {
   const parsed = path.parse(location)
@@ -125,9 +136,10 @@ const buildPaths = (dir) => (acc, file) => {
 
 
 export const crawl = (dir) => {
+  const siteIdx = emptySite()
   return new fdir()
     .withFullPaths()
     .crawl(dir)
     .sync()
-    .reduce(buildPaths(dir), { sites: { __default: emptySite() } })
+    .reduce(buildPaths(dir), { sites: { __default: rootSite() }})
 }

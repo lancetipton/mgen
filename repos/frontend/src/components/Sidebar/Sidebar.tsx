@@ -1,21 +1,14 @@
 import { cls } from '@keg-hub/jsutils/cls'
 
-import { useMemo } from 'react'
 import { Menu } from '@MG/components/Menu/Menu'
 import { useMGen } from '@MG/contexts/MGenContext'
+
 
 export type TSidebar = {}
 
 export const Sidebar = (props:TSidebar) => {
   const { mg, site } = useMGen()
-
-  const nav = useMemo(() => {
-    // TODO: build root site nav, if no site exists
-    return site?.nav || {}
-  }, [
-    site,
-    mg?.config,
-  ])
+  if(!site?.dir) return null
 
   const onClick = (evt:any, id?:string, href?:string) => {
     evt.stopPropagation()
@@ -47,7 +40,7 @@ export const Sidebar = (props:TSidebar) => {
       >
         <Menu
           onClick={onClick}
-          items={nav?.children}
+          items={site?.nav?.children}
         />
       </aside>
 

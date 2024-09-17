@@ -147,9 +147,10 @@ export class MGen extends Events {
     return res.text()
   }
 
-  #updateSite = (loc:string) => {
+  #updateSite = (loc?:string) => {
     const site = getSiteName(loc)
-    if(!site || !this.#site || !this?.config?.sites || site === this.#site) return
+
+    if(!this?.config?.sites || site === this.#site) return
 
     this.#site = site
     this.dispatch(this.events.onSite, this.site())
@@ -182,7 +183,7 @@ export class MGen extends Events {
     }
 
     // Return the default MGen site config when on the Root Index Page
-    return this.__default()
+    return defCfg
   }
 
 
@@ -224,7 +225,7 @@ export class MGen extends Events {
     if(err) return this.#error(err, path)
 
     this.onMarkdown(content, selector, path)
-    this.#updateSite(path)
+    this.#updateSite()
   }
 
 

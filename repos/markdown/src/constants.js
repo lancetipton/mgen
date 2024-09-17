@@ -10,6 +10,11 @@ export const CfgExts = [
   `yml`,
 ]
 
+export const MGIdxName = `index.mdx`
+
+export const MGNoAutoIdx = envs[`MG_NO_AUTO_IDX`]
+export const MGIdxMarkdown = envs[`MG_IDX_MD`] || ``
+
 export const MGCfgName = `mgen.config`
 export const MGCfgLoc = envs[`MG_MG_CFG`]
 export const MGCfgFile = `configs/${MGCfgName}`
@@ -21,3 +26,4 @@ export const ServeCfgFile = `configs/serve.json`
 
 
 export const SitesDir = envs[`MG_SITES_DIR`] || `./sites`
+
