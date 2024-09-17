@@ -1,4 +1,3 @@
-import { TSitesConfig } from './sites.types'
 
 export type TRouteData = {
   scrollX: number
@@ -6,10 +5,6 @@ export type TRouteData = {
   popstate: boolean
 }
 
-export type TMGenCfg = {
-  sites?:TSitesConfig
-  sitemap: Record<string, string>
-}
 
 export enum EMGenEvts {
   onToc=`onMGToc`,

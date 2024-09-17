@@ -25,6 +25,7 @@
       "@mgen/root/*": ["../../*"],
       "@mgen/deploy": ["../../deploy"],
       "@mgen/deploy/*": ["../../deploy/*"],
+      "@MGS/types": ["../backend/src/types.ts"],
       "@keg-hub/jsutils": ["node_modules/@keg-hub/jsutils/build/cjs"],
       "@keg-hub/jsutils/*": ["node_modules/@keg-hub/jsutils/build/cjs/*"]
     }

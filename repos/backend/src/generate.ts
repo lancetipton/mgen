@@ -1,4 +1,4 @@
-import type { TMGenCfg, TSiteConfig } from './types.ts'
+import type { TMGenCfg, TSiteConfig } from './types.js'
 
 import path from 'node:path'
 import { writeFile } from 'node:fs'
