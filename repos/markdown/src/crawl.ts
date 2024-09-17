@@ -1,3 +1,5 @@
+import type { TMGenCfg, TSiteConfig } from './types.ts'
+
 import { fdir } from 'fdir'
 import path from 'node:path'
 import { loadCfgFile } from './config.js'
@@ -5,14 +7,20 @@ import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
 import { MGIdxName, MGCfgFinalLoc, ServeFinalLoc, MGCfgName } from './constants.js'
 
+type TParsed = path.ParsedPath & {
+  siteDir:string
+  siteRoot?:boolean
+}
+
+
 const configFiles = [
   MGCfgFinalLoc,
   ServeFinalLoc,
 ]
 
-const emptySite = () => ({ sitemap: {}, nav: {}, logo: {} })
+const emptySite = ():Partial<TSiteConfig> => ({ pages: {}, sitemap: {}, nav: {}, logo: {} })
 
-const rootSite = () => ({
+const rootSite = ():TSiteConfig => ({
   nav: {},
   dir: ``,
   pages: {},
@@ -23,9 +31,9 @@ const rootSite = () => ({
   },
 })
 
-const parse = (location) => {
+const parse = (location:string) => {
   const parsed = path.parse(location)
-  if(parsed.dir === `/`) return parsed
+  if(parsed.dir === `/`) return parsed as TParsed
   
   const split = parsed.dir.split(`/`)
 
@@ -33,10 +41,10 @@ const parse = (location) => {
     ...parsed,
     siteDir: split[1],
     siteRoot: split.length <= 2
-  }
+  } as TParsed
 }
 
-const buildItem = (siteCfg, location, parsed) => {
+const buildItem = (siteCfg, location:string, parsed:TParsed) => {
   if(parsed.name === `index` && parsed.siteRoot){
     siteCfg.nav = {
       path: location,
@@ -93,7 +101,7 @@ const buildItem = (siteCfg, location, parsed) => {
 }
 
 
-const buildPaths = (dir) => (acc, file) => {
+const buildPaths = (dir:string) => (acc:TMGenCfg, file:string) => {
 
   if(configFiles.find(cfg => file.endsWith(cfg))) return acc
 
@@ -129,14 +137,13 @@ const buildPaths = (dir) => (acc, file) => {
 
   buildItem(siteCfg, clean, parsed)
 
-  acc.sites[parsed.siteDir] = siteCfg
+  acc.sites[parsed.siteDir] = siteCfg as TSiteConfig
 
   return acc
 }
 
 
-export const crawl = (dir) => {
-  const siteIdx = emptySite()
+export const crawl = (dir:string) => {
   return new fdir()
     .withFullPaths()
     .crawl(dir)

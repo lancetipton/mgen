@@ -2,7 +2,18 @@ import path from 'node:path'
 import { spawn } from "node:child_process"
 import { toStr } from '@keg-hub/jsutils/toStr'
 
-const run = (props) => {
+export type TServe = {
+  root:string
+  bin:string
+  port?:string
+  config?:string
+  args?:string[]
+}
+
+export type TProc = ReturnType<typeof spawn>
+
+
+const run = (props:TServe) => {
   const {
     root,
     bin,
@@ -21,13 +32,13 @@ const run = (props) => {
   return spawn(path.join(bin, `serve`), opts, { cwd: root })
 }
 
-const stdio = (proc) => {
+const stdio = (proc:TProc) => {
   proc.stdout.pipe(process.stdout)
   proc.stderr.pipe(process.stderr)
   process.stdin.pipe(proc.stdin)
 }
 
-const events = (proc) => {
+const events = (proc:TProc) => {
   proc.on(`spawn`, () => {
     setTimeout(() => console.log(`MGen Server started.`), 300)
   })

@@ -1,3 +1,5 @@
+import type { TMGenCfg, TSiteConfig } from './types.ts'
+
 import path from 'node:path'
 import { writeFile } from 'node:fs'
 import { noOp } from '@keg-hub/jsutils/noOp'
@@ -31,7 +33,7 @@ export const generateSvg = (letter, options = {}) => {
 }
 
 
-const getLetters = (name) => {
+const getLetters = (name:string) => {
   const split = name.trim().split(` `)
   const first = split?.shift?.().split(``)
   const last = split.pop()?.split?.(``) || first
@@ -39,7 +41,7 @@ const getLetters = (name) => {
   return `${first.shift()}${middle.shift()}${last.shift()}`.toUpperCase()
 }
 
-const generateLogo = (site) => {
+const generateLogo = (site:TSiteConfig) => {
   if(!site.name || site?.logo?.url || site?.logo?.svg)
     return {...site, logo: {...site?.logo, alt: site?.logo?.alt || site?.name || `MGen Docs`}}
 
@@ -52,14 +54,14 @@ const generateLogo = (site) => {
 }
 
 
-const writeIdx = (location, data) => writeFile(location, data, noOp)
+const writeIdx = (location:string, data:string) => writeFile(location, data, noOp)
 
-const buildSites = (config) => {
+const buildSites = (config:TMGenCfg) => {
   const idxMd = [`# MGen Index\n`]
   MGIdxMarkdown && idxMd.push(`${MGIdxMarkdown}\n`)
   
   const sites = Object.entries(config.sites)
-  if(!sites?.length) return idxMd.join(`\n`)
+  if(!sites?.length) return { idxMd: idxMd.join(`\n`), sites:{}}
 
   idxMd.push(`## Sites\n`)
   const sconfigs = sites.reduce((acc, [key, site]) => {
@@ -72,20 +74,21 @@ const buildSites = (config) => {
   }, {})
 
    return {
-    sitesCfg: {...config, sites: sconfigs},
+    mgenCfg: {...config, sites: sconfigs} as TMGenCfg,
     idxMd: idxMd.join(`\n`)
    }
 }
 
 
-export const generateSites = (dir, config) => {
+export const generateSites = (dir:string, config:TMGenCfg) => {
   if(exists(MGNoAutoIdx)) return
 
   const location = path.join(dir, MGIdxName)
 
-  const {idxMd, sitesCfg } = buildSites(config)
+  const {idxMd, mgenCfg} = buildSites(config)
   writeIdx(location, idxMd)
 
-  return sitesCfg
+  return mgenCfg
 }
+
 

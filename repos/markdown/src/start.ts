@@ -9,11 +9,9 @@ import { getRootLoc, getBinLoc, getSitesLoc } from './paths.js'
 export const start = () => {
   const bin = getBinLoc()
   const sites = getSitesLoc()
-  const config = crawl(sites)
-  const sitesCfg = generateSites(sites, config)
+  const mgenCfg = generateSites(sites, crawl(sites))
 
-  genMConfig(sites, sitesCfg)
-
+  genMConfig(sites, mgenCfg)
 
   const { location } = genSConfig(sites)
 

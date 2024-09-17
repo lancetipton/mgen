@@ -4,13 +4,19 @@ import * as url from 'node:url'
 import { existsSync } from 'node:fs'
 import { ife } from '@keg-hub/jsutils/ife'
 import { execSync } from "node:child_process"
-import { MGCfgFile, MGCfgLoc, ServeCfgFile, ServeCfgLoc, SitesDir } from './constants.js'
+import {
+  MGCfgLoc,
+  SitesDir,
+  MGCfgFile,
+  ServeCfgLoc,
+  ServeCfgFile,
+} from './constants.js'
 
 const homedir = os.homedir()
 
 let rootLoc = undefined
 
-const resolveLoc = (loc, exists=true, rootDir) => {
+const resolveLoc = (loc:string, exists=true, rootDir?:string) => {
   const root = rootDir || getRootLoc()
   const resolved = loc.startsWith(`~/`)
     ? path.join(homedir, loc.replace(`~/`, ``))

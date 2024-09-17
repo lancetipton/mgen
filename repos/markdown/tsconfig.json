@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js"
-, "index.cjs", "server.cjs"  ],
+  ],
   "exclude": [
     "build",
     "**/build/*",

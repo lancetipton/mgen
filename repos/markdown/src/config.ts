@@ -1,3 +1,5 @@
+import type { TMGenCfg } from './types.ts'
+
 import yaml from 'js-yaml'
 import path from 'node:path'
 import { tri } from '@keg-hub/jsutils/tri'
@@ -7,12 +9,12 @@ import { getMgCfgLoc, getSrvCfgLoc } from './paths.js'
 import { readFileSync, writeFile, mkdir, existsSync } from 'node:fs'
 import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants.js'
 
-export const createDir = (location) => mkdir(location, {recursive: true}, noOp)
-export const loadJson = (location) => tri(() => JSON.parse(readFileSync(location, `utf8`))) || {}
-export const writeJson = (location, data) => writeFile(location, JSON.stringify(data, null, 2), noOp)
+export const createDir = (location:string) => mkdir(location, {recursive: true}, noOp)
+export const loadJson = (location:string) => tri(() => JSON.parse(readFileSync(location, `utf8`))) || {}
+export const writeJson = (location:string, data:Record<any, any>) => writeFile(location, JSON.stringify(data, null, 2), noOp)
 
 
-export const loadCfgFile = (location, clean=location, error=true) => {
+export const loadCfgFile = (location:string, clean:string=location, error=true) => {
 
   if(location.endsWith(`.json`)){
     try {
@@ -60,7 +62,7 @@ const loadDefMGCfg = () => {
 }
 
 
-export const genMConfig = (dir, cfg) => {
+export const genMConfig = (dir:string, cfg:TMGenCfg) => {
   const config = loadDefMGCfg()
   const location = path.join(dir, MGCfgFinalLoc)
   const parsed = path.parse(location)
@@ -71,7 +73,7 @@ export const genMConfig = (dir, cfg) => {
 }
 
 
-export const genSConfig = (dir) => {
+export const genSConfig = (dir:string) => {
 
   const defCfgLoc = getSrvCfgLoc()
   const defCfg = loadJson(defCfgLoc)

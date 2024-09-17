@@ -1,4 +1,3 @@
 #!/usr/bin/env node
-import { start } from './src/markdown.js'
-
+import { start } from './dist/index.js'
 start()
