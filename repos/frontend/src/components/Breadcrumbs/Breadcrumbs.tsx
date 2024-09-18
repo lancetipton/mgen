@@ -60,12 +60,13 @@ const useParts = (props:TBreadcrumbs) => {
 export const Breadcrumbs = (props:TBreadcrumbs) => {
 
   const parts = useParts(props)
+  const count = parts?.length - 1
   const { isDark } = useTheme()
 
   return (
     <div className={cls(`mg-breadcrumbs breadcrumbs text-sm`)}>
       <ul>
-        {parts?.length && parts.map((part:TPart) => {
+        {parts?.length && parts.map((part:TPart, idx:number) => {
           return (
             <li key={part.href} >
               <Link
@@ -73,6 +74,7 @@ export const Breadcrumbs = (props:TBreadcrumbs) => {
                 disabled={part.disabled}
                 className={cls(
                   isDark ? `text-gray-500` : `text-gray-400`,
+                  count === idx && `text-info`,
                   part.disabled ? `no-underline` : `hover:link-info link-hover`
                 )}
               >

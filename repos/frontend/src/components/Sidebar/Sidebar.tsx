@@ -2,18 +2,23 @@ import { cls } from '@keg-hub/jsutils/cls'
 
 import { Menu } from '@MG/components/Menu/Menu'
 import { useMGen } from '@MG/contexts/MGenContext'
-
+import { useForceUpdate } from '@MG/hooks/components/useForceUpdate'
 
 export type TSidebar = {}
 
 export const Sidebar = (props:TSidebar) => {
   const { mg, site } = useMGen()
+  const forceUpdate = useForceUpdate()
+  
   if(!site?.dir) return null
 
   const onClick = (evt:any, id?:string, href?:string) => {
     evt.stopPropagation()
     evt.preventDefault()
-    href && mg.navigate(href)
+    if(!href) return
+
+    mg.navigate(href)
+    forceUpdate()
   }
 
   return (

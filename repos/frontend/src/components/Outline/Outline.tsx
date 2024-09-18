@@ -1,26 +1,44 @@
 import type { TTOC } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link'
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { useTheme } from '@MG/contexts/ThemeContext'
 
-export type TOutline = {
-  
+export type TOutline = {}
+
+
+const useActive = () => {
+  const initial = (window.location.hash || ``).replace(`#`, ``).toLowerCase()
+  const [active, setActive] = useState<string>(initial)
+  return {active, setActive}
 }
 
 export const Outline = (props:TOutline) => {
   const { site, mg } = useMGen()
 
-  const [toc, setToc] = useState<TTOC[]>([])
   const { isDark } = useTheme()
+  const {active, setActive} = useActive()
+  const [toc, setToc] = useState<TTOC[]>([])
 
-  useLayoutEffect(() => {
+
+
+  useEffect(() => {
+    if(!mg) return
+
     const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => setToc(toc))
+    const offRoute = mg?.on(mg.events.onRoute, (path, data, loc) => {
+      const hash = (window.location.hash || ``).replace(`#`, ``).toLowerCase()
+      setActive(hash)
+    })
+
     return () => {
       offToc?.()
+      offRoute?.()
     }
+
   }, [mg])
+
 
   if(!site?.dir) return null
 
@@ -62,10 +80,12 @@ export const Outline = (props:TOutline) => {
           <ul className='list-none pl-0 mt-1' >
             {toc?.map?.(item => {
               const { type, url, value } = item
+
               return (
                 <li className='mt-1 mb-0 pl-0'  key={`${type}-${url}-${value}`} >
                   <Link
                     href={item.url || `#`}
+                    onClick={(evt:any) => setActive((value || ``).toLowerCase())}
                     className={cls(
                       `no-underline`,
                       `text-base`,
@@ -74,7 +94,7 @@ export const Outline = (props:TOutline) => {
                       `leading-none`,
                       `hover:opacity-100`,
                       `hover:text-info`,
-                      
+                      active === value.toLowerCase() && `text-info`,
                     )}
                   >
                     {value}

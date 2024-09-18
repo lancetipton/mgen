@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link/Link'
+import { stopEvt } from '@MG/utils/dom/stopEvt'
 
 export type TItem = {
   id?:string
@@ -23,13 +24,27 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
     children,
   } = props
 
+  const active = window.location.pathname === url
+
   return (
     <Link
       href={url}
-      onClick={(evt:any) => !url && children ? setOpen?.(!open) : onClick?.(evt, id, url)}
+      onClick={(evt:any) => {
+        url ? onClick?.(evt, id, url) : stopEvt(evt)
+        children && setOpen?.(!open)
+      }}
       className={cls(
-        `mg-menu-item-text`,
         `no-underline`,
+        `mg-menu-item-text`,
+        `rounded-sm`,
+        `hover:text-primary`,
+        `hover:bg-slate-50`,
+        `active:!bg-slate-100`,
+        `active:!text-primary`,
+        `focus:!bg-slate-50`,
+        `focus:!text-primary`,
+        active && `text-primary`,
+        active && `bg-slate-50`,
       )}
     >
       {text}
@@ -53,7 +68,17 @@ export const Item = (props:TItem) => {
         <ItemText {...props} />
       ) : (
         <details open={open} >
-          <summary>
+          <summary
+            className={cls(
+              `rounded-sm`,
+              `hover:text-primary`,
+              `hover:bg-slate-50`,
+              `active:!bg-slate-100`,
+              `active:!text-primary`,
+              `focus:!bg-transparent`,
+              `focus:!text-current`,
+            )}
+          >
             <ItemText
               {...props}
               open={open}
