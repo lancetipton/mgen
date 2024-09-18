@@ -27,3 +27,22 @@ export const ServeCfgFile = `configs/serve.json`
 
 export const SitesDir = envs[`MG_SITES_DIR`] || `./sites`
 
+const DefThemeColors = {
+
+}
+export const DefSiteTheme = {
+  font: {
+    size: 14,
+    family: `ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji`,
+  },
+  logo: {
+    size: 120,
+    radius: 30,
+    width: 100,
+    height: 100,
+    background: `#4444BB`,
+    foreground: `#FFFFFF`,
+  },
+  light: {...DefThemeColors},
+  dark: {...DefThemeColors},
+}

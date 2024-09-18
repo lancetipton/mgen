@@ -26,6 +26,7 @@
     "@keg-hub/parse-config": "2.1.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "alias-hq": "6.2.2",
+    "color-convert": "2.0.1",
     "cors": "^2.8.5",
     "esbuild": "0.19.3",
     "esbuild-register": "3.5.0",

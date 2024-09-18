@@ -11,9 +11,13 @@ export const SiteLogo = (props:TSiteLogo) => {
   //useEffect(() => {}, [logo])
 
   return (
-    <a href={logo.href}>
+    <a href={logo.href} aria-label={logo.alt} >
       {logo?.svg ? (
         <div
+          role='img'
+          // @ts-ignore
+          alt={logo.alt}
+          title={logo.alt}
           style={{
             background: logo?.svg,
             backgroundSize: `cover`,
@@ -22,7 +26,11 @@ export const SiteLogo = (props:TSiteLogo) => {
           }}
         />
       ) : (
-        <img className="w-auto h-7 min-w-7" src={logo.src} alt={logo.alt} />
+        <img
+          src={logo.src}
+          alt={logo.alt}
+          className='w-auto h-7 min-w-7'
+        />
       )}
     </a>
   )

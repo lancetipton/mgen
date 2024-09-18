@@ -1,11 +1,17 @@
-import type { TMGenCfg, TSiteConfig } from './types.js'
+import type { TMGenCfg, TSiteConfig } from './types'
 
 import { fdir } from 'fdir'
 import path from 'node:path'
 import { loadCfgFile } from './config.js'
 import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
-import { MGIdxName, MGCfgFinalLoc, ServeFinalLoc, MGCfgName } from './constants.js'
+import {
+  MGIdxName,
+  MGCfgName,
+  DefSiteTheme,
+  MGCfgFinalLoc,
+  ServeFinalLoc,
+} from './constants.js'
 
 type TParsed = path.ParsedPath & {
   siteDir:string
@@ -18,14 +24,20 @@ const configFiles = [
   ServeFinalLoc,
 ]
 
-const emptySite = ():Partial<TSiteConfig> => ({ pages: {}, sitemap: {}, nav: {}, logo: {} })
+const emptySite = ():Partial<TSiteConfig> => ({
+  nav: {},
+  logo: {},
+  pages: {},
+  sitemap: {},
+})
 
 const rootSite = ():TSiteConfig => ({
   nav: {},
   dir: ``,
+  logo: {},
   pages: {},
   name: `MGen`,
-  logo: {},
+  theme: {...DefSiteTheme},
   sitemap: {
     [`/`]: MGIdxName,
   },

@@ -1,4 +1,4 @@
-import type { TMGenCfg } from './types.js'
+import type { TMGenCfg } from './types'
 
 import yaml from 'js-yaml'
 import path from 'node:path'

@@ -1,5 +1,10 @@
 import type { Listener } from 'route-event'
-import type { TAnyCB, TRouteData, TSitesConfig, TMGenCfg, TSiteConfig } from '@MG/types'
+import type {
+  TMGenCfg,
+  TRouteData,
+  TSiteConfig,
+  TSitesConfig,
+} from '@MG/types'
 
 import Route from 'route-event'
 import {micromark} from 'micromark'
@@ -11,6 +16,7 @@ import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { ConfigFile } from '@MG/constants/constants'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
+import { siteColors } from '@MG/utils/sites/siteColors'
 import { getSiteName } from '@MG/utils/sites/getSiteName'
 
 type TMGenOpts = {
@@ -45,6 +51,8 @@ export class MGen extends Events {
   #mdToHtml:boolean=true
   #renderToDom:boolean=false
   #router:ReturnType<typeof Route>
+  #clearCssVars?:() => void
+  #clearDefCssVars?:() => void
 
   constructor(opts?:TMGenOpts){
     super()
@@ -166,25 +174,30 @@ export class MGen extends Events {
   }
 
   __default = ():TSiteConfig => {
+    this.#clearDefCssVars?.()
+    const config = this.config?.sites?.__default
+    this.#clearDefCssVars = siteColors(config.theme)
+
     return {
       dir: `/`,
       nav: {},
       pages: {},
-      ...this.config?.sites?.__default,
+      ...config,
     } as TSiteConfig
   }
 
   site = ():TSiteConfig => {
+    this.#clearCssVars?.()
     const defCfg = this.__default()
     const siteCfg = this.#site && this.config?.sites?.[this.#site]
-    if(siteCfg)
+    if(siteCfg){
+      this.#clearCssVars = siteColors(siteCfg.theme)
       return {
         ...siteCfg,
-        pages: {
-          ...defCfg?.pages,
-          ...siteCfg?.pages
-        }
+        pages: {...defCfg?.pages, ...siteCfg?.pages},
       }
+    }
+
 
     if(this.#site){
       // TODO: Show warning that site does not exist, so it can't be loaded

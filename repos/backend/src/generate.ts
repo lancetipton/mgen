@@ -1,31 +1,26 @@
-import type { TMGenCfg, TSiteConfig } from './types.js'
+import type { TMGenCfg, TSiteConfig } from './types'
 
 import path from 'node:path'
 import { writeFile } from 'node:fs'
 import { noOp } from '@keg-hub/jsutils/noOp'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
 import { exists } from '@keg-hub/jsutils/exists'
-import { MGNoAutoIdx, MGIdxName, MGIdxMarkdown } from './constants.js'
+import { DefSiteTheme, MGNoAutoIdx, MGIdxName, MGIdxMarkdown } from './constants.js'
 
-const defLogo = {
-  radius: 30,
-  width: 100,
-  height: 100,
-  fontSize: 120,
-  background: `#4444BB`,
-  foreground: `#FFFFFF`,
-  fontFamily: `ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji`,
-}
 
-export const generateSvg = (letter, options = {}) => {
-  const opts = deepMerge(defLogo, options)
+
+export const generateSvg = (letter, site:TSiteConfig) => {
+  const theme = deepMerge(DefSiteTheme, site.theme)
+  const opts = theme.logo
+  const size = opts.size || 120
   const doubleW = opts.width * 2
   const doubleH = opts.height * 2
+  const family = opts.family || theme.font.family
 
   return `
 <svg width="${opts.width}" height="${opts.height}" viewBox="0 0 ${doubleW} ${doubleH}" xmlns="http://www.w3.org/2000/svg">
     <rect xmlns="http://www.w3.org/2000/svg" x="0" width="${doubleW}" height="${doubleH}" rx="${opts.radius}" fill="${opts.background}"/>
-    <text x="50%" y="55%" fill="${opts.foreground}" text-anchor="middle" dominant-baseline="middle" style="font-family: ${opts.fontFamily}; font-size: ${opts.fontSize}">
+    <text x="50%" y="55%" fill="${opts.foreground}" text-anchor="middle" dominant-baseline="middle" style="font-family: ${family}; font-size: ${size}">
       ${letter}
     </text>
 </svg>
@@ -46,7 +41,7 @@ const generateLogo = (site:TSiteConfig) => {
     return {...site, logo: {...site?.logo, alt: site?.logo?.alt || site?.name || `MGen Docs`}}
 
   const letters = getLetters(site.name)
-  const svg = generateSvg(letters, site.logo || {})
+  const svg = generateSvg(letters, site)
 
   site.logo = {...site.logo, alt: site?.logo?.alt || site?.name, svg}
 
