@@ -91,6 +91,7 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
         ...current.children,
         [parsed.name]: {
           path: location,
+          dir: parsed.dir,
           text: wordCaps(parsed.name),
           url: `${parsed.dir}/${parsed.name}`,
         }
@@ -104,8 +105,9 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
     
     // If the part does not exist, then create it
     current.children[part] = {
+      dir: part,
+      children: {},
       text: wordCaps(part),
-      children: {}
     }
     current = current.children[part]
 

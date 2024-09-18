@@ -22,11 +22,10 @@ export const Header = (props:THeader) => {
     `border-base-200`,
     `z-10 fixed top-0`
   )}>
-    <div className="mg-header-container navbar w-full py-3 px-8 md:flex">
+    <div className="mg-header-container navbar w-full py-3 px-4">
 
       <div className='mg-header-left flex items-center justify-between'>
         <HeaderTitle />
-        <HeaderMobile open={open} setOpen={setOpen} />
       </div>
 
       <div 

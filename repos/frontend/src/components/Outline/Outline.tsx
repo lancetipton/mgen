@@ -39,27 +39,25 @@ export const Outline = (props:TOutline) => {
 
   if(!site?.dir) return null
 
-
   return (
     <div
       className={cls(
+        `hidden`,
+        `lg:flex`,
+        `sticky`,
+        `shrink-0`,
         `mg-sidebar`,
-        `fixed`,
-        `right-0`,
         `outline-width`,
-        `overflow-x-hidden`,
-        `overflow-y-auto`,
         `nav-height-offset`,
-        `max-content-height`,
+        `sticky-content`,
       )}
     >
 
       <aside
         className={cls(
           `mg-outline-aside`,
-          `flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto`,
+          `flex flex-col w-64 h-screen px-6 pt-5 pb-8 overflow-y-auto`,
           `scrollbar-thin scrollbar-track-base-content/5 scrollbar-thumb-base-content/40 scrollbar-track-rounded-md scrollbar-thumb-rounded`,
-          `border-base-200 border-l rtl:border-l-0 rtl:border-l`
         )}
       >
 
@@ -84,12 +82,12 @@ export const Outline = (props:TOutline) => {
                     onClick={(evt:any) => setActive((value || ``).toLowerCase())}
                     className={cls(
                       `no-underline`,
-                      `text-base`,
                       `opacity-70`,
                       `!text-sm`,
                       `leading-none`,
                       `hover:opacity-100`,
                       `hover:text-info`,
+                      `text-gray-500`,
                       active === getHash(value) && `text-info`,
                     )}
                   >

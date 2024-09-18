@@ -61,7 +61,7 @@ export enum ESiteCSSVars {
 
 export type TSiteNav = {
   url?:string
-  dir?:boolean
+  dir?:string
   text?:string
   target?:string
   children?:TSiteNavItems

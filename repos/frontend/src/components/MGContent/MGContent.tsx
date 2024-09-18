@@ -41,54 +41,51 @@ export const MGContent = (props:TMGContent) => {
 
   return (
     <div className={cls(
-      `mg-content`,
-      `content-center-offset`,
-      `max-content-height`,
-      `nav-height-offset`,
-      `py-8`,
-      `px-8`,
-      `lg:py-10`,
-      `lg:px-10`,
-      `w-full`,
+      `mg-mg-content`,
+      `px-6`,
+      `md:px-8`,
+      `lg:px-4`,
+      `py-3`,
       `flex`,
+      `w-full`,
       `justify-center`,
+      `flex-col`,
+      `max-w-[100vw]`,
     )} >
-      <div className={cls(
-        `mb-content-container`,
-        `xl:w-10/12`,
-      )} >
-      <div className={cls(`mg-breadcrumbs-container mt-2 mb-6`)} >
+
+      <div className={cls(`mg-breadcrumbs-container mb-6`)} >
         <Breadcrumbs
           capitalize
           parts={parts}
           map={{ [site?.dir]: `Home` }}
         />
       </div>
-        <article
-          className={cls(
-            `mg-content-article`,
-            `prose`,
-            `pb-24`,
-            `w-full`,
-            `h-full`,
-            `min-w-full`,
-            `prose-a:text-blue-600`,
-            `hover:prose-a:text-blue-500`,
-          )}
+      <article
+        className={cls(
+          `mg-content-article`,
+          `prose`,
+          `pb-24`,
+          `w-full`,
+          `h-full`,
+          `min-w-full`,
+          `max-w-full`,
+          `lg:max-w-[90ch]`,
+          `prose-a:text-blue-600`,
+          `hover:prose-a:text-blue-500`,
+        )}
+      >
+        {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
+        <ReactMarkdown
+          remarkPlugins={remarkPlugins}
+          rehypePlugins={rehypePlugins}
+          components={{
+            code:Code,
+            pre:PreCode,
+          }}
         >
-          {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
-          <ReactMarkdown
-            remarkPlugins={remarkPlugins}
-            rehypePlugins={rehypePlugins}
-            components={{
-              code:Code,
-              pre:PreCode,
-            }}
-          >
-            {content}
-          </ReactMarkdown>
-        </article>
-      </div>
+          {content}
+        </ReactMarkdown>
+      </article>
     </div>
   )
 }

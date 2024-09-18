@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Header } from '@MG/components/Header'
 import { Footer } from '@MG/components/Footer'
-import { useMD } from '@MG/contexts/MDContext'
 import { Sidebar } from '@MG/components/Sidebar'
 import { Outline } from '@MG/components/Outline'
 import { MGContent } from '@MG/components/MGContent'
@@ -19,9 +18,17 @@ const Content = (props:TLayout) => {
 
   return (
     <>
-      <Sidebar />
-      {children || (<MGContent />)}
-      <Outline />
+      <div className={cls(
+        `mg-content`,
+        `content-center-offset`,
+        `nav-height-offset`,
+        `flex`,
+      )}
+      >
+        <Sidebar />
+        <Outline />
+        {children || (<MGContent />)}
+      </div>
     </>
   )
 }

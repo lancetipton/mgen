@@ -4,9 +4,10 @@ const globalCss = (props: TGlobalCSS) => {
   return `
 
     :root {
-      --mgen-sidebar-width: 260px;
-      --mgen-outline-width: 260px;
+      --mgen-sidebar-width: 16rem;
+      --mgen-outline-width: 16rem;
       --mgen-header-height: 66px;
+      --mgen-footer-height: 93px;
     }
 
     .max-w-screen {
@@ -17,8 +18,9 @@ const globalCss = (props: TGlobalCSS) => {
       top: var(--mgen-header-height);
     }
 
-    .max-content-height {
-      max-height: calc(100% - 160px);
+    .sticky-content {
+      max-height: 1px;
+      overflow: visible;
     }
 
     .side-bar-width {
@@ -27,14 +29,16 @@ const globalCss = (props: TGlobalCSS) => {
     }
 
     .outline-width {
+      order: 9999;
+      flex-shrink: 0;
       width: var(--mgen-outline-width);
       max-width: var(--mgen-outline-width);
     }
 
     .content-center-offset {
       position: relative;
-      left: var(--mgen-sidebar-width);
-      max-width: calc(100% - var(--mgen-sidebar-width) - var(--mgen-outline-width));
+      margin-left: auto;
+      margin-right: auto;
     }
 
     body, #root, .mg-app {

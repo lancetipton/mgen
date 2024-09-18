@@ -1,17 +1,17 @@
+import type { TSiteNav } from '@MG/types'
+
 import { useState } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link/Link'
 import { stopEvt } from '@MG/utils/dom/stopEvt'
 
-export type TItem = {
+export type TItem = TSiteNav & {
   id?:string
   key?:string
-  text?:string
-  url?:string
+  active?:boolean
   children?:Record<string|number, TItem>
   onClick?:(event:any, id?:string, href?:string, text?:string) => void
 }
-
 
 const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}) => {
   const {
@@ -36,15 +36,14 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
       className={cls(
         `no-underline`,
         `mg-menu-item-text`,
-        `rounded-sm`,
-        `hover:text-primary`,
-        `hover:bg-slate-50`,
-        `active:!bg-slate-100`,
+        `rounded-med`,
+        `hover:bg-base-200`,
+        `active:!bg-base-200`,
         `active:!text-primary`,
-        `focus:!bg-slate-50`,
+        `focus:!bg-base-200`,
         `focus:!text-primary`,
+        active && `bg-base-200`,
         active && `text-primary`,
-        active && `bg-slate-50`,
       )}
     >
       {text}
@@ -57,25 +56,36 @@ export const Item = (props:TItem) => {
 
   const {
     id,
+    dir,
+    onClick,
     children
   } = props
 
-  const [open, setOpen] = useState(!children)
+  const isOpen = children && window.location.pathname.includes(`/${dir}/`)
+  const [open, setOpen] = useState(isOpen)
 
   return (
-    <li id={id} className={cls(`mg-menu-item`)} >
+    <li id={id} className={cls(
+      `mg-menu-item`,
+      `text-gray-400`,
+      `!bg-transparent`,
+      `active:text-primary`,
+      `hover:text-primary`,
+      `focus:text-primary`,
+    )} >
       {!children ? (
         <ItemText {...props} />
       ) : (
         <details open={open} >
           <summary
             className={cls(
-              `rounded-sm`,
+              `rounded-med`,
+              `text-gray-400`,
               `hover:text-primary`,
-              `hover:bg-slate-50`,
-              `active:!bg-slate-100`,
+              `hover:bg-base-200`,
+              `active:!bg-base-200`,
               `active:!text-primary`,
-              `focus:!bg-transparent`,
+              `focus:!bg-base-200`,
               `focus:!text-current`,
             )}
           >
@@ -90,6 +100,7 @@ export const Item = (props:TItem) => {
               return (
                 <Item
                   key={key || child?.key || child.id || child.text}
+                  onClick={onClick}
                   {...child}
                 />
               )

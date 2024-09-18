@@ -24,7 +24,7 @@ export const Menu = (props:TMenu) => {
     HeaderIcon,
     headerText,
   } = props
-  
+
   return (
     <div
       className={cls(
@@ -57,8 +57,10 @@ export const Menu = (props:TMenu) => {
         >
           <ul
             className={cls(
+              `menu`,
+              `p-0`,
+              `bg-base-100`,
               `mg-menu-list`,
-              `menu bg-base-100 w-56`
           )}>
             {Object.entries(items).map(([key, item]) => {
               return (
