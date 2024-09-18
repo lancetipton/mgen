@@ -4,13 +4,15 @@ import { Link } from '@MG/components/Link'
 import { useEffect, useState } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { useTheme } from '@MG/contexts/ThemeContext'
+import { trainCase } from '@keg-hub/jsutils/trainCase'
 
 export type TOutline = {}
 
+const getHash = (hash?:string) => trainCase((hash || ``).replace(`#`, ``))
+
 
 const useActive = () => {
-  const initial = (window.location.hash || ``).replace(`#`, ``).toLowerCase()
-  const [active, setActive] = useState<string>(initial)
+  const [active, setActive] = useState<string>(getHash(window.location.hash))
   return {active, setActive}
 }
 
@@ -21,16 +23,11 @@ export const Outline = (props:TOutline) => {
   const {active, setActive} = useActive()
   const [toc, setToc] = useState<TTOC[]>([])
 
-
-
   useEffect(() => {
     if(!mg) return
 
     const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => setToc(toc))
-    const offRoute = mg?.on(mg.events.onRoute, (path, data, loc) => {
-      const hash = (window.location.hash || ``).replace(`#`, ``).toLowerCase()
-      setActive(hash)
-    })
+    const offRoute = mg?.on(mg.events.onRoute, () => setActive(getHash(window.location.hash)))
 
     return () => {
       offToc?.()
@@ -66,12 +63,11 @@ export const Outline = (props:TOutline) => {
         )}
       >
 
-        <div className="flex flex-col prose">
+        <div className='flex flex-col prose'>
           <div >
             <h4 className={cls(
               `mt-0 bold`,
               isDark ? `text-gray-300` : `text-gray-600`,
-              
             )}
             >
               On This Page
@@ -94,7 +90,7 @@ export const Outline = (props:TOutline) => {
                       `leading-none`,
                       `hover:opacity-100`,
                       `hover:text-info`,
-                      active === value.toLowerCase() && `text-info`,
+                      active === getHash(value) && `text-info`,
                     )}
                   >
                     {value}
