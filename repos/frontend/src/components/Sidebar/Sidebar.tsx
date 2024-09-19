@@ -1,4 +1,3 @@
-import { EBPSize } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Menu } from '@MG/components/Menu/Menu'
 import { stopEvt } from '@MG/utils/dom/stopEvt'

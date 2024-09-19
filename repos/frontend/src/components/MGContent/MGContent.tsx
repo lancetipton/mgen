@@ -1,6 +1,7 @@
 import { cls } from '@keg-hub/jsutils/cls'
 import ReactMarkdown from 'react-markdown'
 import { useEffect, useState } from 'react'
+import { Steps } from '@MG/components/Steps'
 import { Loading } from '@MG/components/Loading'
 import { Code } from '@MG/components/Code/Code'
 import { useMGen } from '@MG/contexts/MGenContext'
@@ -47,6 +48,7 @@ export const MGContent = (props:TMGContent) => {
       `lg:px-4`,
       `py-3`,
       `flex`,
+      `pb-36`,
       `w-full`,
       `justify-center`,
       `flex-col`,
@@ -84,6 +86,7 @@ export const MGContent = (props:TMGContent) => {
           {content}
         </ReactMarkdown>
       </article>
+      <Steps />
     </div>
   )
 }
