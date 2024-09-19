@@ -43,7 +43,7 @@ export const Outline = (props:TOutline) => {
     <div
       className={cls(
         `hidden`,
-        `lg:flex`,
+        `xl:flex`,
         `sticky`,
         `shrink-0`,
         `mg-sidebar`,

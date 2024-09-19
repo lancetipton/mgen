@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Loading } from '@MG/components/Loading'
 import { Code } from '@MG/components/Code/Code'
 import { useMGen } from '@MG/contexts/MGenContext'
-import { Breadcrumbs } from '@MG/components/Breadcrumbs'
 import { PreCode } from '@MG/components/Code/PreCode'
+import { Breadcrumbs } from '@MG/components/Breadcrumbs'
 import { useMarkdown } from '@MG/hooks/components/useMarkdown'
 
 
@@ -52,7 +52,6 @@ export const MGContent = (props:TMGContent) => {
       `flex-col`,
       `max-w-[100vw]`,
     )} >
-
       <div className={cls(`mg-breadcrumbs-container mb-6`)} >
         <Breadcrumbs
           capitalize
@@ -68,8 +67,7 @@ export const MGContent = (props:TMGContent) => {
           `w-full`,
           `h-full`,
           `min-w-full`,
-          `max-w-full`,
-          `lg:max-w-[90ch]`,
+          `xl:max-w-[90ch]`,
           `prose-a:text-blue-600`,
           `hover:prose-a:text-blue-500`,
         )}

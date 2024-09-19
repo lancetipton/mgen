@@ -19,7 +19,7 @@ export const HeaderNav = (props:THeaderNav) => {
     <div className={cls(
       className,
       `mg-header-nav`,
-      `flex flex-col px-2 -mx-4 md:flex-row md:mx-10 md:py-0`
+      `flex flex-col px-2 md:flex-row md:mx-10 md:py-0`
     )}>
       {items?.map(item => {
         return (<HeaderItem {...item} />)

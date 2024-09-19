@@ -9,20 +9,41 @@ export const HeaderMobile = (props:THeaderMobile) => {
   const { open, setOpen } = props
 
   return (
-    <div className="mg-header-mobile flex md:hidden">
-
+    <div className="mg-header-mobile flex lg:hidden">
       <button 
         type="button"
+        aria-label="toggle menu"
         onClick={() => setOpen(!open)}
-        className="mg-header-mobile-btn focus:outline-none" aria-label="toggle menu"
+        className="mg-header-mobile-btn focus:outline-none"
       >
         {open ? (
-          <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            fill="none"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            className="w-6 h-6"
+            stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         ) : (
-          <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
+          <svg
+            fill="none"
+            className="w-6 h-6"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="currentColor" strokeWidth="2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         )}
       </button>

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
 
 export type TSiteLogo = {}
@@ -6,9 +5,6 @@ export type TSiteLogo = {}
 
 export const SiteLogo = (props:TSiteLogo) => {
   const {logo} = useMGen()
-
-  // TODO: update the favicon with the correct logo
-  //useEffect(() => {}, [logo])
 
   return (
     <a href={logo.href} aria-label={logo.alt} >

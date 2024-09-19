@@ -17,7 +17,7 @@ export const ThemeSwitch = (props:TThemeSwitch) => {
 
   return (
     <label
-      className="swap swap-rotate"
+      className="hidden sm:inline-grid swap swap-rotate"
       onMouseUp={() => setTheme(theme === EThemeType.dark ? EThemeType.light : EThemeType.dark)}
     >
       <input

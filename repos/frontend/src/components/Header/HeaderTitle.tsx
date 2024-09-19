@@ -17,6 +17,8 @@ export const HeaderTitle = (props:THeaderTitle) => {
         `mg-header-title-text`,
         `ml-4`,
         `whitespace-nowrap`,
+        `text-base`,
+        `sm:text-lg`,
       )}
       >
         {site?.name || `MGen`}
