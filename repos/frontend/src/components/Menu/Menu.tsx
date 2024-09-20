@@ -7,6 +7,7 @@ import { Item as MItem } from '@MG/components/Menu/Item'
 
 export type TMenu = {
   Item?:any
+  path?:string
   Header?:ReactNode
   HeaderIcon?:ReactNode
   headerText?:ReactNode
@@ -17,6 +18,7 @@ export type TMenu = {
 export const Menu = (props:TMenu) => {
   
   const {
+    path,
     items,
     Header,
     onClick,
@@ -65,8 +67,9 @@ export const Menu = (props:TMenu) => {
             {Object.entries(items).map(([key, item]) => {
               return (
                 <Item
-                  key={item.key || item.id || item.text || key}
+                  active={path}
                   onClick={onClick}
+                  key={item.key || item.id || item.text || key}
                   {...item}
                 />
               )

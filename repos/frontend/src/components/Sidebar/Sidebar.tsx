@@ -20,7 +20,7 @@ export const Sidebar = (props:TSidebar) => {
     setOpen
   } = props
 
-  const { mg, site } = useMGen()
+  const { mg, site, path } = useMGen()
   const forceUpdate = useForceUpdate()
   const ref = useClickAway(() => open && setOpen(false))
 
@@ -64,6 +64,7 @@ export const Sidebar = (props:TSidebar) => {
         )}
       >
         <Menu
+          path={path}
           onClick={onClick}
           items={site?.nav?.children}
         />

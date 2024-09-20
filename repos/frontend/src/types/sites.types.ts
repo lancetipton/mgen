@@ -1,4 +1,5 @@
 export * from '@MGS/types'
+import type { TSiteConfig as TSConfig, TSiteNav } from '@MGS/types'
 
 export type TLogoMeta = {
   href?:string
@@ -8,3 +9,11 @@ export type TLogoMeta = {
   width?:number
   height?:number
 }
+
+export type TSiteConfig = TSConfig & {
+  steps?:Record<string, TSiteNav>
+}
+
+export type TSitesConfig = Record<string, TSiteConfig> 
+
+export type TNavStep = {}

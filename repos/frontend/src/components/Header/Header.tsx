@@ -14,16 +14,19 @@ export const Header = (props:THeader) => {
   const { mobile, open, setOpen } = props
 
   return (
-    <header className={cls(
-      `mg-header`,
-      `w-screen`,
-      `max-w-screen`,
-      `border-b`,
-      `bg-base-100`,
-      `border-base-200`,
-      `z-10 fixed top-0`,
-      `h-[var(--mgen-header-height)]`
-    )}>
+    <header
+      id='mg-header'
+      className={cls(
+        `mg-header`,
+        `w-screen`,
+        `max-w-screen`,
+        `border-b`,
+        `bg-base-100`,
+        `border-base-200`,
+        `z-10 fixed top-0`,
+        `h-[var(--mgen-header-height)]`
+      )}
+    >
       <div className="mg-header-container navbar w-full py-3 px-4">
 
         {mobile && (

@@ -25,17 +25,14 @@ export const MGContent = (props:TMGContent) => {
     remarkPlugins
   } = useMarkdown({...props, content})
 
-  const { mg, site } = useMGen()
-  const [parts, setParts] = useState<string|string[]>(window.location.pathname)
+  const { mg, site, path } = useMGen()
 
   useEffect(() => {
     if(!mg) return
 
-    const offRoute = mg.on(mg.events.onRoute, (path:string) => setParts(path))
     const offRender = mg.on(mg.events.onRender, (content:string) => setContent(content))
 
     return () => {
-      offRoute()
       offRender()
     } 
   }, [mg])
@@ -48,7 +45,7 @@ export const MGContent = (props:TMGContent) => {
       `lg:px-4`,
       `py-3`,
       `flex`,
-      `pb-36`,
+      `pb-32`,
       `w-full`,
       `justify-center`,
       `flex-col`,
@@ -57,7 +54,7 @@ export const MGContent = (props:TMGContent) => {
       <div className={cls(`mg-breadcrumbs-container mb-6`)} >
         <Breadcrumbs
           capitalize
-          parts={parts}
+          path={path}
           map={{ [site?.dir]: `Home` }}
         />
       </div>
@@ -65,7 +62,7 @@ export const MGContent = (props:TMGContent) => {
         className={cls(
           `mg-content-article`,
           `prose`,
-          `pb-24`,
+          `pb-12`,
           `w-full`,
           `h-full`,
           `min-w-full`,
@@ -86,7 +83,7 @@ export const MGContent = (props:TMGContent) => {
           {content}
         </ReactMarkdown>
       </article>
-      <Steps />
+      <Steps path={path} />
     </div>
   )
 }

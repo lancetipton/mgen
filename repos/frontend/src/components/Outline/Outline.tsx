@@ -2,31 +2,25 @@ import type { TTOC } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link'
 import { useEffect, useState } from 'react'
+import { getHash } from '@MG/utils/api/getHash'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { useTheme } from '@MG/contexts/ThemeContext'
-import { trainCase } from '@keg-hub/jsutils/trainCase'
+import { useActiveScroll } from '@MG/hooks/components/useActiveScroll'
 
 export type TOutline = {}
 
-const getHash = (hash?:string) => trainCase((hash || ``).replace(`#`, ``))
-
-
-const useActive = () => {
-  const [active, setActive] = useState<string>(getHash(window.location.hash))
-  return {active, setActive}
-}
 
 export const Outline = (props:TOutline) => {
   const { site, mg } = useMGen()
 
   const { isDark } = useTheme()
-  const {active, setActive} = useActive()
   const [toc, setToc] = useState<TTOC[]>([])
+  const {active, setActive} = useActiveScroll({ toc })
 
   useEffect(() => {
     if(!mg) return
 
-    const offToc = mg?.on?.(mg.events.onToc, (toc:TTOC[]) => setToc(toc))
+    const offToc = mg?.on?.(mg.events.onToc, setToc)
     const offRoute = mg?.on(mg.events.onRoute, () => setActive(getHash(window.location.hash)))
 
     return () => {
@@ -88,7 +82,7 @@ export const Outline = (props:TOutline) => {
                       `hover:opacity-100`,
                       `hover:text-info`,
                       `text-gray-500`,
-                      active === getHash(value) && `text-info`,
+                      active === getHash(value) && `text-primary`,
                     )}
                   >
                     {value}

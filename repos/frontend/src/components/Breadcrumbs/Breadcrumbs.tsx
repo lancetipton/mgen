@@ -8,10 +8,10 @@ import { useTheme } from '@MG/contexts/ThemeContext'
 import { eitherArr } from '@keg-hub/jsutils/eitherArr'
 
 export type TBreadcrumbs = {
+  path:string
   split?:string
   ignore?:string[]
   capitalize?:boolean
-  parts:string|string[]
   map?:Record<string, string>
 }
 
@@ -25,9 +25,9 @@ const useParts = (props:TBreadcrumbs) => {
   const { site } = useMGen()
 
   return useMemo(() => {
-    const parts = isStr(props.parts)
-      ? props.parts.split(props.split || `/`)
-      : eitherArr(props.parts, [])
+    const parts = isStr(props.path)
+      ? props.path.split(props.split || `/`)
+      : eitherArr(props.path, [])
 
     const collect = []
     return parts.reduce((acc, part) => {
@@ -51,7 +51,7 @@ const useParts = (props:TBreadcrumbs) => {
     site?.sitemap,
     props.map,
     props.split,
-    props.parts,
+    props.path,
     props.ignore,
     props.capitalize
   ])

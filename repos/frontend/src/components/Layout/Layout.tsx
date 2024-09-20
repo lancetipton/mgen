@@ -64,6 +64,7 @@ export const Layout = (props:TLayout) => {
         setOpen={setOpen}
       />
       <main
+        id='mg-main-content'
         className={cls(
           `mg-layout-content`,
           `h-full flex items-stretch grow relative w-screen`

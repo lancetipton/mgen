@@ -1,6 +1,8 @@
 import type { ReactNode } from "react"
 
 import { cls } from '@keg-hub/jsutils/cls'
+import { useTheme } from '@MG/contexts/ThemeContext'
+
 
 export type TStep = {
   href?:string
@@ -25,26 +27,35 @@ export const Step = (props:TStep) => {
     className,
   } = props
 
+  const { isDark } = useTheme()
+
   return (
     <div
       className={cls(
         `mg-step`,
         className,
+        disabled && `opacity-0 pointer-events-none`,
       )}
     >
-      <button
+      <a
+        href={href}
         onClick={(evt:any) => onClick?.(evt, href)}
-        disabled={disabled}
         className={cls(
+          isDark ? `text-gray-300` : `text-gray-600`,
+          `hover:text-primary`,
+          `!no-underline`,
+          `border-none`,
           `btn`,
+          `btn-sm`,
           `btn-link`,
-          //`btn-accent`,
+          `md:btn-md`,
+          `gap-2`,
+          `lg:gap-3`,
           btnClass,
-          disabled && `btn-disabled`,
         )}
       >
         {children}
-      </button>
+      </a>
     </div>
   )
   

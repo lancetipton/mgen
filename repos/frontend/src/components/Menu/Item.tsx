@@ -8,7 +8,7 @@ import { stopEvt } from '@MG/utils/dom/stopEvt'
 export type TItem = TSiteNav & {
   id?:string
   key?:string
-  active?:boolean
+  active?:string
   children?:Record<string|number, TItem>
   onClick?:(event:any, id?:string, href?:string, text?:string) => void
 }
@@ -19,12 +19,13 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
     text,
     url,
     open,
+    active,
     setOpen,
     onClick,
     children,
   } = props
 
-  const active = window.location.pathname === url
+  const isActive = active === url
 
   return (
     <Link
@@ -42,8 +43,8 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
         `active:!text-primary`,
         `focus:!bg-base-200`,
         `focus:!text-primary`,
-        active && `bg-base-200`,
-        active && `text-primary`,
+        isActive && `bg-base-200`,
+        isActive && `text-primary`,
       )}
     >
       {text}
@@ -57,11 +58,12 @@ export const Item = (props:TItem) => {
   const {
     id,
     dir,
+    active,
     onClick,
-    children
+    children,
   } = props
 
-  const isOpen = children && window.location.pathname.includes(`/${dir}/`)
+  const isOpen = children && active?.includes?.(`/${dir}/`)
   const [open, setOpen] = useState(isOpen)
 
   return (
@@ -99,8 +101,9 @@ export const Item = (props:TItem) => {
             {Object.entries(children).map(([key, child]) => {
               return (
                 <Item
-                  key={key || child?.key || child.id || child.text}
+                  active={active}
                   onClick={onClick}
+                  key={key || child?.key || child.id || child.text}
                   {...child}
                 />
               )

@@ -1,7 +1,7 @@
 import type { TSiteConfig, TLogoMeta } from '@MG/types'
 import type { TMemoChildren } from '@MG/components/MemoChildren'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MGen } from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
 import { MGenId } from '@MG/constants/constants'
@@ -18,6 +18,7 @@ export type TMGenProvider = TMemoChildren & {
 
 export type TMGenCtx = {
   mg?:MGen
+  path?:string
   logo?:TLogoMeta
   site?:TSiteConfig
 }
@@ -32,6 +33,7 @@ export const MGenProvider = (props:TMGenProvider) => {
   const [mg, setMM] = useState<MGen>()
   const [site, setSite] = useState<TSiteConfig>()
   const [logo, setLogo] = useState<TLogoMeta>(getSiteLogo())
+  const [path, setPath] = useState<string>(window.location.pathname)
 
   useEffectOnce(() => {
     if(mg) return
@@ -56,8 +58,16 @@ export const MGenProvider = (props:TMGenProvider) => {
 
   })
 
+  useEffect(() => {
+    const offRoute = mg?.on(mg?.events.onRoute, (path:string) => setPath(path))
+    return () => {
+      offRoute?.()
+    }
+  }, [mg])
+
+
   return (
-    <MMContext.Provider value={{mg, site, logo}}>
+    <MMContext.Provider value={{mg, site, logo, path}}>
       <MemoChildren children={children} />
     </MMContext.Provider>
   )
