@@ -23,6 +23,7 @@
     "alias-hq": "6.2.2",
     "esbuild-register": "3.5.0",
     "fdir": "6.3.0",
+    "flexsearch": "0.7.43",
     "js-yaml": "4.1.0",
     "tsup": "8.3.0"
   }
