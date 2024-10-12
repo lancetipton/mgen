@@ -1,3 +1,5 @@
+import type { TSiteSearch } from './types'
+
 import { loadEnvs } from '../scripts/loadEnvs.js'
 
 const envs = loadEnvs()
@@ -46,4 +48,28 @@ export const DefSiteTheme = {
   },
   light: {...DefThemeColors},
   dark: {...DefThemeColors},
+}
+
+
+export const DefSiteSearch:TSiteSearch = {
+  preset: `match`,
+  //tokenize: `forward`,
+  cache: 100,
+  tokenize: `full`,
+  document: {
+    id: `id`,
+    store: [`content`],
+    index: [`location`, `content`],
+  },
+  context: {
+    depth: 2,
+    resolution: 9,
+    bidirectional: true
+  }
+  //tokenize: `forward`,
+  //document: {
+  //  id: `id`,
+  //  store: true,
+  //  index: `content`
+  //}
 }

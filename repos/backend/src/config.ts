@@ -10,6 +10,7 @@ import { readFileSync, writeFile, mkdir, existsSync } from 'node:fs'
 import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants.js'
 
 export const createDir = (location:string) => mkdir(location, {recursive: true}, noOp)
+export const loadFile = (location:string):string => tri(() => readFileSync(location, `utf8`)) || ``
 export const loadJson = (location:string) => tri(() => JSON.parse(readFileSync(location, `utf8`))) || {}
 export const writeJson = (location:string, data:Record<any, any>) => writeFile(location, JSON.stringify(data, null, 2), noOp)
 
@@ -106,5 +107,5 @@ export const genSConfig = (dir:string) => {
 
   writeJson(location, defCfg)
 
-  return { location }
+  return location
 }
