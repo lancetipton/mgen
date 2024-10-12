@@ -14,6 +14,14 @@ const globalCss = (props: TGlobalCSS) => {
       max-width: 100vw;
     }
 
+    .w-inherit {
+      width: inherit;
+    }
+
+    .h-inherit {
+      height: inherit;
+    }
+
     .nav-height-offset {
       top: var(--mgen-header-height);
     }

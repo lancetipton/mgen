@@ -61,13 +61,33 @@ const loadDefMGCfg = () => {
 
 }
 
+const writeSiteCfgs = (mCfgDir:string, original:TMGenCfg, merged:TMGenCfg) => {
+  if(!merged.sites) return
+
+  const osites = Object.keys(original?.sites || {})
+  
+  Object.entries(merged.sites)
+    .forEach(([name, cfg]) => {
+      if(osites.includes(name)) return
+      const siteCfgLoc = path.join(mCfgDir, `${name}.json`)
+      writeJson(siteCfgLoc, cfg)
+    })
+  
+  return {
+    ...merged,
+    sites: original?.sites
+  }
+}
+
 
 export const genMConfig = (dir:string, cfg:TMGenCfg) => {
   const config = loadDefMGCfg()
+
   const location = path.join(dir, MGCfgFinalLoc)
   const parsed = path.parse(location)
-  createDir(parsed.dir)
-  writeJson(location, deepMerge(config, cfg))
+  const mcfg = writeSiteCfgs(parsed.dir, config, deepMerge(config, cfg))
+
+  writeJson(location, mcfg)
 
   return { location }
 }

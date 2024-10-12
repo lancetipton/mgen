@@ -162,5 +162,8 @@ export const crawl = (dir:string) => {
     .withFullPaths()
     .crawl(dir)
     .sync()
-    .reduce(buildPaths(dir), { sites: { __default: rootSite() }})
+    .reduce(buildPaths(dir), {
+      sitesType: undefined,
+      sites: { __default: rootSite() }
+    })
 }

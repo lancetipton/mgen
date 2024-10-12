@@ -1,4 +1,5 @@
 
 export const MGenId = `mgen`
 export const DataThemeAttr = `data-theme`
-export const ConfigFile = `.mgen/mgen.config.json`
+export const MConfigDir = `.mgen`
+export const MConfigFile = `${MConfigDir}/mgen.config.json`

@@ -1,4 +1,7 @@
 
+# Can be domain / subdomain / pathname
+sitesType: pathname
+
 sites:
   __default:
     name: MGen

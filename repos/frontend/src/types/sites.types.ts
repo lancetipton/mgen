@@ -1,4 +1,3 @@
-export * from '@MGS/types'
 import type { TSiteConfig as TSConfig, TSiteNav } from '@MGS/types'
 
 export type TLogoMeta = {

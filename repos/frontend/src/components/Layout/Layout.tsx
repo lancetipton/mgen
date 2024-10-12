@@ -4,7 +4,6 @@ import type { TSidebar } from '@MG/components/Sidebar'
 import { useState } from 'react'
 import { EBPSize } from '@MG/types'
 import { cls } from '@keg-hub/jsutils/cls'
-import { Steps } from '@MG/components/Steps'
 import { Header } from '@MG/components/Header'
 import { Footer } from '@MG/components/Footer'
 import { Sidebar } from '@MG/components/Sidebar'
@@ -31,6 +30,8 @@ const Content = (props:TLayout & TSidebar) => {
     <>
       <div className={cls(
         `mg-content`,
+        `w-inherit`,
+        `max-w-[90rem]`,
         `sm:max-xl:w-full`,
         `content-center-offset`,
         `nav-height-offset`,

@@ -15,12 +15,13 @@ export const MGIdxName = `index.mdx`
 export const MGNoAutoIdx = envs[`MG_NO_AUTO_IDX`]
 export const MGIdxMarkdown = envs[`MG_IDX_MD`] || ``
 
+export const MGCfgDir = `.mgen`
 export const MGCfgName = `mgen.config`
 export const MGCfgLoc = envs[`MG_MG_CFG`]
 export const MGCfgFile = `configs/${MGCfgName}`
-export const MGCfgFinalLoc = `.mgen/${MGCfgName}.json`
+export const MGCfgFinalLoc = `${MGCfgDir}/${MGCfgName}.json`
 
-export const ServeFinalLoc = `.mgen/serve.json`
+export const ServeFinalLoc = `${MGCfgDir}/serve.json`
 export const ServeCfgLoc = envs[`MG_SERVE_CFG`]
 export const ServeCfgFile = `configs/serve.json`
 
