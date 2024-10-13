@@ -1,8 +1,10 @@
 import type { TTOC } from '@MG/types'
+import { toInt } from '@keg-hub/jsutils'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link'
 import { useEffect, useState } from 'react'
 import { getHash } from '@MG/utils/api/getHash'
+import { EditLink } from '@MG/components/EditLink'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { useTheme } from '@MG/contexts/ThemeContext'
 import { useActiveScroll } from '@MG/hooks/components/useActiveScroll'
@@ -32,6 +34,7 @@ export const Outline = (props:TOutline) => {
 
 
   if(!site?.dir) return null
+
 
   return (
     <div
@@ -68,9 +71,16 @@ export const Outline = (props:TOutline) => {
           <ul className='list-none pl-0 mt-1' >
             {toc?.map?.(item => {
               const { type, url, value } = item
+              const num = toInt(type)
 
               return (
-                <li className='mt-1 mb-0 pl-0'  key={`${type}-${url}-${value}`} >
+                <li
+                  className={cls(
+                    `mt-1 mb-0`,
+                    num > 2 ? `pl-${num + 1}` : `pl-0`,
+                  )}
+                  key={`${type}-${url}-${value}`}
+                >
                   <Link
                     href={item.url || `#`}
                     onClick={(evt:any) => setActive((value || ``).toLowerCase())}
@@ -80,7 +90,7 @@ export const Outline = (props:TOutline) => {
                       `!text-sm`,
                       `leading-none`,
                       `hover:opacity-100`,
-                      `hover:text-info`,
+                      isDark ? `hover:text-gray-300` : `hover:text-gray-600`,
                       `text-gray-500`,
                       active === getHash(value) && `text-primary`,
                     )}
@@ -92,6 +102,11 @@ export const Outline = (props:TOutline) => {
             })}
           </ul>
         </div>
+
+        <div className="divider"></div>
+
+        {site?.edit?.url && (<EditLink />)}
+
       </aside>
 
     </div>

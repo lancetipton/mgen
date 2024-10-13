@@ -21,6 +21,8 @@ export const Footer = (props:TFooter) => {
           `py-8`,
           `border-t`,
           `border-base-200`,
+          `mx-auto`,
+          `max-w-[90rem]`,
         )}>
             <div className="flex flex-col items-center sm:flex-row sm:justify-between px-8">
 

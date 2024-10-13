@@ -128,6 +128,11 @@ export type TSearchExport = {
   'content.ctx'?:string
 }
 
+export type TSiteEdit = {
+  url?:string
+  text?:string
+  map?:Record<string, string>
+}
 
 export type TSiteConfig = {
   name:string
@@ -135,6 +140,7 @@ export type TSiteConfig = {
   css?:string
   nav:TSiteNav
   logo:TSiteLogo
+  edit?:TSiteEdit
   pages:TSitePages
   theme?:TSiteTheme
   search?:TSiteSearch|boolean
