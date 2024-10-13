@@ -43,7 +43,7 @@ export const Footer = (props:TFooter) => {
             <div className="flex flex-col items-center sm:flex-row sm:justify-between px-8">
 
               <div className="flex items-center justify-between">
-                {site?.footer.logo !== false ? (<SiteLogo />) : null}
+                {site?.footer?.logo !== false ? (<SiteLogo />) : null}
                 <p className="text-sm ml-4">
                   {text}
                 </p>

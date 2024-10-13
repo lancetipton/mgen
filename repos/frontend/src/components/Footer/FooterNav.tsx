@@ -13,10 +13,11 @@ export const FooterNav = (props:TFooterNav) => {
 
         return link.url && (
           <Link
-            key={`${link.url}-${text}`}
             href={link.url}
-            className="mx-2 text-sm link-hover"
             aria-label={link.text}
+            key={`${link.url}-${text}`}
+            target={link?.target || `_blank`}
+            className="mx-2 text-sm link-hover"
             > {text} </Link>
         ) || null
       })}

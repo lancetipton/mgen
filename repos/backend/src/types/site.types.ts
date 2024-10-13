@@ -131,6 +131,7 @@ export type TSearchExport = {
 export type TSiteLink = {
   text?:string
   url?:string
+  target?:`_self`|`_blank`|`parent`|`_top`|`_unfencedTop`
 }
 
 export type TSiteEdit = TSiteLink & {
