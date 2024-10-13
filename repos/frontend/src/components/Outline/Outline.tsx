@@ -5,6 +5,7 @@ import { Link } from '@MG/components/Link'
 import { useEffect, useState } from 'react'
 import { getHash } from '@MG/utils/api/getHash'
 import { EditLink } from '@MG/components/EditLink'
+import { Divider } from '@MG/components/Divider'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { useTheme } from '@MG/contexts/ThemeContext'
 import { useActiveScroll } from '@MG/hooks/components/useActiveScroll'
@@ -103,7 +104,7 @@ export const Outline = (props:TOutline) => {
           </ul>
         </div>
 
-        <div className="divider"></div>
+        <Divider />
 
         {site?.edit?.url && (<EditLink />)}
 

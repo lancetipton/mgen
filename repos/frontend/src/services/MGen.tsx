@@ -13,8 +13,8 @@ import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
 import { limbo } from '@keg-hub/jsutils/limbo'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
-import { getNavMap } from '@MG/utils/sites/getNavMap'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
+import { buildSteps } from '@MG/utils/sites/buildSteps'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
 import { siteColors } from '@MG/utils/sites/siteColors'
 import { getSiteName } from '@MG/utils/sites/getSiteName'
@@ -296,7 +296,7 @@ export class MGen extends Events {
       this.#clearCssVars = siteColors(siteCfg.theme)
       return {
         ...siteCfg,
-        steps: getNavMap(siteCfg.nav),
+        steps: buildSteps(siteCfg.nav),
         pages: {
           ...defCfg?.pages,
           ...siteCfg?.pages

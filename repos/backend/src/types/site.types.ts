@@ -128,10 +128,20 @@ export type TSearchExport = {
   'content.ctx'?:string
 }
 
-export type TSiteEdit = {
-  url?:string
+export type TSiteLink = {
   text?:string
+  url?:string
+}
+
+export type TSiteEdit = TSiteLink & {
   map?:Record<string, string>
+}
+
+export type TSiteFooter = {
+  text?:string
+  logo?:boolean
+  links:TSiteLink[]
+  year?:boolean|string
 }
 
 export type TSiteConfig = {
@@ -143,6 +153,7 @@ export type TSiteConfig = {
   edit?:TSiteEdit
   pages:TSitePages
   theme?:TSiteTheme
+  footer?:TSiteFooter
   search?:TSiteSearch|boolean
   sitemap:Record<string, string>
 }
