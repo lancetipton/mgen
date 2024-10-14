@@ -1,4 +1,5 @@
 import type { TSiteConfig as TSConfig, TSiteNav } from '@MGS/types'
+import type { Search } from '@MG/services/Search'
 
 export type TLogoMeta = {
   href?:string
@@ -9,7 +10,8 @@ export type TLogoMeta = {
   height?:number
 }
 
-export type TSiteConfig = TSConfig & {
+export type TSiteConfig = Omit<TSConfig, `search`> & {
+  search?:Search
   steps?:Record<string, TSiteNav>
 }
 

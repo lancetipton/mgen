@@ -1,6 +1,16 @@
 import type FlexSearch from 'flexsearch'
 import type { IndexOptionsForDocumentSearch } from 'flexsearch'
 
+export type TSearchDoc = {
+  id:string
+  url?:string
+  text:string
+  path:string
+}
+
+export type TSearchIdx = FlexSearch.Document<string|Record<any, any>, true|string[]> & {
+  get:(id:string) => TSearchDoc|undefined
+}
 
 
 export type TSiteThemeColors = {
@@ -116,16 +126,18 @@ export type TSiteTheme = {
   }
 }
 
-export type TSearchIdx = FlexSearch.Document<string|Record<any, any>, true|string[]>
-//export type TSearchIdx = FlexSearch.Index
+
 
 export type TSearchExport = {
   reg?:string
   tag?:string
   store?:string
-  'content.cfg'?:string
-  'content.map'?:string
-  'content.ctx'?:string
+  'text.cfg'?:string
+  'text.map'?:string
+  'text.ctx'?:string
+  'path.cfg'?:string
+  'path.map'?:string
+  'path.ctx'?:string
 }
 
 export type TSiteLink = {

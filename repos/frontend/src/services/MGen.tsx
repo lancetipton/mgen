@@ -11,6 +11,7 @@ import {micromark} from 'micromark'
 import { EMGenEvts } from '@MG/types'
 import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
+import { Search } from '@MG/services/Search'
 import { limbo } from '@keg-hub/jsutils/limbo'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
@@ -39,6 +40,7 @@ export class MGen extends Events {
 
   #site:string
   baseUrl:string
+  search:Search
   selector:string
   config:TMGenCfg
   events=EMGenEvts
@@ -294,14 +296,18 @@ export class MGen extends Events {
     const siteCfg = this.#site && this.config?.sites?.[this.#site]
     if(siteCfg){
       this.#clearCssVars = siteColors(siteCfg.theme)
-      return {
+      const merged:TSiteConfig = {
         ...siteCfg,
+        search: undefined,
         steps: buildSteps(siteCfg.nav),
         pages: {
           ...defCfg?.pages,
           ...siteCfg?.pages
         },
       }
+      if(siteCfg?.search) merged.search = new Search(this, merged)
+
+      return merged
     }
 
 

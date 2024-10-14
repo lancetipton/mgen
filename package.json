@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    
     "preinstall": "npx only-allow pnpm",
     "si": "pnpm sync; pnpm install",
     "sync": "syncpack fix-mismatches --config configs/syncpack.config.js"

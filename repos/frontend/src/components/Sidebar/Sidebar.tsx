@@ -3,8 +3,8 @@ import { Menu } from '@MG/components/Menu/Menu'
 import { stopEvt } from '@MG/utils/dom/stopEvt'
 import { ScrollBar } from '@MG/constants/classes'
 import { useMGen } from '@MG/contexts/MGenContext'
-import { useForceUpdate } from '@MG/hooks/components/useForceUpdate'
 import { useClickAway } from '@MG/hooks/components/useClickAway'
+import { useForceUpdate } from '@MG/hooks/components/useForceUpdate'
 
 export type TSidebar = {
   open?:boolean

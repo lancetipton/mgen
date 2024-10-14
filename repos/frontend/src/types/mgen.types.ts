@@ -12,4 +12,6 @@ export enum EMGenEvts {
   onError=`onMGError`,
   onRoute=`onMGRoute`,
   onRender=`onMGRender`,
+  onSearchError=`onSearchError`,
+  onSearchLoaded=`onSearchLoaded`,
 }
