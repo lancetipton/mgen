@@ -18,8 +18,7 @@ export const SearchItem = (props:TSearchItem) => {
   } = props
 
   const content = useMemo(() => {
-
-    const start = item.text.split(`\n`)
+    const text = item.text.split(`\n`)
       .reduce((acc, line) => {
         if(line.toLowerCase().includes(query.toLowerCase())){
           line.startsWith(`#`) || line.startsWith(`*`)
@@ -29,11 +28,9 @@ export const SearchItem = (props:TSearchItem) => {
 
         return acc
       }, [] as string[])
-      .slice(0, 10)
       .join(`\n`)
-      
 
-    return start
+    return text
 
   }, [item.text, query])
 
@@ -41,8 +38,9 @@ export const SearchItem = (props:TSearchItem) => {
     <li 
       className={cls(
         `mg-search-item`,
-        `pb-2`,
         `w-full`,
+        `mb-2`,
+        `px-4`,
         `overflow-hidden`,
       )}
     >
@@ -51,39 +49,39 @@ export const SearchItem = (props:TSearchItem) => {
         className={cls(
           `mg-search-item-link`,
           `w-full`,
-          `p-3`,
+          `px-4`,
           `block`,
           `overflow-hidden`,
+          `hover:text-primary`,
         )}
       >
         <div
           className={cls(
             `mg-search-item-content`,
             `flex flex-col`,
-            `gap-2`,
             `w-full`,
           )}
         >
-          <label
+          <span
             className={cls(
+              `pb-1`,
               `font-bold`,
-              `text-sm`,
-              `border-b`,
-              `w-full`,
-              `border-neutral`,
-              `pb-1`
-            )}
-          >
-            {item.url}
-          </label>
-          <pre
-            className={cls(
-              `mt-1`,
-              `p-2`,
-              `pt-0`,
               `text-sm`,
               `w-full`,
               `text-ellipsis`,
+              `overflow-hidden`,
+              `whitespace-nowrap`,
+            )}
+          >
+            {item.title}
+          </span>
+          <pre
+            className={cls(
+              `px-3`,
+              `text-xs`,
+              `w-full`,
+              `text-ellipsis`,
+              `text-base-content`,
               `overflow-hidden`,
             )}
           >

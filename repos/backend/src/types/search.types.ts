@@ -11,7 +11,7 @@ export type TSearchDoc = {
 }
 
 export type TSearchIdx = FlexSearch.Document<string|Record<any, any>, true|string[]> & {
-  get:(id:string) => TSearchDoc|undefined
+  get:(id:string|number) => TSearchDoc|undefined
 }
 
 

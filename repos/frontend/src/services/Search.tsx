@@ -5,6 +5,8 @@ import type {
   TSearchDoc,
   TSiteSearch,
   TSearchExport,
+  TSearchSection,
+  TSearchSections,
 } from '@MG/types'
 
 import FlexSearch from "flexsearch"
@@ -12,9 +14,17 @@ import { DefSiteSearch } from '@MGS/shared'
 import { Alert }  from '@MG/services/Alert'
 import { isObj } from '@keg-hub/jsutils/isObj'
 import { limbo } from '@keg-hub/jsutils/limbo'
+import { toInt } from '@keg-hub/jsutils/toInt'
+import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { MConfigDir } from '@MG/constants/constants'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { getSiteName } from '@MG/utils/sites/getSiteName'
+
+
+
+const sameParentTitle = (parent:TSearchDoc|TSearchSection, item:TSearchDoc) => (
+  parent?.title?.toLowerCase?.()?.trim?.() === item?.title?.toLowerCase?.()?.trim?.()
+)
 
 
 export class Search {
@@ -24,7 +34,6 @@ export class Search {
   #site:TSiteConfig
   #opts?:TSiteSearch
   #index:TSearchIdx
-  #inverted:Record<string, string>
 
   constructor(mg:MGen, site:TSiteConfig, opts?:TSiteSearch){
     this.#mg = mg
@@ -32,15 +41,6 @@ export class Search {
     this.#opts = opts
     this.#alert = new Alert()
   }
-
-  #invert = () => {
-    this.#inverted = Object.entries(this.#site.sitemap)
-      .reduce((acc, [key, value]) => {
-        acc[value] = key
-        return acc
-      }, {} as Record<string, string>)
-  }
-
 
   #path = (name:string) => {
     const site = getSiteName(name, this.#mg.config.sitesType)
@@ -126,14 +126,41 @@ export class Search {
       index: DefSiteSearch.document.index,
     })
 
-    if(!this.#inverted) this.#invert()
-
     const ids = Array.from(new Set(resp.reduce((acc, item) => acc.concat(item.result), [])))
-    return ids.map(id => {
-      const item = this.#index.get(id)
-      const url = this.#inverted[item.path]
-      return url && {...item, url, id}
-    }).filter(Boolean)
+    const sections:Record<string|number, TSearchSection> = {}
+    const parents:Record<string|number, TSearchDoc> = {}
+    
+    ids.map(id => {
+      
+      const item = {...(this.#index.get(id)), id}
+
+      const sId = toInt(item.id)
+
+      if(sId === item.id){
+        parents[sId] = item
+        sections[sId] = {
+          id: item.id,
+          url: item.url,
+          title: item.title,
+          items: [item],
+        }
+      }
+      else if(sections[sId]){
+        !sameParentTitle(sections[sId], item) && sections[sId].items.push(item)
+      }
+      else {
+        const parent = parents[sId] || {...(this.#index.get(sId)), id}
+        parents[sId] = parent
+        sections[sId] = {
+          id: parent.id,
+          url: parent.url,
+          title: parent.title,
+          items: sameParentTitle(parent, item) ? [parent] : [parent, item]
+        }
+      }
+    })
+
+    return Object.values(sections)
 
   }
 

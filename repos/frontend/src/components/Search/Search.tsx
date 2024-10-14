@@ -1,4 +1,4 @@
-import type { TSearchIdx, TSearchDoc } from '@MG/types'
+import type { TSearchIdx, TSearchSections } from '@MG/types'
 
 import { useEffect, useState } from 'react'
 import { ife } from '@keg-hub/jsutils/ife'
@@ -16,7 +16,7 @@ export const Search = (props:TSearch) => {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState<string>()
   const [index, setIndex] = useState<TSearchIdx>()
-  const [results, setResults] = useState<TSearchDoc[]>([])
+  const [sections, setSections] = useState<TSearchSections>([])
   const ref = useClickAway(() => {
     if(!open) return
     
@@ -31,12 +31,12 @@ export const Search = (props:TSearch) => {
     const query = evt.target.value.trim()
     if(query.length < 3){
       setQuery(undefined)
-      return setResults([])
+      return setSections([])
     }
 
-    const results = await site.search.query(query)
+    const sections = await site.search.query(query)
     setQuery(query)
-    setResults(results)
+    setSections(sections)
     setOpen(true)
   }
 
@@ -111,7 +111,7 @@ export const Search = (props:TSearch) => {
           <Results
             open={open}
             query={query}
-            items={results}
+            sections={sections}
           />
         </div>
       </div>

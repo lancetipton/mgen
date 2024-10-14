@@ -32,10 +32,7 @@ export const parseMD = (content:string, url) => {
       return ``
     },
     paragraph: ({ type, text, raw, tokens }) => {
-      if(active){
-        active.title = active.text
-        active.text = text
-      }
+      if(active) active.text = `${active.text}\n${text}`
       return ``
     },
     text: ({ text }) => {

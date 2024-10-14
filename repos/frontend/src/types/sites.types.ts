@@ -1,4 +1,4 @@
-import type { TSiteConfig as TSConfig, TSiteNav } from '@MGS/types'
+import type { TSiteConfig as TSConfig, TSiteNav, TSearchDoc } from '@MGS/types'
 import type { Search } from '@MG/services/Search'
 
 export type TLogoMeta = {
@@ -18,3 +18,13 @@ export type TSiteConfig = Omit<TSConfig, `search`> & {
 export type TSitesConfig = Record<string, TSiteConfig> 
 
 export type TNavStep = {}
+
+
+export type TSearchSection = {
+  id:string
+  url:string
+  title:string
+  items:TSearchDoc[]
+}
+
+export type TSearchSections = TSearchSection[]

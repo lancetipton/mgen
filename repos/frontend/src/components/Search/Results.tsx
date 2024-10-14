@@ -1,83 +1,119 @@
-import type { TSearchDoc } from '@MG/types'
+import type { TSearchDoc, TSearchSections, TSearchSection } from '@MG/types'
 
+import { Fragment } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
-import { SearchItem } from '@MG/components/Search/SearchItem'
+
 import { useTheme } from '@MG/contexts/ThemeContext'
+import { SearchItem } from '@MG/components/Search/SearchItem'
+import { SectionHeader } from '@MG/components/Search/SectionHeader'
 
 
 export type TResults = {
   open?:boolean
   query?:string
-  items:TSearchDoc[]
+  sections:TSearchSections
 }
 
 const NoItem = {
   path: ``,
+  url: `#`,
   id: `No Items`,
+  title: `No Items`,
   text: `No matching results found`
 }
+
+const classes = {
+  dropdown: [
+    `w-full`,
+    `dropdown`,
+    `dropdown-left`,
+  ],
+  container: [
+    `mg-search-results-container`,
+    `dropdown-content`,
+    `z-[1]`,
+    `border`,
+    `left-0`,
+    `!fixed`,
+    `w-screen`,
+    `drop-shadow`,
+    `rounded-xl`,
+    `!top-[65px]`,
+    `md:!absolute`,
+    `md:!top-[-4px]`,
+    `md:!left-[-20rem]`,
+    `md:max-w-[min(calc(100vw-2rem),calc(100%+20rem))]`,
+  ],
+  ul: [
+    `mg-search-results-list`,
+    `menu`,
+    `px-1`,
+    `py-3`,
+    `rounded-xl`,
+    `flex-nowrap`,
+    `max-h-screen`,
+    `md:max-h-[50vh]`,
+    `overflow-y-auto`,
+    `overflow-x-hidden`,
+  ]
+}
+
 
 export const Results = (props:TResults) => {
   
   const {
     open,
-    items,
     query,
+    sections,
   } = props
   
   const { isDark } = useTheme()
 
-
   return (
-      <div className={cls(
-        `dropdown`,
-        `dropdown-left`,
-        `w-full`,
-        open && `dropdown-open`,
-      )}>
+      <div
+        className={cls(
+          ...classes.dropdown,
+          query && open && `dropdown-open`,
+        )}
+      >
+      <div
+        className={cls(
+          ...classes.container,
+          isDark ? `border-neutral` : `border-base-200`,
+        )}
+      >
         <ul
           tabIndex={0}
           className={cls(
-            `mg-search-results-container`,
-            `p-2`,
-            `menu`,
-            `z-[1]`,
-            `gap-2`,
-            `drop-shadow`,
-            `rounded-sm`,
-            `border`,
-            `border-neutral`,
-            `dropdown-content`,
+            ...classes.ul,
             isDark ? `bg-base-200` : `bg-base-100`,
-
-            `left-0`,
-            `!fixed`,
-            `w-screen`,
-            `!top-[65px]`,
-            `md:max-w-[min(calc(100vw-2rem),calc(100%+20rem))]`,
-            `md:!absolute`,
-            `md:!top-[-4px]`,
-            `md:!left-[-24rem]`,
-
           )}
         >
-          {items.map(item => {
+          {sections.map(section => {
             return (
-              <SearchItem
-                item={item}
-                key={item.id}
-                query={query}
-              />
+              <Fragment key={section.id} >
+                <SectionHeader isDark={isDark} section={section} />
+                {section.items.map(item => {
+                  return (
+                    <SearchItem
+                      item={item}
+                      key={item.id}
+                      query={query}
+                    />
+                  )
+                })}
+              </Fragment>
             )
           })}
-          {!items?.length && (
-            <SearchItem
-              query={``}
-              item={NoItem}
-              key={NoItem.id}
-            />
+          {!sections?.length && (
+              <SearchItem
+                query={``}
+                item={NoItem}
+                key={NoItem.id}
+              />
           ) || null}
-        </ul>
+          </ul>
+      </div>
       </div>
   )
 
