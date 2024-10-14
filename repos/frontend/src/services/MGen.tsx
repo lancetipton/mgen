@@ -404,3 +404,6 @@ export class MGen extends Events {
   }
 
 }
+
+
+export default MGen

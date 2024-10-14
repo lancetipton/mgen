@@ -1,16 +1,4 @@
-import type FlexSearch from 'flexsearch'
-import type { IndexOptionsForDocumentSearch } from 'flexsearch'
-
-export type TSearchDoc = {
-  id:string
-  url?:string
-  text:string
-  path:string
-}
-
-export type TSearchIdx = FlexSearch.Document<string|Record<any, any>, true|string[]> & {
-  get:(id:string) => TSearchDoc|undefined
-}
+import type { TSiteSearch } from './search.types.js'
 
 
 export type TSiteThemeColors = {
@@ -109,11 +97,6 @@ export type TSiteThemeLogo = TSiteThemeFont & {
   radius?:string|number
 }
 
-
-export type TSiteSearch = IndexOptionsForDocumentSearch<string|Record<any, any>, true|string[]> & {
-  active?:boolean
-}
-
 export type TSiteTheme = {
   font?:TSiteThemeFont
   logo?:TSiteThemeLogo
@@ -126,19 +109,6 @@ export type TSiteTheme = {
   }
 }
 
-
-
-export type TSearchExport = {
-  reg?:string
-  tag?:string
-  store?:string
-  'text.cfg'?:string
-  'text.map'?:string
-  'text.ctx'?:string
-  'path.cfg'?:string
-  'path.map'?:string
-  'path.ctx'?:string
-}
 
 export type TSiteLink = {
   text?:string

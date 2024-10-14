@@ -2,7 +2,7 @@ import type { TSiteConfig, TLogoMeta } from '@MG/types'
 import type { TMemoChildren } from '@MG/components/MemoChildren'
 
 import { useState, useEffect } from 'react'
-import { MGen } from '@MG/services/MGen'
+import MGen from '@MG/services/MGen'
 import { ife } from '@keg-hub/jsutils/ife'
 import { MGenId } from '@MG/constants/constants'
 import { useContext, createContext } from "react"

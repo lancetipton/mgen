@@ -2,6 +2,7 @@ import type { TMGenCfg, TSiteConfig } from './types'
 
 import { fdir } from 'fdir'
 import path from 'node:path'
+import { locToTitle } from './utils.js'
 import { loadCfgFile } from './config.js'
 import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
@@ -83,7 +84,7 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
       if(parsed.name === `index`){
         current.url = parsed.dir
         current.path = location
-        current.text = wordCaps(parsed.dir.split(`/`).pop())
+        current.text = locToTitle(parsed.dir)
         return
       }
 
