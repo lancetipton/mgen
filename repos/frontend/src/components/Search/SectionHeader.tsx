@@ -1,10 +1,11 @@
 import type { TSearchSection } from '@MG/types'
-import { cls } from '@keg-hub/jsutils/cls'
 
+import { cls } from '@keg-hub/jsutils/cls'
 
 export type TSection = {
   isDark?:Boolean
   section:TSearchSection
+  onClick?:(evt:any) => void
 }
 
 export const SectionHeader = (props:TSection) => {
@@ -12,6 +13,7 @@ export const SectionHeader = (props:TSection) => {
   const {
     isDark,
     section,
+    onClick,
   } = props
 
   return (
@@ -32,6 +34,7 @@ export const SectionHeader = (props:TSection) => {
           `hover:text-primary`,
         )}
         href={section.url}
+        onClick={onClick}
       >
         <div
         className={cls(

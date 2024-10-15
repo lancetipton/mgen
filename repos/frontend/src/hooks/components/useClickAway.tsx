@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useEffect } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { useInline } from '@MG/hooks/components/useInline'
 
 export const useClickAway = (callback:(evt:any) => any) => {
@@ -23,4 +23,11 @@ export const useClickAway = (callback:(evt:any) => any) => {
   }, [])
 
   return ref
+}
+
+export const onForceClick = () => {
+  document.body.dispatchEvent(new MouseEvent(`mousedown`, {
+    bubbles: true,
+    cancelable: true
+  }))
 }

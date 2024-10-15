@@ -12,9 +12,9 @@ import { parseMD } from './parse.js'
 import { locToTitle } from './utils.js'
 import { DefSiteSearch } from './shared.js'
 import { isObj } from '@keg-hub/jsutils/isObj'
-import { toFloat } from '@keg-hub/jsutils/toFloat'
-import { loadFile, writeJson } from './config.js'
 import { MGCfgFinalLoc } from './constants.js'
+import { loadFile, writeJson } from './config.js'
+import { toFloat } from '@keg-hub/jsutils/toFloat'
 
 const buildIdxExport = async (index:TSearchIdx) => {
   const exported:TSearchExport = {}
@@ -55,7 +55,7 @@ const genSiteIndex = async (dir:string, site:TSiteConfig) => {
 
       index.add(parent)
 
-      const sections = parseMD(content, url)
+      const { sections } = parseMD(content, url)
 
       sections.forEach((section, sid) => {
         const num = sid >= 9 ? sid + 1 : `0${sid + 1}`

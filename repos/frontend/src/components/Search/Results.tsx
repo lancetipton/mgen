@@ -7,11 +7,11 @@ import { useTheme } from '@MG/contexts/ThemeContext'
 import { SearchItem } from '@MG/components/Search/SearchItem'
 import { SectionHeader } from '@MG/components/Search/SectionHeader'
 
-
 export type TResults = {
   open?:boolean
   query?:string
   sections:TSearchSections
+  onClick?:(evt:any) => void
 }
 
 const NoItem = {
@@ -52,7 +52,8 @@ const classes = {
     `rounded-xl`,
     `flex-nowrap`,
     `max-h-screen`,
-    `md:max-h-[50vh]`,
+    `max-h-[calc(100vh-var(--mgen-header-height))]`,
+    `md:max-h-[75vh]`,
     `overflow-y-auto`,
     `overflow-x-hidden`,
   ]
@@ -64,16 +65,17 @@ export const Results = (props:TResults) => {
   const {
     open,
     query,
+    onClick,
     sections,
   } = props
-  
-  const { isDark } = useTheme()
 
+  const { isDark } = useTheme()
+ 
   return (
       <div
         className={cls(
           ...classes.dropdown,
-          query && open && `dropdown-open`,
+          query && open ? `dropdown-open` : `hidden`,
         )}
       >
       <div
@@ -92,13 +94,18 @@ export const Results = (props:TResults) => {
           {sections.map(section => {
             return (
               <Fragment key={section.id} >
-                <SectionHeader isDark={isDark} section={section} />
+                <SectionHeader
+                  isDark={isDark}
+                  section={section}
+                  onClick={onClick}
+                />
                 {section.items.map(item => {
                   return (
                     <SearchItem
                       item={item}
                       key={item.id}
                       query={query}
+                      onClick={onClick}
                     />
                   )
                 })}

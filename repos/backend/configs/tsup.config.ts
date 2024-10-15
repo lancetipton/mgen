@@ -8,12 +8,23 @@ import { promises as fs } from 'node:fs'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const rootDir = path.join(dirname, `..`)
 const outdir = path.join(rootDir, `dist`)
-const outfile = path.join(rootDir, `dist/index.js`)
-const entry = path.join(rootDir, `src/index.ts`)
+
+const fileIO = [
+  `index`,
+  `serve`,
+  `setup`,
+]
+
+const cleanup = async () => {
+  return Promise.all(fileIO.map(async (name) => {
+    const outfile = path.join(rootDir, `dist/${name}.js`)
+    await fs.rm(outfile, { recursive: true, force: true })
+    await fs.rm(`${outfile}.map`, { recursive: true, force: true })
+  }))
+}
 
 export default defineConfig(async () => {
-  await fs.rm(outfile, { recursive: true, force: true })
-  await fs.rm(`${outfile}.map`, { recursive: true, force: true })
+  await cleanup()
 
   return {
     sourcemap: true,
@@ -21,7 +32,7 @@ export default defineConfig(async () => {
     outDir: outdir,
     format: [`esm`],
     name: `mgen`,
-    entry: [entry],
+    entry: fileIO.map(name => path.join(rootDir, `src/${name}.ts`)),
     esbuildOptions:(options, context) => {
       options && (
         options.external = [

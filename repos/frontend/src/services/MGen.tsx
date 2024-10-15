@@ -49,6 +49,7 @@ export class MGen extends Events {
 
   #alert:Alert
   #init?:boolean
+  #hash?:string
   #opts:TMGenOpts
   #stopRouter:() => void
   #mdToHtml:boolean=true
@@ -157,10 +158,7 @@ export class MGen extends Events {
       path = window.location.pathname
 
 
-    if(window.location.hash){
-      const el = document.querySelector(window.location.hash) as HTMLElement
-      el && window.scrollTo({ top: el.offsetTop, behavior: `smooth`});
-    }
+    if(window.location.hash) this.#hash = window.location.hash
     else window.scrollTo(0, 0)
 
     const loc = this.#loc(path)
@@ -356,11 +354,23 @@ export class MGen extends Events {
    */
   render = (content:string, selector?:string, path?:string) => {
     this.dispatch(this.events.onRender, content, selector, path)
-    if(!this.#renderToDom) return
 
-    const sel = selector || this.selector
-    const el = sel && document.querySelector(sel)
-    el && (el.innerHTML = content)
+    if(this.#renderToDom){
+      const sel = selector || this.selector
+      const el = sel && document.querySelector(sel)
+      el && (el.innerHTML = content)
+    }
+
+    // Check if the #hash was set and attempt to scroll to it after render
+    if(!this.#hash) return
+
+    const hash = this.#hash
+    this.#hash = undefined
+    setTimeout(() => {
+      const el = document.querySelector(hash) as HTMLElement
+      el && window.scrollTo({ top: el.offsetTop, behavior: `smooth`});
+    }, 200)
+
   }
 
 

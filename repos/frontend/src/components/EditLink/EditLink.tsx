@@ -7,7 +7,7 @@ const styles = {
   icon: {
     height: `14px`,
     width: `14px`,
-    marginRight: `10px`,
+    marginRight: `4px`,
     display: `inline-block`,
   },
   container: {

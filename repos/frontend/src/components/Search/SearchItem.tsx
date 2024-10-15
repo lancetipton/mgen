@@ -4,17 +4,18 @@ import { cls } from '@keg-hub/jsutils/cls'
 import { HighlightMatches } from '@MG/components/Search/HighlightMatches'
 
 
-
 export type TSearchItem = {
   query?:string
   item:TSearchDoc
+  onClick?:(evt:any) => void
 }
 
 export const SearchItem = (props:TSearchItem) => {
 
   const {
     item,
-    query
+    query,
+    onClick
   } = props
 
   const content = useMemo(() => {
@@ -34,6 +35,8 @@ export const SearchItem = (props:TSearchItem) => {
 
   }, [item.text, query])
 
+
+
   return (
     <li 
       className={cls(
@@ -46,6 +49,7 @@ export const SearchItem = (props:TSearchItem) => {
     >
       <a
         href={item.url}
+        onClick={onClick}
         className={cls(
           `mg-search-item-link`,
           `w-full`,

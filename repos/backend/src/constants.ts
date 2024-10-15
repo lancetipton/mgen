@@ -1,5 +1,3 @@
-import type { TSiteSearch } from './types'
-
 import { loadEnvs } from '../scripts/loadEnvs.js'
 
 const envs = loadEnvs()

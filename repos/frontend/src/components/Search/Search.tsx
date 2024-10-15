@@ -17,11 +17,15 @@ export const Search = (props:TSearch) => {
   const [query, setQuery] = useState<string>()
   const [index, setIndex] = useState<TSearchIdx>()
   const [sections, setSections] = useState<TSearchSections>([])
-  const ref = useClickAway(() => {
-    if(!open) return
-    
+
+  const onClick = () => {
     setOpen(false)
     setOff(true)
+  }
+
+  const ref = useClickAway(() => {
+    if(!open) return
+    onClick()
   })
 
   const onSearch = async (evt:any) => {
@@ -111,6 +115,7 @@ export const Search = (props:TSearch) => {
           <Results
             open={open}
             query={query}
+            onClick={onClick}
             sections={sections}
           />
         </div>

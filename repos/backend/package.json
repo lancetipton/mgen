@@ -5,13 +5,17 @@
   "type": "module",
   "main": "index.js",
   "bin": {
-    "mgen": "markdown.js"
+    "mgen-dev": "dev.js",
+    "mgen-sites": "sites.js",
+    "mgen": "serve.js"
   },
   "scripts": {
-    "build": "tsup-node --config configs/tsup.config.ts",
-    "start": "tsup-node --config configs/tsup.config.ts --watch src  --watch configs --onSuccess 'pnpm md' ",
-    "md": "node --enable-source-maps -r esbuild-register ./markdown.js ./sites",
-    "serve": "node node_modules/serve/build/main.js",
+    "build": "pnpm build:mgen && pnpm build:sites",
+    "build:mgen": "tsup-node --config configs/tsup.config.ts",
+    "build:sites": "node --enable-source-maps -r esbuild-register ./sites.js ./sites",
+    "start": "tsup-node --config configs/tsup.config.ts --watch src  --watch configs --onSuccess 'pnpm dev' ",
+    "dev": "node --enable-source-maps -r esbuild-register ./dev.js ./sites",
+    "serve": "node --enable-source-maps -r esbuild-register ./serve.js ./sites",
     "clean": "rm -rf dist",
     "clean:nm": "rm -rf node_modules",
     "clean:full": "pnpm clean && pnpm clean:nm"

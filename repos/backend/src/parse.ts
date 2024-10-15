@@ -14,35 +14,34 @@ type THSection = {
   title?:string
 }
 
-
 export const parseMD = (content:string, url) => {
   const sections:THSection[] = []
   let active: THSection = undefined
 
   const renderer:TRender = {
     heading: ({ tokens, depth, text, raw, type }) => {
+      const slug = trainCase(text)
       const section = {
         text: ``,
         title: text,
+        hash: `${url}#${slug}`,
         tag: `h${depth}` as HeadTag,
-        hash: `${url}#${trainCase(text)}`,
       }
       active = section
       sections.push(section)
-      return ``
+      return `<h${depth} id="${slug}" >${text}</h${depth}>`
     },
     paragraph: ({ type, text, raw, tokens }) => {
       if(active) active.text = `${active.text}\n${text}`
-      return ``
+      return `<p>${text}</p>`
     },
     text: ({ text }) => {
       if(active) active.text = `${active.text}\n${text}`
-
-      return ``
+      return text
     },
-    code: ({ text, raw, ...rest }) => {
+    code: ({ text, raw, lang, ...rest }) => {
       if(active) active.text = `${active.text}\n${raw}`
-      return ``
+      return `<pre><code language="${lang}" >${text}</code></pre>`
     }
 
     //space(token: Tokens.Space): string;
@@ -66,7 +65,7 @@ export const parseMD = (content:string, url) => {
   }
 
   marked.use({ renderer })
-  marked.parse(content)
+  const html = marked.parse(content)
 
-  return sections
+  return {sections, html}
 }

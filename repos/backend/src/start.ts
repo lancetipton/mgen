@@ -1,20 +1,13 @@
-import { crawl } from './crawl.js'
+import { setup } from './setup.js'
 import { serve } from './serve.js'
 import { APIPort } from './constants.js'
-import { genSearchIndex } from './search.js'
-import { generateSites } from './generate.js'
-import { genMConfig, genSConfig } from './config.js'
-import { getRootLoc, getBinLoc, getSitesLoc } from './paths.js'
+import { getRootLoc, getBinLoc } from './paths.js'
 
 
 export const start = async () => {
-  const bin = getBinLoc()
-  const sites = getSitesLoc()
-  const location = genSConfig(sites)
 
-  const mgenCfg = generateSites(sites, crawl(sites))
-  genMConfig(sites, mgenCfg)
-  await genSearchIndex(sites, mgenCfg)
+  const bin = getBinLoc()
+  const { location } = await setup()
 
   const proc = serve({
     bin,

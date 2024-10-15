@@ -18,12 +18,14 @@ export const Header = (props:THeader) => {
       id='mg-header'
       className={cls(
         `mg-header`,
+        `z-20`,
+        `fixed`,
+        `top-0`,
         `w-screen`,
-        `max-w-screen`,
         `border-b`,
         `bg-base-100`,
+        `max-w-screen`,
         `border-base-200`,
-        `z-10 fixed top-0`,
         `h-[var(--mgen-header-height)]`
       )}
     >
