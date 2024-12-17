@@ -9,6 +9,7 @@ import type {
 import Route from 'route-event'
 import {micromark} from 'micromark'
 import { EMGenEvts } from '@MG/types'
+import { api } from '@MG/services/Api'
 import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
 import { Search } from '@MG/services/Search'
@@ -253,7 +254,7 @@ export class MGen extends Events {
   #request = async (loc:string, opts?:RequestInit) => {
     opts = opts || {headers: {[`Accept`]: `text/markdown`}}
 
-    const res = await fetch(loc, opts)
+    const res = await api.fetch(loc, opts)
     if (!res.ok) throw new Error(`${res.statusText} (${res.status})`)
     return res.text()
   }
