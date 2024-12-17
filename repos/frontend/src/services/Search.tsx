@@ -9,12 +9,12 @@ import type {
 } from '@MG/types'
 
 import FlexSearch from "flexsearch"
-import { api } from '@MG/services/Api'
 import { DefSiteSearch } from '@MGS/shared'
 import { Alert }  from '@MG/services/Alert'
 import { isObj } from '@keg-hub/jsutils/isObj'
 import { limbo } from '@keg-hub/jsutils/limbo'
 import { toInt } from '@keg-hub/jsutils/toInt'
+import { staticApi } from '@MG/services/Static'
 import { MConfigDir } from '@MG/constants/constants'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { getSiteName } from '@MG/utils/sites/getSiteName'
@@ -90,7 +90,8 @@ export class Search {
   #request = async (loc:string, opts?:RequestInit) => {
     opts = opts || {headers: {[`Accept`]: `text/markdown`}}
 
-    const res = await api.fetch(loc, opts)
+    const fetch = await staticApi()
+    const res = await fetch(loc, opts, true)
     if (!res.ok) throw new Error(`${res.statusText} (${res.status})`)
     return res.text()
   }

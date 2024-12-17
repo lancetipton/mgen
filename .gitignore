@@ -295,4 +295,6 @@ repos/markdown/sites
 !.gitkeep
 mgen.config.json
 repos/markdown/sites/mgen.config.json
+repos/frontend/public/.mgen/
+repos/frontend/public/sites/
 

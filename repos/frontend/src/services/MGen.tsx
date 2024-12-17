@@ -9,11 +9,11 @@ import type {
 import Route from 'route-event'
 import {micromark} from 'micromark'
 import { EMGenEvts } from '@MG/types'
-import { api } from '@MG/services/Api'
 import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
 import { Search } from '@MG/services/Search'
 import { limbo } from '@keg-hub/jsutils/limbo'
+import { staticApi } from '@MG/services/Static'
 import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildSteps } from '@MG/utils/sites/buildSteps'
@@ -227,6 +227,7 @@ export class MGen extends Events {
     if(force || !this.config){
       const {path, full=path} = this.#path(MConfigFile, this.baseUrl)
       const [err, content] = await limbo(this.#request(full, {headers: {[`Accept`]: `text/json`}}))
+
       if(err) return this.#error(err, path)
       this.config = parseJSON(content)
       this.#site = getSiteName(undefined, this.config.sitesType)
@@ -254,7 +255,8 @@ export class MGen extends Events {
   #request = async (loc:string, opts?:RequestInit) => {
     opts = opts || {headers: {[`Accept`]: `text/markdown`}}
 
-    const res = await api.fetch(loc, opts)
+    const fetch = await staticApi()
+    const res = await fetch(loc, opts, true)
     if (!res.ok) throw new Error(`${res.statusText} (${res.status})`)
     return res.text()
   }
