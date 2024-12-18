@@ -41,7 +41,7 @@ class Api {
     const url = new URL(input)
     const pathname = url.pathname
     const items = !isMd(pathname) ? this.#mgen : this.#sites
-    
+
     const found = Object.entries(items).find(([loc, mod]) => loc === pathname) as TImpResp
     if(!found) return new Response(`404 - Path "${pathname}" not found.`, { status: 404 })
 
