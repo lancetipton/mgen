@@ -7,14 +7,12 @@ import type {
 } from '@MG/types'
 
 import Route from 'route-event'
-import {micromark} from 'micromark'
 import { EMGenEvts } from '@MG/types'
 import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
 import { Search } from '@MG/services/Search'
 import { limbo } from '@keg-hub/jsutils/limbo'
 import { staticApi } from '@MG/services/Static'
-import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildSteps } from '@MG/utils/sites/buildSteps'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
@@ -24,11 +22,8 @@ import { MConfigDir, MConfigFile } from '@MG/constants/constants'
 
 type TMGenOpts = {
   selector?:string
-  mdToHtml?:boolean
   autoStart?:boolean
-  renderToDom?:boolean
   sitesConfig?:TSitesConfig
-  micromark?:Record<any, any>
   sitemap?:Record<string, string>
   getPath?:(loc?:string) => string
   onSite?:(site?:TSiteConfig) => any
@@ -53,8 +48,6 @@ export class MGen extends Events {
   #hash?:string
   #opts:TMGenOpts
   #stopRouter:() => void
-  #mdToHtml:boolean=true
-  #renderToDom:boolean=false
   #router:ReturnType<typeof Route>
   #clearCssVars?:() => void
   #clearDefCssVars?:() => void
@@ -77,8 +70,6 @@ export class MGen extends Events {
     this.baseUrl = buildApiUrl()
     this.#events(opts)
     if(opts?.getPath) this.getPath = opts?.getPath
-    if(opts?.mdToHtml === false) this.#mdToHtml = false
-    if(opts?.renderToDom === false) this.#renderToDom = false
     if(opts?.sitemap) this.sitemap = {...this.sitemap, ...opts?.sitemap}
 
     ;(opts?.autoStart !== false) && this.start()
@@ -336,15 +327,7 @@ export class MGen extends Events {
    * @param {string} [path] - Optional path for the content.
    */
   onMarkdown = (content:string, selector?:string, path?:string) => {
-    const html = this.#mdToHtml
-      ? micromark(content, {
-          extensions: [gfm()],
-          allowDangerousHtml: true,
-          htmlExtensions: [gfmHtml()]
-        })
-      : content
-
-    this.render(html, selector, path)
+    this.render(content, selector, path)
   }
 
 
@@ -357,12 +340,6 @@ export class MGen extends Events {
    */
   render = (content:string, selector?:string, path?:string) => {
     this.dispatch(this.events.onRender, content, selector, path)
-
-    if(this.#renderToDom){
-      const sel = selector || this.selector
-      const el = sel && document.querySelector(sel)
-      el && (el.innerHTML = content)
-    }
 
     // Check if the #hash was set and attempt to scroll to it after render
     if(!this.#hash) return

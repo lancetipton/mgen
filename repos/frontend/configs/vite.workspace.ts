@@ -1,13 +1,19 @@
 import '../scripts/registerPaths'
 
+import url from 'node:url'
 import path from 'node:path'
 import react from '@vitejs/plugin-react-swc'
 import { loadConfig } from './mgen.config'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import { svgrComponent } from 'vite-plugin-svgr-component'
+import { toBool } from '@keg-hub/jsutils/toBool'
 
+const markdownExts = [`.md`, `.mdx`]
 const rootDir = path.join(__dirname, '..')
 const { aliases, envs, port, environment } = loadConfig()
+const staticBuild = toBool(process.env.MG_STATIC_BUILD)
+
+
 
 /**
  * Load from the local process.env
@@ -54,8 +60,13 @@ export const config = {
     {
       name: `markdown-loader`,
       transform(code:string, id:string) {
-        if (id.slice(-3) === `.md`)
-          return `export default ${JSON.stringify(code)}`
+        const loc = url.pathToFileURL(id)
+        const parsed = new URL(decodeURIComponent(loc.href))
+        const ext = path.extname(parsed.pathname)
+
+        if(markdownExts.includes(ext))
+          return staticBuild ? code : `export default ${JSON.stringify(code)}`
+
       }
     },
   ],

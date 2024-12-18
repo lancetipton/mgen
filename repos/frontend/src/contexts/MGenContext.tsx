@@ -41,8 +41,6 @@ export const MGenProvider = (props:TMGenProvider) => {
     ife(async () => {
       const mgen = new MGen({
         ...rest,
-        mdToHtml: false,
-        renderToDom: false,
         onSite: (siteCfg) => {
           if(site?.name === siteCfg?.name) return
           setSite(siteCfg)
