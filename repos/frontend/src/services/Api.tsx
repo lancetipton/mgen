@@ -12,7 +12,7 @@ class Api {
 
   constructor(){
     const sites = import.meta.glob(`../../public/sites/**`, {
-      eager: true,
+      eager: false,
       query: `?raw`,
     })
     
@@ -22,7 +22,7 @@ class Api {
     }, {} as TImports)
 
     const mgen = import.meta.glob(`../../public/.mgen/*`, {
-      eager: true,
+      eager: false,
       query: `?raw`,
     })
 
