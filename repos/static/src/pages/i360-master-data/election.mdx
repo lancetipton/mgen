@@ -1,0 +1,248 @@
+
+# Election
+
+
+## Metadata
+
+* **Type**: module
+* **Language**: python
+* **Location**: /election.py
+
+## Description
+
+Election Data Ingestion Module
+
+This module is responsible for ingesting election data files into the I360 Master Data (IMD) repository.
+
+It defines an `Election` class that orchestrates the ingestion workflow. The class takes in parameters for the state, EEPK (ingestion package ID), source table, and source database.
+
+The main ingestion steps are:
+
+1. Create a staging schema in IMD based on the EEPK
+
+2. Transfer data from the source table to the staging schema
+
+3. Update election fields (EC) from the elections table
+
+4. Match elections in the file to existing elections
+
+5. Deduplicate data in the staging schema
+
+6. Insert any new unmatched elections into the elections table
+
+7. Update package variables and run feedback processing
+
+Utility functions are used for logging, executing SQL, uploading logs to S3, and sending failure emails. The class runs the steps in order, tracking progress, and handles errors.
+
+On completion, it analyzes the staging table and updates the semaphore to mark the package as successful or failed. This module provides a reusable way to ingest and process election data from different states and source systems into the central IMD repository.
+
+
+## Code
+
+```python
+  import time
+  import json
+  import logging
+  import configparser
+  import sys
+  import psycopg2
+  import datetime
+  
+  from util.data_flow_task import DFT, PGDatabaseReader, PGDatabaseWriter
+  from util.db_conn import Connection
+  from util.query_executor import QueryExecutor
+  from util.mailer import Mailer
+  from util.utility import *
+  from util.feedback import Feedback
+  from util.timer import function_timer
+  from util.credentials_manager import CredentialsManager
+  from util.s3_processor import S3Processor
+  
+  class Election:
+      
+      def __init__(self, state, eepk,  sourcetable, sourcedb):
+          self.state = state
+          self.eepk = eepk
+          self.schema = "staging_" + str(eepk) + "_election"
+          self.sourcetable = sourcetable
+          self.sourcedb = sourcedb
+          self.steps_processed = get_steps_processed(eepk, 'Election')
+          self.election_sql = get_files("resources/sql/ingestion/election/")
+          self.election_columns = get_files("resources/columns/ingestion/election/")
+  
+      def master(self):
+          try:
+              self.initialize_variables()
+              update_package_variables_dtg(self.eepk, 'election_start_dtg')
+              self.log_args()
+              self.staging()
+              self.cleanse()
+              self.match_elections()
+              self.dedupe_staging()
+              self.insert()
+              self.update_package_variables()
+              self.feedback()
+              update_package_variables_dtg(self.eepk, 'election_end_dtg')
+              analyze_staging_table(self.schema)
+              update_semaphore_success(self.eepk, 'Election')
+          except Exception as e:
+              logging.exception(e)
+              update_semaphore_errored(self.eepk, 'Election')
+              self.send_failure_email()
+              raise e
+          finally:
+              if self.load_log_to_s3:
+                  self.upload_log_to_s3()
+  
+      def initialize_variables(self):
+          self.environment = os.environ.get("env")
+          config = configparser.ConfigParser()
+          file_name = f'resources/config/{self.environment}/config.ini'
+          config.read(file_name)
+          self.email_group = [config.get('mail', 'email_group', fallback='dataopspolitical@i-360.com')]
+          self.load_log_to_s3 = True if config.get('log', 'load_to_s3', fallback='Y') == 'Y' else False
+  
+      def log_args(self):
+          logging.info('Starting Election')
+          logging.info('State: ' + self.state)
+          logging.info('EEPK: ' + str(self.eepk))
+  	
+      def staging(self):
+          if 'staging' not in self.steps_processed:
+              self.create_staging_schema()
+              self.xfer_to_staging()
+              insert_processed_step(self.eepk, 'Election', 'staging')
+  
+      def create_staging_schema(self):
+          '''Creates staging schema from eepk. '''
+          # update start time for logging purposes
+          sql = self.election_sql["update_package_variables_start_dtg"].replace('${eepk}', str(self.eepk))
+          query_executor = QueryExecutor("IMD")
+          query_executor.execute_statement(sql)
+                  
+          sql = self.election_sql["create_schema"]
+          sql = sql.replace('${schema}', self.schema)
+          query_executor.execute_statement(sql)
+  
+      @function_timer
+      def xfer_to_staging(self):
+          '''Loads data to staging based on file type. '''
+          logging.info('Starting xfer to staging ' + str(time.ctime()))
+  
+          sql = self.election_sql["xfer_to_staging"].replace('${sourcetable}', self.sourcetable)
+  
+          # get input columns and output columns with created staging_id starting at 1 in DFT
+          columns_input = self.election_columns["xfer_to_staging_input"].split(',')
+          columns_output = self.election_columns["xfer_to_staging_output"].split(',')
+  
+          input_table = PGDatabaseReader('dataservices', columns_input, sql, process='xfer_staging_election')
+          output_table = PGDatabaseWriter('IMD', self.schema + '.staging_validated', columns_output, '|', index_columns={'staging_id':1})
+  
+          dft = DFT([input_table], [output_table])
+          dft.transformation()
+  
+      @function_timer
+      def cleanse(self):
+          '''Updates EC fields from election table. '''
+          if 'cleanse' not in self.steps_processed:
+              logging.info('Updating EC fields ' + str(time.ctime()))
+              sql = self.election_sql["cleanse"].replace('${schema}', self.schema) 
+              query_executor = QueryExecutor("IMD")
+              query_executor.execute_statement(sql)
+              insert_processed_step(self.eepk, 'Election', 'cleanse')
+  
+      @function_timer
+      def match_elections(self):
+          '''Matches elections in file to elections table'''
+          if 'match' not in self.steps_processed:
+              logging.info('Matching Elections '+ str(time.ctime()))
+              sql = self.election_sql["match"].replace('${schema}', self.schema)
+              query_executor = QueryExecutor("IMD")
+              query_executor.execute_statement(sql)
+              insert_processed_step(self.eepk, 'Election', 'match')
+  
+      @function_timer
+      def dedupe_staging(self):
+          '''Dedupes election staging data'''
+          if 'dedupe_staging' not in self.steps_processed:
+              logging.info('Dedupe Staging ' + str(time.ctime()))
+              sql = self.election_sql["dedupe_staging"]
+              sql = sql.replace('${schema}', self.schema)
+              query_executor = QueryExecutor("IMD")
+              query_executor.execute_statement(sql)
+              insert_processed_step(self.eepk, 'Election', 'dedupe_staging')
+  
+      @function_timer
+      def insert(self):
+          '''Inserts any new elections to our elections table.'''
+          if 'insert' not in self.steps_processed:
+              logging.info('Starting insert for unmatched elections to voter.election ' + str(time.ctime()))
+  
+              sql = self.election_sql["insert"].replace('${schema}', self.schema).replace('${eepk}', str(self.eepk))
+              input_columns = self.election_columns["insert_input"].split(',')
+              input_table = PGDatabaseReader('IMD', input_columns, sql, process='election_insert')
+  
+              # create merge output destination
+              columns_merge_output = self.election_columns["insert_merge_output"].split(',')
+              merge_output_table = PGDatabaseWriter('IMD', self.schema + '.merge_output', columns_merge_output, '|')
+  
+              # create election destination
+              columns_election_table = self.election_columns["insert_election"].split(',')
+              columns_insert_op_rename = json.loads(self.election_columns["insert_op_rename"])
+              election_table = PGDatabaseWriter('IMD', 'voter.election', columns_election_table, '|', column_rename=columns_insert_op_rename)
+  
+              dft = DFT([input_table], [merge_output_table, election_table])
+              dft.transformation()
+  
+              insert_processed_step(self.eepk, 'Election', 'insert')
+  
+      def update_package_variables(self):
+          # grouping feeback and pck vars into same process step. Insert if after feedback
+          if 'feedback' not in self.steps_processed:
+              logging.info('Starting feedback and package variables ' + str(time.ctime()))
+              sql = self.election_sql["package_variables"]
+              sql = sql.replace('${eepk}', str(self.eepk))
+              sql = sql.replace('${schema}', self.schema)
+              query_executor = QueryExecutor('IMD')
+              query_executor.execute_statement(sql)
+  
+      def feedback(self):
+          if 'feedback' not in self.steps_processed:
+              logging.info('Starting feedback ' + str(time.ctime()))
+              f = Feedback(self.schema, 'ins_ec_ecpk', 'ecpk_match', 'ecpk_resolved')
+              f.run()
+              insert_processed_step(self.eepk, 'Election', 'feedback')
+  
+      def send_failure_email(self):
+          subject = 'Failure in ' + self.environment.upper() + f': IMD Election Job Failed'
+          log_path = f'resources/logs/election/election_{self.eepk}.txt'
+          mailer = Mailer()
+          mailer.send_email(subject, 'Check attached logs', self.email_group, [], file_name=log_path)
+  
+      def upload_log_to_s3(self):
+          credentials_manager = CredentialsManager()
+          secrets = credentials_manager.secrets['s3_political_dmi'].get_value()
+          log_path = f'resources/logs/election/election_{self.eepk}.txt'
+          t = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+          s3_file_name = f'IMD_Logs/election/election_{self.eepk}_{t}.txt'
+          s3 = S3Processor(secrets['bucket_name'], secrets['access_key'], secrets['secret_key'])
+          s3.upload_file(log_path, s3_file_name)
+  
+  def main():
+      env = os.environ.get("env")
+      credentials_manager = CredentialsManager()
+      credentials_manager.initialize_credentials(env)
+      log_file = 'resources/logs/election/election_' + str(sys.argv[1]) + '.txt'
+      logging.basicConfig(level=logging.INFO, handlers = [logging.FileHandler(log_file), logging.StreamHandler()])
+      eepk = int(sys.argv[1])
+      filename = sys.argv[3]
+      state = sys.argv[4]
+      sourcedb = sys.argv[5]
+      election = Election(state, eepk, filename, sourcedb)
+      election.master()
+      
+  if __name__ == '__main__':
+      main()
+      
+  
+```

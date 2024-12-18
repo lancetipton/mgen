@@ -1,0 +1,43 @@
+
+# Setup
+
+
+## Metadata
+
+* **Type**: module
+* **Language**: python
+* **Location**: /setup.py
+
+## Description
+
+Setup file for Insight Engine ETL Python package
+
+This file defines the setup configuration for the Insight Engine ETL Python package. It specifies metadata like the package name, version, and author. It also defines the package dependencies that will be installed automatically when this package is installed. This allows any Python code in this package or its subpackages to import and use the specified third party libraries. The find_packages function excludes non-Python files from the package so that only actual Python modules are included. Overall this file provides the necessary configuration to distribute and install the Insight Engine ETL Python code as a reusable package.
+
+
+## Code
+
+```python
+  from setuptools import setup, find_packages
+  
+  setup(
+      name='insight-engine-etl',
+      version='0.1',
+      url='https://gitlab.com/i360DataOps/insightengineetl.git',
+      author='David Terrell',
+      author_email='dterrell@i-360.com',
+      packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+      install_requires=[
+          'insight-engine-utils @ git+https://gitlab.com/i360DataOps/insightengineutils.git',
+          'psycopg2>=2.8',
+          'python-dateutil>=2.7',
+          'sqlalchemy>=1.3',
+          'requests',
+          'beautifulsoup4',
+          'lxml',
+          'pandas',
+          'pytrends',
+          'pyodbc',
+      ],
+  )
+```
