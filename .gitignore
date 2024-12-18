@@ -290,6 +290,8 @@ imd.cypher
 
 sites/
 !sites/.gitkeep
+repos/frontend/src/sites/
+repos/frontend/src/sites/.gitkeep
 repos/markdown/sites
 !repos/markdown/sites/.gitkeep
 !.gitkeep
