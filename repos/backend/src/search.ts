@@ -8,12 +8,12 @@ import type {
 
 import path from 'node:path'
 import FlexSearch from "flexsearch"
-import { parseMD } from './parse.js'
-import { locToTitle } from './utils.js'
-import { DefSiteSearch } from './shared.js'
+import { parseMD } from './parse'
+import { locToTitle } from './utils'
+import { DefSiteSearch } from './shared'
 import { isObj } from '@keg-hub/jsutils/isObj'
-import { MGCfgFinalLoc } from './constants.js'
-import { loadFile, writeJson } from './config.js'
+import { MGCfgFinalLoc } from './constants'
+import { loadFile, writeJson } from './config'
 import { toFloat } from '@keg-hub/jsutils/toFloat'
 
 const buildIdxExport = async (index:TSearchIdx) => {

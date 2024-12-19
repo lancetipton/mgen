@@ -2,8 +2,8 @@ import type { TMGenCfg, TSiteConfig } from './types'
 
 import { fdir } from 'fdir'
 import path from 'node:path'
-import { locToTitle } from './utils.js'
-import { loadCfgFile } from './config.js'
+import { locToTitle } from './utils'
+import { loadCfgFile } from './config'
 import { wordCaps } from '@keg-hub/jsutils/wordCaps'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
 import {
@@ -12,7 +12,7 @@ import {
   DefSiteTheme,
   MGCfgFinalLoc,
   ServeFinalLoc,
-} from './constants.js'
+} from './constants'
 
 type TParsed = path.ParsedPath & {
   siteDir:string

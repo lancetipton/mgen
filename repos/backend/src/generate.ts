@@ -5,7 +5,7 @@ import { writeFile } from 'node:fs'
 import { noOp } from '@keg-hub/jsutils/noOp'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
 import { exists } from '@keg-hub/jsutils/exists'
-import { DefSiteTheme, MGNoAutoIdx, MGIdxName, MGIdxMarkdown } from './constants.js'
+import { DefSiteTheme, MGNoAutoIdx, MGIdxName, MGIdxMarkdown } from './constants'
 
 
 

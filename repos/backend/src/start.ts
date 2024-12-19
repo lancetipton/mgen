@@ -1,7 +1,7 @@
-import { setup } from './setup.js'
-import { serve } from './serve.js'
-import { APIPort } from './constants.js'
-import { getRootLoc, getBinLoc } from './paths.js'
+import { setup } from './setup'
+import { serve } from './serve'
+import { APIPort } from './constants'
+import { getRootLoc, getBinLoc } from './paths'
 
 
 export const start = async () => {

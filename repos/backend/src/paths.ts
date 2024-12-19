@@ -10,7 +10,7 @@ import {
   MGCfgFile,
   ServeCfgLoc,
   ServeCfgFile,
-} from './constants.js'
+} from './constants'
 
 const homedir = os.homedir()
 

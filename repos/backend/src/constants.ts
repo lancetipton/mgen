@@ -1,4 +1,4 @@
-import { loadEnvs } from '../scripts/loadEnvs.js'
+import { loadEnvs } from '../../../scripts/loadEnvs'
 
 const envs = loadEnvs()
 

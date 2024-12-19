@@ -5,9 +5,9 @@ import path from 'node:path'
 import { tri } from '@keg-hub/jsutils/tri'
 import { noOp } from '@keg-hub/jsutils/noOp'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
-import { getMgCfgLoc, getSrvCfgLoc } from './paths.js'
+import { getMgCfgLoc, getSrvCfgLoc } from './paths'
 import { readFileSync, writeFile, mkdir, existsSync } from 'node:fs'
-import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants.js'
+import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants'
 
 export const createDir = (location:string) => mkdir(location, {recursive: true}, noOp)
 export const loadFile = (location:string):string => tri(() => readFileSync(location, `utf8`)) || ``

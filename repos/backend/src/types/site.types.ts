@@ -1,4 +1,4 @@
-import type { TSiteSearch } from './search.types.js'
+import type { TSiteSearch } from './search.types'
 
 
 export type TSiteThemeColors = {
