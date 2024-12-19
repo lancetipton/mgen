@@ -4,8 +4,6 @@ import { homedir } from 'node:os'
 import { addToProcess } from './addToProcess'
 import { loadConfigs } from '@keg-hub/parse-config'
 
-
-
 const { NODE_ENV, MG_REPO_ROOT_DIR, MG_REPO_DEPLOY_DIR } = process.env
 
 const nodeEnv = NODE_ENV || `local`
@@ -19,7 +17,7 @@ export type TLoadEnvs = {
   locations?: string[]
 }
 
-export const loadEnvs = (args: TLoadEnvs) => {
+export const loadEnvs = (args: TLoadEnvs={}) => {
   const { force, processAdd, locations = [], env = nodeEnv, name = `mgen` } = args
 
   const envs = loadConfigs({

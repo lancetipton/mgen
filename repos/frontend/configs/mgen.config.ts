@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { version } from '../package.json'
-import { loadEnvs } from '../scripts/loadEnvs'
+// TODO: figure out how to use the tsconfig paths alias
+import { loadEnvs } from '../../../scripts/loadEnvs'
 
 const rootDir = path.join(__dirname, '..')
 const nodeEnv = process.env.NODE_ENV || `local`
