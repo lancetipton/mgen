@@ -23,6 +23,8 @@
       "@mgen/root/*": ["./*"],
       "@mgen/deploy": ["./deploy"],
       "@mgen/deploy/*": ["./deploy/*"],
+      "@mgen/mgen": ["./repos/mgen"],
+      "@mgen/mgen/*": ["./repos/mgen/*"],
       "@mgen/backend": ["./repos/backend"],
       "@mgen/backend/*": ["./repos/backend/*"],
       "@mgen/frontend": ["./repos/frontend"],
