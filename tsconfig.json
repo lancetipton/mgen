@@ -23,8 +23,10 @@
       "@mgen/root/*": ["./*"],
       "@mgen/deploy": ["./deploy"],
       "@mgen/deploy/*": ["./deploy/*"],
-      "@mgen/backend": ["./repos/backend/src"],
-      "@mgen/backend/*": ["./repos/backend/src/*"],
+      "@mgen/backend": ["./repos/backend"],
+      "@mgen/backend/*": ["./repos/backend/*"],
+      "@mgen/frontend": ["./repos/frontend"],
+      "@mgen/frontend/*": ["./repos/frontend/*"],
       "@keg-hub/jsutils": ["node_modules/@keg-hub/jsutils/build/cjs"],
       "@keg-hub/jsutils/*": ["node_modules/@keg-hub/jsutils/build/cjs/*"]
     }

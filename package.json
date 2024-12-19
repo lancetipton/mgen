@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "build:static": "node --enable-source-maps -r ./scripts/register.js scripts/build.ts ./sites",
+    "build:static": "pnpm build:sites && cd repos/frontend && pnpm build",
+    "build:sites": "node --enable-source-maps -r ./scripts/register.js scripts/sites.ts",
     "clean": "rm -rf dist",
     "clean:nm": "rm -rf node_modules",
     "clean:full": "pnpm clean && pnpm clean:nm && pnpm -r clean:full",

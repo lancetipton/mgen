@@ -52,9 +52,14 @@ export const getBinLoc = () => {
     : ife(() => {throw new Error(`Could not find node_modules bin folder`)})
 }
 
-export const getSitesLoc = () => {
+export const getSitesLoc = (loc?:string) => {
   const args = process.argv.slice(2)
-  const sitesDir = args.pop() || SitesDir
+  let sitesDir = loc || args.pop()
+  if(!sitesDir){
+    console.warn(`Sites directory not set, using default => ${SitesDir}`)
+    sitesDir = SitesDir
+  }
+
   return resolveLoc(sitesDir)
 }
 
