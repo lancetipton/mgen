@@ -33,19 +33,33 @@ export const getRootLoc = () => {
   if(rootLoc) return rootLoc
 
   const dirname = url.fileURLToPath(new URL('.', import.meta.url))
-  rootLoc = path.join(dirname, '..')
+  rootLoc = dirname.includes(`node_modules`)
+    ? dirname.split(`node_modules`)[0]
+    : path.join(dirname, `..`)
 
   return rootLoc
 }
 
+const findBin = () => {
+  const root = getRootLoc()
+  const mgs = [ `pnpm`, `npm`, `bun`, `deno`, `yarn` ]
+
+  for(let idx in mgs){
+    try {
+      const bin = execSync(`${mgs[idx]} bin`, { cwd: root }).toString()
+      return bin.trim()
+    }
+    catch(err){}
+  }
+
+}
+
+
 export const getBinLoc = () => {
   const root = getRootLoc()
+  const found = findBin()
+  if(found) return found
 
-  try {
-    const bin = execSync(`pnpm bin`, { cwd: root }).toString()
-    return bin.trim()
-  }
-  catch(err){}
   const bin = path.join(root, `node_modules/.bin`)
   return existsSync(bin)
     ? bin

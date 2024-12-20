@@ -292,12 +292,12 @@ sites/
 !sites/.gitkeep
 repos/frontend/src/sites/
 repos/frontend/src/sites/.gitkeep
-repos/markdown/sites
-!repos/markdown/sites/.gitkeep
+repos/backend/sites
+!repos/backend/sites/.gitkeep
 !.gitkeep
 mgen.config.json
-repos/markdown/sites/mgen.config.json
+repos/backend/sites/mgen.config.json
 repos/frontend/public/.mgen/
 repos/frontend/public/sites/
-repos/mgen/frontend/
-repos/mgen/backend/
+repos/mgen/
+!repos/mgen/.gitkeep

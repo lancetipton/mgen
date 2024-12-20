@@ -25,12 +25,9 @@ export const ServeFinalLoc = `${MGCfgDir}/serve.json`
 export const ServeCfgLoc = envs[`MG_SERVE_CFG`]
 export const ServeCfgFile = `configs/serve.json`
 
-
 export const SitesDir = envs[`MG_SITES_DIR`] || `./sites`
 
-const DefThemeColors = {
-
-}
+const DefThemeColors = {}
 export const DefSiteTheme = {
   font: {
     size: 14,
