@@ -5,15 +5,11 @@ import { fileURLToPath } from 'node:url'
 import { addToProcess } from './addToProcess'
 import { loadConfigs } from '@keg-hub/parse-config'
 
-
-const {
-  NODE_ENV,
-  MG_REPO_ROOT_DIR,
-  MG_REPO_DEPLOY_DIR
-} = process.env
-
-
-const nodeEnv = NODE_ENV || `local`
+const nodeEnv = process.env.NODE_ENV || `local`
+const MG_REPO_ROOT_DIR = process.env.MG_REPO_ROOT_DIR
+const MG_REPO_DEPLOY_DIR = process.env.MG_REPO_DEPLOY_DIR
+  ? process.env.MG_REPO_DEPLOY_DIR
+  : MG_REPO_ROOT_DIR && path.join(MG_REPO_ROOT_DIR, `deploy`)
 
 export type TLoadEnvs = {
   name?: string
@@ -42,14 +38,16 @@ const resolveLocs = () => {
 export const loadEnvs = (args: TLoadEnvs={}) => {
   const { force, processAdd, locations = [], env = nodeEnv, name = `mgen` } = args
 
+  const locs = [
+    ...locations,
+    ...resolveLocs(),
+    path.join(homedir(), `.config/mgen`),
+  ]
+
   const envs = loadConfigs({
     env,
     name,
-    locations: [
-      ...locations,
-      ...resolveLocs(),
-      path.join(homedir(), `.config/mgen`),
-    ],
+    locations: locs,
   })
 
   /*

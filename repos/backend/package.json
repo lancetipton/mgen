@@ -14,9 +14,9 @@
     "build:mgen": "tsup-node --config configs/tsup.config.ts",
     "build:sites": "node --enable-source-maps -r esbuild-register ./sites.js ./sites",
     "start": "tsup-node --config configs/tsup.config.ts --watch src  --watch configs --onSuccess 'pnpm dev' ",
-    "dev": "node --enable-source-maps -r esbuild-register ./dev.js ./sites",
-    "serve": "node --enable-source-maps -r esbuild-register ./serve.js ./sites",
-    "server": "node --enable-source-maps -r esbuild-register ./server.js",
+    "dev": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./dev.js ./sites",
+    "serve": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./serve.js ./sites",
+    "server": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./server.js",
     "clean": "rm -rf dist",
     "clean:nm": "rm -rf node_modules",
     "clean:full": "pnpm clean && pnpm clean:nm"
