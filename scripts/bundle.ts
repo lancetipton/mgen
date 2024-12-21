@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url)
 
 const mgpack = {
   name: `mgen`,
+  type: `module`,
   version: `0.1.0`,
   description: `Static markdown generated website`,
   main: `index.js`,
@@ -28,6 +29,7 @@ const mgpack = {
     mgen: `mgen.js`
   },
   scripts: {
+    serve: `MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" MG_SERVE_DIR=$(echo \"$PWD/frontend\") MG_SITES_DIR=$(echo \"$PWD/frontend/sites\") node ./server.js`
   },
   keywords: [],
   dependencies: {}
@@ -43,6 +45,9 @@ import { server } from './backend/server.js'
 server()
 `
 
+const workspace = `packages:
+  - '.'
+`
 
 const replace = async (from:string, to:string) => {
   //await fs.rm(to, { force: true, recursive: true })
@@ -79,11 +84,13 @@ const dependencies = async () => {
   const mgp = path.join(mg, `package.json`)
   const mgen = path.join(mg, `mgen.js`)
   const mgs = path.join(mg, `server.js`)
+  const mgw = path.join(mg, `pnpm-workspace.yaml`)
 
   mgpack.dependencies = {...mgpack?.dependencies, ...bepack.dependencies}
   await fs.writeFile(mgp, JSON.stringify(mgpack, null, 2))
   await fs.writeFile(mgen, mgsites)
   await fs.writeFile(mgs, mgserver)
+  await fs.writeFile(mgw, workspace)
 }
 
 const main = async () => {

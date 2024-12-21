@@ -7,6 +7,7 @@ import { execSync } from "node:child_process"
 import {
   MGCfgLoc,
   SitesDir,
+  ServeDir,
   MGCfgFile,
   ServeCfgLoc,
   ServeCfgFile,
@@ -75,6 +76,11 @@ export const getSitesLoc = (loc?:string) => {
   }
 
   return resolveLoc(sitesDir)
+}
+
+export const getServeLoc = () => {
+  if(ServeDir) return resolveLoc(ServeDir)
+  return getRootLoc()
 }
 
 export const getSrvCfgLoc = () => {

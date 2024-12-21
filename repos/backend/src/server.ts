@@ -2,7 +2,11 @@
 import path from 'node:path'
 import { serve } from './serve'
 import { APIPort, ServeFinalLoc } from './constants'
-import { getRootLoc, getBinLoc, getSitesLoc } from './paths'
+import {
+  getBinLoc,
+  getSitesLoc,
+  getServeLoc,
+} from './paths'
 
 
 const restarts = parseInt(process.env.MG_RESTART_ATTEMPTS, 10) || 0
@@ -15,7 +19,7 @@ export const server = (times:number=0) => {
       bin,
       port: APIPort,
       config: location,
-      root: getRootLoc(),
+      root: getServeLoc(),
       args: [
         `--cors`,
         `--no-clipboard`,
