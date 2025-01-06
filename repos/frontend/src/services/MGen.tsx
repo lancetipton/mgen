@@ -191,6 +191,10 @@ export class MGen extends Events {
     // If no site name in the path then ignore loading the site config
     if(!site) return
 
+    // If the current site matches the default site, then use default config
+    if(this.config?.sites?.__default?.dir === site)
+      return this.config?.sites?.__default
+
     // Load the site config
     const file = `${MConfigDir}/${site}.json`
     const {path, full=path} = this.#path(file, this.baseUrl)
@@ -271,12 +275,15 @@ export class MGen extends Events {
     const config = this.config?.sites?.__default
     this.#clearDefCssVars = siteColors(config.theme)
 
-    return {
+    const built = {
       dir: `/`,
       nav: {},
       pages: {},
       ...config,
     } as TSiteConfig
+
+    if(built?.search) built.search = new Search(this, built)
+    return built
   }
 
 

@@ -5,7 +5,7 @@ export class Api {
   fetch = async (input:string, init?:RequestInit, local?:boolean):Promise<Response> => {
     return !local || !MG_STATIC_BUILD
       ? await fetch(input, init)
-      : await fetch(`/sites/${new URL(input).pathname}`, init)
+      : await fetch(`/sites${new URL(input).pathname}`, init)
   }
 
 }
