@@ -301,3 +301,5 @@ repos/frontend/public/.mgen/
 repos/frontend/public/sites/
 repos/mgen/
 !repos/mgen/.gitkeep
+repos/**/*.bak
+repos/**/*.bak/**
