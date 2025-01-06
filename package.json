@@ -2,6 +2,9 @@
   "name": "@mgen/app",
   "private": true,
   "version": "0.1.0",
+  "description": "Static markdown generated website",
+  "author": "Lance Tipton <lancetipton04@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "bundle": "pnpm build:backend && pnpm build:frontend && pnpm build:bundle",
     "build:backend": "cd repos/backend && pnpm build:mgen",
@@ -14,6 +17,7 @@
     "clean:full": "pnpm clean && pnpm clean:nm && pnpm -r clean:full",
     "preinstall": "npx only-allow pnpm",
     "serve:static": "cd repos/frontend && serve -s ./dist",
+    "serve:mgen": "cd repos/mgen && serve -s ./frontend",
     "si": "pnpm sync; pnpm install",
     "sync": "syncpack fix-mismatches --config configs/syncpack.config.js"
   },

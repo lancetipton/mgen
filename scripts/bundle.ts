@@ -2,22 +2,23 @@ import hq from 'alias-hq'
 import path from 'node:path'
 import { promises as fs } from 'node:fs'
 import { createRequire } from 'node:module'
-import { noOp } from '@keg-hub/jsutils/noOp'
 
 const paths = hq.get(`webpack`)
 const mg = paths[`@mgen/mgen`]
+const root = paths[`@mgen/root`]
 const be = paths[`@mgen/backend`]
 const fe = paths[`@mgen/frontend`]
 const require = createRequire(import.meta.url)
+const rtpack = require(path.join(root, `package.json`))
 
 const mgpack = {
-  name: `mgen`,
+  name: `@ltipton/mgen`,
   type: `module`,
-  version: `0.1.0`,
-  description: `Static markdown generated website`,
   main: `index.js`,
-  author: `Lance Tipton`,
-  license: `MIT`,
+  author: rtpack.author,
+  license: rtpack.license,
+  version: rtpack.version,
+  description: rtpack.description,
   bugs: {
     url: `https://github.com/lancetipton/mgen/issues`
   },
@@ -29,11 +30,15 @@ const mgpack = {
     mgen: `mgen.js`
   },
   scripts: {
+    mgen: `node ./mgen.js`,
     serve: `MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" MG_SERVE_DIR=$(echo \"$PWD/frontend\") MG_SITES_DIR=$(echo \"$PWD/frontend/sites\") node ./server.js`
   },
   keywords: [],
   dependencies: {}
 }
+
+const mjs = `export * from './backend/index.js'
+`
 
 const mgsites = `#!/usr/bin/env node
 import { setup } from './backend/setup.js'
@@ -81,13 +86,15 @@ const configs = async () => {
 const dependencies = async () => {
   const bepack = require(path.join(be, `package.json`))
 
-  const mgp = path.join(mg, `package.json`)
   const mgen = path.join(mg, `mgen.js`)
+  const mgm = path.join(mg, `index.js`)
   const mgs = path.join(mg, `server.js`)
+  const mgp = path.join(mg, `package.json`)
   const mgw = path.join(mg, `pnpm-workspace.yaml`)
 
   mgpack.dependencies = {...mgpack?.dependencies, ...bepack.dependencies}
   await fs.writeFile(mgp, JSON.stringify(mgpack, null, 2))
+  await fs.writeFile(mgm, mjs)
   await fs.writeFile(mgen, mgsites)
   await fs.writeFile(mgs, mgserver)
   await fs.writeFile(mgw, workspace)
