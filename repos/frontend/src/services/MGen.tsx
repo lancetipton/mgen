@@ -108,7 +108,7 @@ export class MGen extends Events {
     this.dispatch(this.events.onError, err, loc)
     const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
     this.#alert.error({text: msg})
-    this.render(`<code class="error">${msg}</code>`)
+    this.render(`<code class="error">${msg}</code>`, undefined, undefined, err.message)
   }
 
 
@@ -342,9 +342,10 @@ export class MGen extends Events {
    * @param {string} content - The content to render.
    * @param {string} [selector] - Optional DOM selector to render the content to.
    * @param {string} [path] - Optional path for the content.
+   * @param {string} [error] - Optional error text.
    */
-  render = (content:string, selector?:string, path?:string) => {
-    this.dispatch(this.events.onRender, content, selector, path)
+  render = (content:string, selector?:string, path?:string, error?:string) => {
+    this.dispatch(this.events.onRender, content, selector, path, error)
 
     // Check if the #hash was set and attempt to scroll to it after render
     if(!this.#hash) return

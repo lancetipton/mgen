@@ -35,6 +35,8 @@ export const EditLink = (props:TEditLink) => {
     let loc = site?.sitemap[pathname]
     if(!loc && pathname === `/`) loc = site?.sitemap[`/${site?.dir}`]
 
+    if(!loc) return
+
     const cleaned = loc.replace(`/${site?.dir}`, ``).replace(/^\//, ``)
     const part = site?.edit?.map?.[cleaned] || cleaned
 

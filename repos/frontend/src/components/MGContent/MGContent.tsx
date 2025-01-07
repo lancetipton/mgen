@@ -5,6 +5,7 @@ import { Steps } from '@MG/components/Steps'
 import { Loading } from '@MG/components/Loading'
 import { Code } from '@MG/components/Code/Code'
 import { useMGen } from '@MG/contexts/MGenContext'
+import { NotFound } from '@MG/components/NotFound'
 import { PreCode } from '@MG/components/Code/PreCode'
 import { Breadcrumbs } from '@MG/components/Breadcrumbs'
 import { useMarkdown } from '@MG/hooks/components/useMarkdown'
@@ -19,7 +20,9 @@ export type TMGContent = {
 export const MGContent = (props:TMGContent) => {
 
 
+  const [error, setError] = useState<string>(``)
   const [content, setContent] = useState<string>(``)
+
   const {
     rehypePlugins,
     remarkPlugins
@@ -30,12 +33,18 @@ export const MGContent = (props:TMGContent) => {
   useEffect(() => {
     if(!mg) return
 
-    const offRender = mg.on(mg.events.onRender, (content:string) => setContent(content))
+    const offRender = mg.on(
+      mg.events.onRender,
+      (content:string, selector:string, path:string, error:string) => {
+        error ? setError(error) : setError(``)
+        setContent(content)
+    })
 
     return () => {
       offRender()
     } 
   }, [mg])
+
 
   return (
     <div className={cls(
@@ -72,16 +81,20 @@ export const MGContent = (props:TMGContent) => {
         )}
       >
         {!mg && (<Loading className='mg-content-loading' text={`Loading`} />) || null}
-        <ReactMarkdown
-          remarkPlugins={remarkPlugins}
-          rehypePlugins={rehypePlugins}
-          components={{
-            code:Code,
-            pre:PreCode,
-          }}
-        >
-          {content}
-        </ReactMarkdown>
+        {error ? (
+          <NotFound />
+        ) : (
+          <ReactMarkdown
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
+            components={{
+              code:Code,
+              pre:PreCode,
+            }}
+          >
+            {content}
+          </ReactMarkdown>
+        )}
       </article>
       <Steps path={path} />
     </div>
