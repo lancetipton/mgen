@@ -64,6 +64,14 @@ const frontend = async () => {
     path.join(fe, `dist`),
     path.join(mg, `frontend`)
   )
+  await replace(
+    path.join(mg, `frontend/index.html`),
+    path.join(mg, `frontend/404.html`)
+  )
+  await replace(
+    path.join(mg, `configs/serve.json`),
+    path.join(mg, `frontend/sites/.mgen/serve.json`)
+  )
 }
 
 
@@ -102,8 +110,8 @@ const dependencies = async () => {
 
 const main = async () => {
   await backend()
-  await frontend()
   await configs()
+  await frontend()
   await dependencies()
 }
 

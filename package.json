@@ -16,8 +16,6 @@
     "clean:nm": "rm -rf node_modules",
     "clean:full": "pnpm clean && pnpm clean:nm && pnpm -r clean:full",
     "preinstall": "npx only-allow pnpm",
-    "serve:static": "cd repos/frontend && serve -s ./dist",
-    "serve:mgen": "cd repos/mgen && serve -s ./frontend",
     "si": "pnpm sync; pnpm install",
     "sync": "syncpack fix-mismatches --config configs/syncpack.config.js"
   },
