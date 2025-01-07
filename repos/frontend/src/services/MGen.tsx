@@ -108,7 +108,7 @@ export class MGen extends Events {
     this.dispatch(this.events.onError, err, loc)
     const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
     this.#alert.error({text: msg})
-    this.render(`<code class="error">${msg}</code>`, undefined, undefined, err.message)
+    this.render(`<code class="error">${msg}</code>`, undefined, undefined, err.message || `404 Error - Not found`)
   }
 
 
