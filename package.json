@@ -15,6 +15,7 @@
     "clean": "rm -rf dist",
     "clean:nm": "rm -rf node_modules",
     "clean:full": "pnpm clean && pnpm clean:nm && pnpm -r clean:full",
+    "generate": "pnpm build:sites && pnpm bundle",
     "preinstall": "npx only-allow pnpm",
     "si": "pnpm sync; pnpm install",
     "sync": "syncpack fix-mismatches --config configs/syncpack.config.js"

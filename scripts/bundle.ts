@@ -30,7 +30,7 @@ const mgpack = {
     mgen: `mgen.js`
   },
   scripts: {
-    mgen: `node ./mgen.js`,
+    mgen: `MG_SITES_DIR=$(echo \"$PWD/frontend/sites\") node ./mgen.js`,
     serve: `MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" MG_SERVE_DIR=$(echo \"$PWD/frontend\") MG_SITES_DIR=$(echo \"$PWD/frontend/sites\") node ./server.js`
   },
   keywords: [],

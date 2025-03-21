@@ -12,10 +12,10 @@
   "scripts": {
     "build": "pnpm build:mgen && pnpm build:sites",
     "build:mgen": "tsup-node --config configs/tsup.config.ts",
-    "build:sites": "node --enable-source-maps -r esbuild-register ./sites.js ./sites",
+    "build:sites": "node --enable-source-maps -r esbuild-register ./sites.js",
     "start": "tsup-node --config configs/tsup.config.ts --watch src  --watch configs --onSuccess 'pnpm dev' ",
-    "dev": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./dev.js ./sites",
-    "serve": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./serve.js ./sites",
+    "dev": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./dev.js",
+    "serve": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./serve.js",
     "server": "MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" node --enable-source-maps -r esbuild-register ./server.js",
     "clean": "rm -rf dist",
     "clean:nm": "rm -rf node_modules",

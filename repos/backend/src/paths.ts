@@ -69,7 +69,7 @@ export const getBinLoc = () => {
 
 export const getSitesLoc = (loc?:string) => {
   const args = process.argv.slice(2)
-  let sitesDir = loc || args.pop()
+  let sitesDir = loc || args.pop() || process.env.MG_SITES_DIR
   if(!sitesDir){
     console.warn(`Sites directory not set, using default => ${SitesDir}`)
     sitesDir = SitesDir
