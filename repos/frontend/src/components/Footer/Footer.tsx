@@ -38,7 +38,7 @@ export const Footer = (props:TFooter) => {
           `border-t`,
           `border-base-200`,
           `mx-auto`,
-          `max-w-[90rem]`,
+          `max-w-[100rem]`,
         )}>
             <div className="flex flex-col items-center sm:flex-row sm:justify-between px-8">
 

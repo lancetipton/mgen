@@ -1,3 +1,11 @@
+import type { TSiteToc } from '@MGS/types'
+
+export type TMDTocOpts = {
+  toc?:TSiteToc
+  base?:string
+  onToc?:(toc:TTOC[]) => any
+}
+
 export type TTOC = {
   url?:string
   type?:string

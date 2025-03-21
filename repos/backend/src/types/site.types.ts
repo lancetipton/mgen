@@ -127,10 +127,25 @@ export type TSiteFooter = {
   year?:boolean|string
 }
 
+export type TSiteTocHeadings = `heading1`
+  | `heading2`
+  | `heading3`
+  | `heading4`
+  | `heading5`
+  | `heading6`
+
+export type TSiteToc = {
+  disabled?:boolean
+  include:TSiteTocHeadings[]
+  exclude:TSiteTocHeadings[]
+}
+
+
 export type TSiteConfig = {
   name:string
   dir:string
   css?:string
+  toc:TSiteToc
   nav:TSiteNav
   logo:TSiteLogo
   edit?:TSiteEdit

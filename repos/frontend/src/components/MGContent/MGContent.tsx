@@ -51,7 +51,6 @@ export const MGContent = (props:TMGContent) => {
       `mg-mg-content`,
       `px-6`,
       `md:px-8`,
-      `lg:px-4`,
       `py-3`,
       `flex`,
       `pb-32`,

@@ -29,7 +29,7 @@ export const Header = (props:THeader) => {
         `h-[var(--mgen-header-height)]`
       )}
     >
-      <div className="mg-header-container navbar w-full py-3 px-4 max-w-[90rem] mx-auto">
+      <div className="mg-header-container navbar w-full py-3 px-4 max-w-[100rem] mx-auto">
 
         {mobile && (
           <div className='mg-header-left navbar-start flex items-center justify-between w-2/6'>
