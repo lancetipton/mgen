@@ -34,7 +34,22 @@ const mgpack = {
     serve: `MG_REPO_ROOT_DIR=\"$(dirname $(dirname $PWD))\" MG_SERVE_DIR=$(echo \"$PWD/frontend\") MG_SITES_DIR=$(echo \"$PWD/frontend/sites\") node ./server.js`
   },
   keywords: [],
-  dependencies: {}
+  dependencies: {
+    [`fdir`]: `6.3.0`,
+    [`rimraf`]: `^6.0.1`,
+    [`js-yaml`]: `4.1.0`,
+    [`marked`]: `14.1.2`,
+    [`flexsearch`]: `0.7.43`,
+    [`cross-zip-cli`]: `^1.0.0`,
+    [`move-file-cli`]: `^3.0.0`,
+  },
+  devDependencies: {
+    [`simple-git-hooks`]: `^2.11.1`
+  },
+  [`simple-git-hooks`]: {
+    [`pre-commit`]: `pnpm zip`,
+    [`preserveUnused`]: true
+  }
 }
 
 const mjs = `export * from './backend/index.js'
@@ -54,8 +69,12 @@ const workspace = `packages:
   - '.'
 `
 
+const cleanup = async () => {
+  await fs.rm(mg, { recursive: true, force: true })
+  await fs.mkdir(mg, { recursive: true })
+}
+
 const replace = async (from:string, to:string) => {
-  //await fs.rm(to, { force: true, recursive: true })
   await fs.cp(from, to, { force: true, recursive: true })
 }
 
@@ -91,6 +110,25 @@ const configs = async () => {
 }
 
 
+const extra = async () => {
+  const files = [
+    `Dockerfile`,
+    `.npmrc`,
+    `.gitignore`,
+    `.dockerignore`,
+  ]
+
+  return await Promise.all(
+    files.map(async (file) => {
+      await replace(
+        path.join(root, file),
+        path.join(mg, file),
+      )
+    })
+  )
+}
+
+
 const dependencies = async () => {
   const bepack = require(path.join(be, `package.json`))
 
@@ -100,7 +138,10 @@ const dependencies = async () => {
   const mgp = path.join(mg, `package.json`)
   const mgw = path.join(mg, `pnpm-workspace.yaml`)
 
-  mgpack.dependencies = {...mgpack?.dependencies, ...bepack.dependencies}
+  mgpack.dependencies = {
+    ...mgpack?.dependencies,
+    ...bepack.dependencies,
+  }
   await fs.writeFile(mgp, JSON.stringify(mgpack, null, 2))
   await fs.writeFile(mgm, mjs)
   await fs.writeFile(mgen, mgsites)
@@ -109,9 +150,11 @@ const dependencies = async () => {
 }
 
 const main = async () => {
+  await cleanup()
   await backend()
   await configs()
   await frontend()
+  await extra()
   await dependencies()
 }
 
