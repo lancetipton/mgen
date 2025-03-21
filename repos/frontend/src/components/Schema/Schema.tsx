@@ -29,3 +29,5 @@ export const Schema = (props:TSchema) => {
     </Lightbox>
   )
 }
+
+export default Schema

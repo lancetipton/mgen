@@ -10,7 +10,6 @@ export type TMermaid = {
 }
 
 
-
 export const Mermaid = (props:TMermaid) => {
   const {
     children,
@@ -34,5 +33,4 @@ export const Mermaid = (props:TMermaid) => {
       </div>
     </Lightbox>
   )
-  
 }

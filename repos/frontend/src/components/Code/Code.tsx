@@ -1,11 +1,15 @@
 import type { ReactNode } from 'react'
 
+
+import { Suspense, lazy } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
-import { Schema } from '@MG/components/Schema'
 import { Mermaid } from '@MG/components/Mermaid'
+import { Loading } from '@MG/components/Loading'
 import { useTheme } from '@MG/contexts/ThemeContext'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vs2015, vs } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
+
+const Schema = lazy(() => import('@MG/components/Schema/Schema'))
 
 export type TCode = {
   className?:string
@@ -19,7 +23,6 @@ export const Code = (props:TCode) => {
   const { className, ...rest } = props
   const hasLang = /language-(\w+)/.exec(className || '')
   const language = hasLang?.[1]
-  
 
   switch(language){
     case `mermaid`: {
@@ -30,7 +33,11 @@ export const Code = (props:TCode) => {
       )
     }
     case `schema`: {
-      return (<Schema {...props} />)
+      return (
+        <Suspense fallback={<Loading className='w-full flex justify-center items-center min-h-[200px]' />}>
+          <Schema {...props} />
+        </Suspense>
+      )
     }
     default: {
       return hasLang
