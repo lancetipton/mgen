@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { cls } from '@keg-hub/jsutils/cls'
+import { Schema } from '@MG/components/Schema'
 import { Mermaid } from '@MG/components/Mermaid'
 import { useTheme } from '@MG/contexts/ThemeContext'
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -17,33 +18,42 @@ export const Code = (props:TCode) => {
 
   const { className, ...rest } = props
   const hasLang = /language-(\w+)/.exec(className || '')
+  const language = hasLang?.[1]
+  
 
-
-  return hasLang
-    ? hasLang?.[1] === `mermaid`
-      ? (
-          <Mermaid className={className} >
-            {rest.children}
-          </Mermaid>
-        )
-      : (
-          <SyntaxHighlighter
-            PreTag='div'
-            wrapLongLines={true}
-            language={hasLang[1]}
-            customStyle={{ margin: `0px` }}
-            style={isDark ? vs2015 : vs}
-            className={cls(
-              !isDark && `!bg-[#005dc706]`,
-              `!pt-0 !pb-0`,
-              `scrollbar-thin scrollbar-track-base-content/5 scrollbar-thumb-base-content/40 scrollbar-track-rounded-md scrollbar-thumb-rounded`
-            )}
-            showLineNumbers={true}
-            useInlineStyles={true}
-          >
-            {String(rest.children).replace(/\n$/, "")}
-          </SyntaxHighlighter>
-        )
-    : (<code className={className} {...props} />)
+  switch(language){
+    case `mermaid`: {
+      return (
+        <Mermaid className={className} >
+          {rest.children}
+        </Mermaid>
+      )
+    }
+    case `schema`: {
+      return (<Schema {...props} />)
+    }
+    default: {
+      return hasLang
+        ? (
+            <SyntaxHighlighter
+              PreTag='div'
+              wrapLongLines={true}
+              language={hasLang[1]}
+              customStyle={{ margin: `0px` }}
+              style={isDark ? vs2015 : vs}
+              className={cls(
+                !isDark && `!bg-[#005dc706]`,
+                `!pt-0 !pb-0`,
+                `scrollbar-thin scrollbar-track-base-content/5 scrollbar-thumb-base-content/40 scrollbar-track-rounded-md scrollbar-thumb-rounded`
+              )}
+              showLineNumbers={true}
+              useInlineStyles={true}
+            >
+              {String(rest.children).replace(/\n$/, "")}
+            </SyntaxHighlighter>
+          )
+        : (<code className={className} {...props} />)
+    }
+  }
 
 }

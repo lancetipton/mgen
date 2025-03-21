@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
 import { cls } from '@keg-hub/jsutils/cls'
-import { useTheme } from '@MG/contexts/ThemeContext'
 import { Lightbox } from '@MG/components/Lightbox'
+import { useTheme } from '@MG/contexts/ThemeContext'
 
 export type TMermaid = {
   className?:string
