@@ -56,7 +56,7 @@ export const MGContent = (props:TMGContent) => {
       `flex`,
       `pb-32`,
       `w-full`,
-      `justify-center`,
+      `justify-start`,
       `flex-col`,
       `max-w-[100vw]`,
     )} >
@@ -73,7 +73,7 @@ export const MGContent = (props:TMGContent) => {
           `prose`,
           `pb-12`,
           `w-full`,
-          `h-full`,
+          `h-auto`,
           `min-w-full`,
           `xl:max-w-[90ch]`,
           `prose-a:text-blue-600`,
