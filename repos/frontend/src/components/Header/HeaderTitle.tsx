@@ -4,26 +4,30 @@ import { SiteLogo } from '@MG/components/Site/SiteLogo'
 export type THeaderTitle = {}
 
 export const HeaderTitle = (props:THeaderTitle) => {
-  const {site} = useMGen()
+  const {site, logo} = useMGen()
 
   return (
     <div className={cls(
       `mg-header-title`,
-      `flex items-center justify-between`,
     )}
     >
-      <SiteLogo />
-      <div className={cls(
-        `mg-header-title-text`,
-        `ml-4`,
-        `whitespace-nowrap`,
-        `text-base`,
-        `sm:text-lg`,
-      )}
+      <a
+        href={logo.href}
+        aria-label={logo.alt}
+        className={`flex items-center justify-between`}
       >
-        {site?.name || `MGen`}
-      </div>
+        <SiteLogo />
+        <div className={cls(
+          `mg-header-title-text`,
+          `ml-4`,
+          `whitespace-nowrap`,
+          `text-base`,
+          `sm:text-lg`,
+        )}
+        >
+          {site?.name || `MGen`}
+        </div>
+      </a>
     </div>
   )
-  
-} 
+}

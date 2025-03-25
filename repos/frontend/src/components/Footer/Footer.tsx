@@ -11,7 +11,7 @@ export type TFooter = {
 
 export const Footer = (props:TFooter) => {
 
-  const {site} = useMGen()
+  const {site, logo} = useMGen()
 
   const text = useMemo(() => {
     const start = site?.footer?.text || site?.name
@@ -21,8 +21,6 @@ export const Footer = (props:TFooter) => {
         ? `${start.trim()} ${site?.footer?.year}`
         : `${start.trim()} ${new Date().getFullYear()}`
   }, [site])
-  
-
 
   return (
     <footer className={cls(
@@ -43,7 +41,14 @@ export const Footer = (props:TFooter) => {
             <div className="flex flex-col items-center sm:flex-row sm:justify-between px-8">
 
               <div className="flex items-center justify-between">
-                {site?.footer?.logo !== false ? (<SiteLogo />) : null}
+                {site?.footer?.logo !== false
+                  ? (
+                      <a href={logo.href} aria-label={logo.alt} >
+                        <SiteLogo />
+                      </a>
+                    )
+                  : null
+                }
                 <p className="text-sm ml-4">
                   {text}
                 </p>

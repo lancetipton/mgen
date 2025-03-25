@@ -59,6 +59,78 @@ export enum ESiteCSSVars {
   warnContent=`--wac`,
   error=`--er`,
   errorContent=`--erc`,
+
+  // Tailwind prose css vars
+  twProseBody=`--tw-prose-body`,
+  twProseHeadings=`--tw-prose-headings`,
+  twProseLead=`--tw-prose-lead`,
+  twProseLinks=`--tw-prose-links`,
+  twProseBold=`--tw-prose-bold`,
+  twProseCounters=`--tw-prose-counters`,
+  twProseBullets=`--tw-prose-bullets`,
+  twProseHr=`--tw-prose-hr`,
+  twProseQuotes=`--tw-prose-quotes`,
+  twProseQuoteBorders=`--tw-prose-quote-borders`,
+  twProseCaptions=`--tw-prose-captions`,
+  twProseCode=`--tw-prose-code`,
+  twProsePreCode=`--tw-prose-pre-code`,
+  twProsePreBg=`--tw-prose-pre-bg`,
+  twProseThBorders=`--tw-prose-th-borders`,
+  twProseTdBorders=`--tw-prose-td-borders`,
+
+  // Tailwind css vars
+  //--tw-border-spacing-x: 0;
+  //--tw-border-spacing-y: 0;
+  //--tw-translate-x: 0;
+  //--tw-translate-y: 0;
+  //--tw-rotate: 0;
+  //--tw-skew-x: 0;
+  //--tw-skew-y: 0;
+  //--tw-scale-x: 1;
+  //--tw-scale-y: 1;
+  //--tw-pan-x: ;
+  //--tw-pan-y: ;
+  //--tw-pinch-zoom: ;
+  //--tw-scroll-snap-strictness: proximity;
+  //--tw-gradient-from-position: ;
+  //--tw-gradient-via-position: ;
+  //--tw-gradient-to-position: ;
+  //--tw-ordinal: ;
+  //--tw-slashed-zero: ;
+  //--tw-numeric-figure: ;
+  //--tw-numeric-spacing: ;
+  //--tw-numeric-fraction: ;
+  //--tw-ring-inset: ;
+  //--tw-ring-offset-width: 0px;
+  //--tw-ring-offset-color: #fff;
+  //--tw-ring-color: rgb(59 130 246 / 0.5);
+  //--tw-ring-offset-shadow: 0 0 #0000;
+  //--tw-ring-shadow: 0 0 #0000;
+  //--tw-shadow: 0 0 #0000;
+  //--tw-shadow-colored: 0 0 #0000;
+  //--tw-blur: ;
+  //--tw-brightness: ;
+  //--tw-contrast: ;
+  //--tw-grayscale: ;
+  //--tw-hue-rotate: ;
+  //--tw-invert: ;
+  //--tw-saturate: ;
+  //--tw-sepia: ;
+  //--tw-drop-shadow: ;
+  //--tw-backdrop-blur: ;
+  //--tw-backdrop-brightness: ;
+  //--tw-backdrop-contrast: ;
+  //--tw-backdrop-grayscale: ;
+  //--tw-backdrop-hue-rotate: ;
+  //--tw-backdrop-invert: ;
+  //--tw-backdrop-opacity: ;
+  //--tw-backdrop-saturate: ;
+  //--tw-backdrop-sepia: ;
+  //--tw-contain-size: ;
+  //--tw-contain-layout: ;
+  //--tw-contain-paint: ;
+  //--tw-contain-style: ;
+
 }
 
 export type TSiteNav = {

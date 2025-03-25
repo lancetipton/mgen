@@ -1,9 +1,9 @@
 import path from 'node:path'
+import tailwindcss from "tailwindcss"
 import react from '@vitejs/plugin-react-swc'
 import { loadConfig } from './mgen.config'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import { svgrComponent } from 'vite-plugin-svgr-component'
-
 const rootDir = path.join(__dirname, '..')
 const { aliases, envs, port, environment } = loadConfig()
 
@@ -59,6 +59,11 @@ export const config = {
   define: {
     ...envs,
     [`process.env.MG_BASE_PATH`]: JSON.stringify(basePath)
+  },
+  css: {
+    postcss: {
+      plugins: [tailwindcss()]
+    }
   },
   clearScreen: false,
   test: {

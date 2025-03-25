@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Steps } from '@MG/components/Steps'
 import { Loading } from '@MG/components/Loading'
 import { Code } from '@MG/components/Code/Code'
+import { Image } from '@MG/components/Image/Image'
 import { useMGen } from '@MG/contexts/MGenContext'
 import { NotFound } from '@MG/components/NotFound'
 import { PreCode } from '@MG/components/Code/PreCode'
@@ -87,6 +88,7 @@ export const MGContent = (props:TMGContent) => {
             remarkPlugins={remarkPlugins}
             rehypePlugins={rehypePlugins}
             components={{
+              img:Image,
               code:Code,
               pre:PreCode,
             }}

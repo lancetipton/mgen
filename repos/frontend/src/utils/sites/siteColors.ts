@@ -5,6 +5,8 @@ import { getThemeName } from '@MG/utils/theme/themeName'
 import { convertColors } from '@MG/utils/theme/convertColors'
 import { overrideCSSVar, removeCSSVars } from '@MG/utils/dom/overrideCSSVars'
 
+const SiteCSSVars:string[] = Object.values(ESiteCSSVars)
+
 export const siteColors = (theme?:TSiteTheme) => {
   if(!theme) return
 
@@ -20,6 +22,9 @@ export const siteColors = (theme?:TSiteTheme) => {
   Object.entries(values)
     .forEach(([key, val]) => {
       const varName = ESiteCSSVars[key]
+        ? ESiteCSSVars[key]
+        : SiteCSSVars.includes(key) ? key : undefined
+
       if(!varName) return
 
       cached.push(varName)

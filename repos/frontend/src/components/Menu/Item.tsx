@@ -58,6 +58,7 @@ export const Item = (props:TItem) => {
   const {
     id,
     dir,
+    url,
     active,
     onClick,
     children,
@@ -65,6 +66,11 @@ export const Item = (props:TItem) => {
 
   const isOpen = children && active?.includes?.(`/${dir}/`)
   const [open, setOpen] = useState(isOpen)
+
+  const onSummaryClick = (evt:any) => {
+    url ? onClick?.(evt, id, url) : stopEvt(evt)
+    children && setOpen?.(!open)
+  }
 
   return (
     <li id={id} className={cls(
@@ -80,6 +86,7 @@ export const Item = (props:TItem) => {
       ) : (
         <details open={open} >
           <summary
+            onClick={onSummaryClick}
             className={cls(
               `rounded-med`,
               `text-gray-400`,

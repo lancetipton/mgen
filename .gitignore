@@ -270,3 +270,6 @@ repos/frontend/public/sites/
 repos/mgen/
 repos/**/*.bak
 repos/**/*.bak/**
+frontend/sites/.mgen
+repos/frontend/public/assets/**
+!repos/frontend/public/assets/.gitkeep

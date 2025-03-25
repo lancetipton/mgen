@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-
+import type { ExtraProps } from 'react-markdown'
 
 import { Suspense, lazy } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
@@ -11,7 +11,9 @@ import { vs2015, vs } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
 
 const Schema = lazy(() => import('@MG/components/Schema/Schema'))
 
-export type TCode = {
+import { ECodeIgnore } from '@MG/types'
+
+export type TCode = ExtraProps & {
   className?:string
   children?:ReactNode
 }
@@ -25,20 +27,25 @@ export const Code = (props:TCode) => {
   const language = hasLang?.[1]
 
   switch(language){
-    case `mermaid`: {
+    case ECodeIgnore.mermaid: {
       return (
         <Mermaid className={className} >
           {rest.children}
         </Mermaid>
       )
     }
-    case `schema`: {
+    case ECodeIgnore.schema: {
       return (
         <Suspense fallback={<Loading className='w-full flex justify-center items-center min-h-[200px]' />}>
           <Schema {...props} />
         </Suspense>
       )
     }
+    // TODO: add Components for these
+    case ECodeIgnore.graph:
+    case ECodeIgnore.chart:
+    // TODO investigate dynamic components via '```react' block
+    case ECodeIgnore.react:
     default: {
       return hasLang
         ? (
