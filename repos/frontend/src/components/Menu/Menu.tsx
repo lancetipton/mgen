@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { TItem } from '@MG/components/Menu/Item'
 
+import { useRef } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Item as MItem } from '@MG/components/Menu/Item'
 
@@ -26,6 +27,8 @@ export const Menu = (props:TMenu) => {
     HeaderIcon,
     headerText,
   } = props
+
+  const activeRef = useRef(path)
 
   return (
     <div
@@ -69,6 +72,7 @@ export const Menu = (props:TMenu) => {
                 <Item
                   active={path}
                   onClick={onClick}
+                  activeRef={activeRef}
                   key={item.key || item.id || item.text || key}
                   {...item}
                 />

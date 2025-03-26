@@ -322,7 +322,11 @@ export class MGen extends Events {
    * Navigates to the specified location by setting the route.
    * @param {string} location - The location to navigate to.
    */
-  navigate = (location:string) => this.#router.setRoute(location)
+  navigate = (location:string, newTab?:boolean) => {
+    newTab
+      ? window.open(`${window.location.origin}${location}`, `_blank`)
+      : this.#router.setRoute(location)
+  }
 
 
   /**

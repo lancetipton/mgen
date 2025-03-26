@@ -135,9 +135,9 @@ const buildItem = (
     
     // If the part does not exist, then create it
     current.children[part] = {
-      dir: part,
       children: {},
       config: dirCfg,
+      dir: parsed.dir,
       text: titleText(part),
     }
     current = current.children[part]

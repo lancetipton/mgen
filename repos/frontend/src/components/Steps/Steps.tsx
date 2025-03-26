@@ -25,7 +25,7 @@ const useSteps = (props:TSteps) => {
 
     const onNav = (evt:any, href:string) => {
       stopEvt(evt)
-      href && mg.navigate(href)
+      href && mg.navigate(href, evt.metaKey)
     } 
 
     return {

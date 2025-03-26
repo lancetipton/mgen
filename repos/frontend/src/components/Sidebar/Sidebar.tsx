@@ -29,7 +29,7 @@ export const Sidebar = (props:TSidebar) => {
   const onClick = (evt:any, id?:string, href?:string) => {
     stopEvt(evt)
     forceUpdate()
-    href && mg.navigate(href)
+    href && mg.navigate(href, evt.metaKey)
   }
 
   const classes = mobile
