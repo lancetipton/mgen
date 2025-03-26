@@ -32,9 +32,6 @@ export const Menu = (props:TMenu) => {
   } = props
 
   const { items } = useMGenDir(nav)
-  console.log(`------- items -------`)
-  console.log(items)
-
   const activeRef = useRef(path)
 
   return (

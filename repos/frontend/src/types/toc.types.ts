@@ -8,6 +8,7 @@ export type TMDTocOpts = {
 
 export type TTOC = {
   url?:string
+  id?:string
   type?:string
   value?:string
   children?:TTOC[]
@@ -29,4 +30,8 @@ export type TNode = {
   url?:string
   lang?:string
   title?:string
+  data?:{
+    id?:string
+    hProperties?: Record<string, any>
+  }
 }

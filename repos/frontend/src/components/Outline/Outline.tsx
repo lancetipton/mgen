@@ -71,7 +71,7 @@ export const Outline = (props:TOutline) => {
           </div>
           <ul className='list-none pl-0 mt-1' >
             {toc?.map?.((item, idx) => {
-              const { type, url, value } = item
+              const { type, url, value, id } = item
               const num = toInt(type)
 
               return (
@@ -93,7 +93,7 @@ export const Outline = (props:TOutline) => {
                       `hover:opacity-100`,
                       isDark ? `hover:text-gray-300` : `hover:text-gray-600`,
                       `text-gray-500`,
-                      active === getHash(value) && `text-primary`,
+                      active === id && `text-primary`,
                     )}
                   >
                     {value}

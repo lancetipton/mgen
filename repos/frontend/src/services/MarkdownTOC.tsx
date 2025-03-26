@@ -3,24 +3,48 @@ import type { TNode, TMDTocOpts } from '@MG/types'
 import { trainCase } from '@keg-hub/jsutils/trainCase'
 
 
-const buildUrl = (base:string, text?:string, existing?:string) => {
-  return existing ? {url: existing} : text ? {url: `${base}#${trainCase(text)}`} : {}
+const buildUrl = (
+  base:string,
+  text?:string,
+  existing?:string,
+  id?:string
+) => {
+  return existing
+    ? {url: existing}
+    : text || id
+      ? {url: `${base}#${id || trainCase(text)}`}
+      : {}
 }
 
-const getText = (base:string, children:TNode[]) => {
+
+const getText = (
+  base:string,
+  children:TNode[],
+  id:string
+) => {
 
   let text:string = ``
   const built = children.reduce((acc, child) => {
-    if(child.type === `text`)
-      text = `${text} ${child.value}`.trim()
+    if(child.type === `text`) text = `${text} ${child.value}`.trim()
 
     else {
-      const { text, children:childs } = getText(base, child.children)
+
+      const {
+        id,
+        text,
+        children:childs
+      } = getText(
+        base,
+        child.children,
+        child?.data?.id || child?.data?.hProperties.id
+      )
+
       acc.push({
+        id,
         value: text,
-        ...buildUrl(base, text, child.url),
         type: child.type,
-        children: childs
+        children: childs,
+        ...buildUrl(base, text, child.url, id),
       })
     }
 
@@ -29,7 +53,8 @@ const getText = (base:string, children:TNode[]) => {
 
   return {
     text,
-    children: built
+    children: built,
+    id: id || trainCase(text),
   }
 
 }
@@ -62,11 +87,16 @@ const loopChildren = (base:string, children:TNode[], opts:TMDTocOpts) => {
 
     if(!isAllowed(child, opts)) return acc 
 
-    const { text, children:childs } = getText(base, child.children)
+    const {
+      id,
+      text,
+      children:childs
+    } = getText(base, child.children, child?.data?.id || child?.data?.hProperties.id)
     acc.push({
+      id,
       value: text,
-      ...buildUrl(base, text),
       children: childs,
+      ...buildUrl(base, text, undefined, id),
       type: `h${child.depth}`,
     })
 
