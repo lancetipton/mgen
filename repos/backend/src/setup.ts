@@ -6,9 +6,10 @@ import { genMConfig, genSConfig } from './config'
 
 export const setup = async (loc?:string) => {
   const sites = getSitesLoc(loc)
-  const location = genSConfig(sites)
-
   const mgenCfg = generateSites(sites, crawl(sites))
+
+  const location = genSConfig(sites, mgenCfg)
+
   genMConfig(sites, mgenCfg)
   await genSearchIndex(sites, mgenCfg)
 

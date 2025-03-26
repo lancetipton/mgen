@@ -3,8 +3,8 @@ import { loadEnvs } from '../../../scripts/loadEnvs'
 const envs = loadEnvs()
 
 const {
-  MG_MG_CFG,
   MG_IDX_MD,
+  MG_APP_CFG,
   MG_SERVE_DIR,
   MG_SERVE_CFG,
   MG_SITES_DIR,
@@ -26,8 +26,9 @@ export const MGNoAutoIdx = MG_NO_AUTO_IDX || envs[`MG_NO_AUTO_IDX`]
 export const MGIdxMarkdown = MG_IDX_MD || envs[`MG_IDX_MD`] || ``
 
 export const MGCfgDir = `.mgen`
+export const MGDirCfgName = `mgen.dir`
 export const MGCfgName = `mgen.config`
-export const MGCfgLoc = MG_MG_CFG || envs[`MG_MG_CFG`]
+export const MGCfgLoc = MG_APP_CFG || envs[`MG_APP_CFG`]
 export const MGCfgFile = `configs/${MGCfgName}`
 export const MGCfgFinalLoc = `${MGCfgDir}/${MGCfgName}.json`
 

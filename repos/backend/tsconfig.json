@@ -19,6 +19,8 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "forceConsistentCasingInFileNames": true,
     "paths": {
+      "@mgen/backend": ["./"],
+      "@mgen/backend/*": ["./*"],
       "@mgen/root": ["../../"],
       "@mgen/root/*": ["../../*"],
       "@mgen/deploy": ["../../deploy"],

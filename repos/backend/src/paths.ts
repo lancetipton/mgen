@@ -1,6 +1,6 @@
 import os from 'node:os'
+import hq from 'alias-hq'
 import path from 'node:path'
-import * as url from 'node:url'
 import { existsSync } from 'node:fs'
 import { ife } from '@keg-hub/jsutils/ife'
 import { execSync } from "node:child_process"
@@ -16,9 +16,11 @@ import {
 const homedir = os.homedir()
 
 let rootLoc = undefined
+const hqw = hq.get(`webpack`)
 
-const resolveLoc = (loc:string, exists=true, rootDir?:string) => {
-  const root = rootDir || getRootLoc()
+const resolveLoc = (loc:string, exists=true) => {
+  const root = getRootLoc()
+
   const resolved = loc.startsWith(`~/`)
     ? path.join(homedir, loc.replace(`~/`, ``))
     : loc.startsWith(`/`)
@@ -28,15 +30,17 @@ const resolveLoc = (loc:string, exists=true, rootDir?:string) => {
   return exists
     ? existsSync(resolved) ? resolved : undefined
     : resolved
+
 }
 
 export const getRootLoc = () => {
-  if(rootLoc) return rootLoc
 
-  const dirname = url.fileURLToPath(new URL('.', import.meta.url))
-  rootLoc = dirname.includes(`node_modules`)
-    ? dirname.split(`node_modules`)[0]
-    : path.join(dirname, `..`)
+  if(!rootLoc){
+    const caller = process.argv[1]
+    rootLoc = caller.includes(hqw[`@mgen/backend`])
+      ? hqw[`@mgen/backend`]
+      : hqw[`@mgen/root`]
+  }
 
   return rootLoc
 }
@@ -84,15 +88,13 @@ export const getServeLoc = () => {
 }
 
 export const getSrvCfgLoc = () => {
-  const root = getRootLoc()
   return ServeCfgLoc
     ? resolveLoc(ServeCfgLoc)
-    : path.join(root, ServeCfgFile)
+    : path.join(hqw[`@mgen/backend`], ServeCfgFile)
 }
 
 export const getMgCfgLoc = () => {
-  const root = getRootLoc()
   return MGCfgLoc
     ? resolveLoc(MGCfgLoc, false)
-    : path.join(root, MGCfgFile)
+    : path.join(hqw[`@mgen/backend`], MGCfgFile)
 }

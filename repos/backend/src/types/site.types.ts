@@ -137,12 +137,16 @@ export type TSiteNav = {
   url?:string
   dir?:string
   text?:string
+  path?:string
   target?:string
+  config?:TDirConfig
   children?:TSiteNavItems
 }
 
 export type TSiteNavItems = Record<string, TSiteNav>
 
+// Should eventually merge with TDirConfig
+// Or at least validated when DirConfig is also checked for things like ignore
 export type TSitePages = {
   hidden?:string[],
   ignore?: string[],
@@ -208,19 +212,34 @@ export type TSiteTocHeadings = `heading1`
 
 export type TSiteToc = {
   disabled?:boolean
-  include:TSiteTocHeadings[]
-  exclude:TSiteTocHeadings[]
+  include?:TSiteTocHeadings[]
+  exclude?:TSiteTocHeadings[]
 }
 
+
+export type TSrvOpt = {
+  engine?:string
+  source?:string
+  destination?:string
+}
+
+export type TSiteSrvConfig = {
+  unlisted?:string[]
+  rewrites?:TSrvOpt[]
+  redirects?:TSrvOpt[]
+}
 
 export type TSiteConfig = {
   name:string
   dir:string
   css?:string
-  toc:TSiteToc
   nav:TSiteNav
+  toc?:TSiteToc
   logo:TSiteLogo
   edit?:TSiteEdit
+  server?:TSiteSrvConfig
+  // Should eventually merge with TDirConfig
+  // Or at least validated when DirConfig is also checked for things like ignore
   pages:TSitePages
   theme?:TSiteTheme
   footer?:TSiteFooter
@@ -229,3 +248,9 @@ export type TSiteConfig = {
 }
 
 export type TSitesConfig = Record<string, TSiteConfig>
+
+
+export type TDirConfig = {
+  order?:string[]
+  exclude?:string[]
+}
