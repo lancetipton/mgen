@@ -4,7 +4,6 @@ import { getHash } from '@MG/utils/api/getHash'
 import { useState, useEffect, useRef } from 'react'
 
 
-
 export type THActiveScroll = {
   toc?:TTOC[]
 }
@@ -57,7 +56,9 @@ export const useActiveScroll = (props:THActiveScroll) => {
 
       if(!entry.isVisible && !entry.isIntersecting){
 
-        if(entry.boundingClientRect.top < entry.rootBounds.height)
+        if(!entry?.rootBounds) return
+
+        if(entry?.boundingClientRect?.top < entry?.rootBounds?.height)
           return setActive(entry.target.id)
 
         const idx = elements.findIndex(element => element === entry.target)
@@ -66,9 +67,9 @@ export const useActiveScroll = (props:THActiveScroll) => {
           && setActive(prev?.id || ``)
 
       }
-
       else if(!entry.isVisible && entry.isIntersecting){
-        if(entry.boundingClientRect.top >= entry.rootBounds.height) return
+        if(!entry?.rootBounds || entry.boundingClientRect?.top >= entry?.rootBounds?.height)
+          return
 
         const idx = elements.findIndex(element => element === entry.target)
         const prev = elements[idx - 1]
