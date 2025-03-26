@@ -1,1 +1,2 @@
-export * from './buildNav'
+export * from './sortNavItems'
+export * from './getNavItemArr'

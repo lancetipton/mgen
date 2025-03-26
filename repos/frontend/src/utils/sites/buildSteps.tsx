@@ -1,19 +1,30 @@
 import type { TSiteNav } from '@MG/types'
+import { getNavOrder } from '@MG/utils/sites/getNavOrder'
+import { sortNavItems } from '@MG/utils/sites/sortNavItems'
+import { getNavItemArr } from '@MG/utils/sites/getNavItemArr'
 
-type TNavMap = Record<string, TSiteNav>
 
 /**
  * Builds the steps navigation base on the passed in site nav object
  */
 export const buildSteps = (nav:TSiteNav) => {
-  // TODO: pass in the pages config, and filter the steps base on the page config
+  const arr:TSiteNav[] = nav.url ? [nav] : []
 
-  const map:TNavMap = nav.url ? { [nav?.url]: nav } : {}
+  const config = nav?.config || {}
 
-  return Object.entries(nav.children)
-  .reduce((acc, [key, nav]) => {
-    if(nav.url) acc[nav.url] = nav
+  const order = config?.order ? getNavOrder(config?.order) : undefined
 
-    return nav.children ? {...acc, ...buildSteps(nav)} : acc
-  }, map)
+  const arrItems = getNavItemArr(nav.children, config)
+
+  const items = order && arrItems?.length
+    ? sortNavItems(arrItems, order)
+    : arrItems
+
+  const steps = items.reduce((acc, nav) => {
+    if(nav.url) acc.push(nav)
+
+    return nav.children ? [...acc, ...buildSteps(nav)] : acc
+  }, arr)
+
+  return steps
 }

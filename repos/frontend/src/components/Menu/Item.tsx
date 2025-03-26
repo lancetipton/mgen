@@ -1,4 +1,4 @@
-import type { TSiteNav } from '@MG/types'
+import type { TItem } from '@MG/types'
 import type { MutableRefObject } from 'react'
 
 import { useState, useEffect } from 'react'
@@ -6,14 +6,6 @@ import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link/Link'
 import { stopEvt } from '@MG/utils/dom/stopEvt'
 import { useMGenDir } from '@MG/hooks/components/useMGenDir'
-
-export type TItem = TSiteNav & {
-  id?:string
-  key?:string
-  active?:string
-  children?:Record<string|number, TItem>
-  onClick?:(event:any, id?:string, href?:string, text?:string) => void
-}
 
 export type TItemWithARef = TItem & {
   activeRef: MutableRefObject<string>
@@ -38,7 +30,7 @@ const ItemText = (props:TItemText) => {
     activeParent
   } = props
 
-  const isActive = activeParent || (active === url)
+  const isActive = (active === url)
 
   return (
     <Link
@@ -57,7 +49,7 @@ const ItemText = (props:TItemText) => {
         `focus:!bg-base-200`,
         `focus:!text-primary`,
         isActive && `bg-base-200`,
-        isActive && `text-primary`,
+        (activeParent || isActive) && `text-primary`,
       )}
     >
       {text}
@@ -125,8 +117,6 @@ export const Item = (props:TItemWithARef) => {
               `hover:bg-base-200`,
               `active:!bg-base-200`,
               `active:!text-primary`,
-              activeParent && `bg-base-200`,
-              activeParent && `text-primary`,
             )}
           >
             <ItemText

@@ -65,6 +65,7 @@ export const Sidebar = (props:TSidebar) => {
       >
         <Menu
           path={path}
+          nav={site?.nav}
           onClick={onClick}
           items={site?.nav?.children}
         />

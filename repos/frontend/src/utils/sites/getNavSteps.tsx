@@ -1,16 +1,19 @@
 import { TSiteConfig } from '@MG/types'
 
-
 export const getNavSteps = (site:TSiteConfig) => {
 
-  const current = site?.steps?.[window.location.pathname]
+  const pathname = window.location.pathname
 
-  if(!site?.steps || !current) return { prev: { disabled: true }, next: { disabled: true } }
+  const idx = site?.steps.findIndex(step => (
+    step?.path === pathname
+      || step.dir === pathname
+      || step.url === pathname
+  ))
 
-  const steps = Object.values(site?.steps)
-  const idx = steps.findIndex(nav => nav.url === current.url)
-  const prev = steps[idx - 1]
-  const next = steps[idx + 1]
+  if(!site?.steps || idx < 0) return { prev: { disabled: true }, next: { disabled: true } }
+
+  const prev = site?.steps[idx - 1]
+  const next = site?.steps[idx + 1]
 
   return {
     prev: {
