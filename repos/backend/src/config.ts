@@ -1,13 +1,14 @@
-import type { TMGenCfg } from './types'
+import type { TMGenCfg, TSrvOpt } from './types'
 
 import yaml from 'js-yaml'
 import path from 'node:path'
 import { tri } from '@keg-hub/jsutils/tri'
 import { noOp } from '@keg-hub/jsutils/noOp'
+import { getMgCfgLoc, getSrvCfgLoc } from './paths'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
-import { getMgCfgLoc, getSrvCfgLoc } from './paths.js'
+import { flatUnion } from '@keg-hub/jsutils/flatUnion'
 import { readFileSync, writeFile, mkdir, existsSync } from 'node:fs'
-import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants.js'
+import { CfgExts, MGCfgFinalLoc, ServeFinalLoc } from './constants'
 
 export const createDir = (location:string) => mkdir(location, {recursive: true}, noOp)
 export const loadFile = (location:string):string => tri(() => readFileSync(location, `utf8`)) || ``
@@ -80,13 +81,59 @@ const writeSiteCfgs = (mCfgDir:string, original:TMGenCfg, merged:TMGenCfg) => {
   }
 }
 
+const mergeSrvConfigs = (srcCfg:Record<string, any>, cfg:TMGenCfg) => {
+   return Object.entries(cfg.sites)
+    .reduce((acc, [name, sCfg]) => {
+
+      if(!sCfg?.server) return acc
+
+
+      const copy = {...acc}
+
+      if(sCfg.server?.unlisted?.length)
+        copy.unlisted = flatUnion<string>(copy.unlisted, sCfg.server.unlisted)
+
+      if(sCfg.server?.redirects?.length)
+        copy.redirects = flatUnion<TSrvOpt>(
+          copy.redirects,
+          sCfg.server.redirects,
+          (it:TSrvOpt) => it.source
+        )
+
+      if(sCfg.server?.rewrites?.length)
+        copy.rewrites = flatUnion(
+          copy.rewrites,
+          sCfg.server.rewrites,
+          (it:TSrvOpt) => it.source
+        )
+
+      return copy
+    }, srcCfg)
+}
+
+
+const cleanSitesConfigs = (cfg:TMGenCfg) => {
+  return {
+    ...cfg,
+   sites: Object.entries(cfg.sites)
+    .reduce((acc, [name, sCfg]) => {
+      const {server, ...rest} = sCfg
+      acc[name] = rest
+      return acc
+    }, {})
+  }
+}
+
 
 export const genMConfig = (dir:string, cfg:TMGenCfg) => {
+
   const config = loadDefMGCfg()
+  const clean = cleanSitesConfigs(cfg)
 
   const location = path.join(dir, MGCfgFinalLoc)
   const parsed = path.parse(location)
-  const mcfg = writeSiteCfgs(parsed.dir, config, deepMerge(config, cfg))
+
+  const mcfg = writeSiteCfgs(parsed.dir, config, deepMerge(config, clean))
 
   writeJson(location, mcfg)
 
@@ -94,7 +141,8 @@ export const genMConfig = (dir:string, cfg:TMGenCfg) => {
 }
 
 
-export const genSConfig = (dir:string) => {
+
+export const genSConfig = (dir:string, cfg:TMGenCfg) => {
 
   const defCfgLoc = getSrvCfgLoc()
   const defCfg = loadJson(defCfgLoc)
@@ -103,9 +151,8 @@ export const genSConfig = (dir:string) => {
   const parsed = path.parse(location)
   createDir(parsed.dir)
 
-  // Add code here to modify the serve config if needed
-
-  writeJson(location, defCfg)
+  const merged = mergeSrvConfigs(defCfg, cfg)
+  writeJson(location, merged)
 
   return location
 }

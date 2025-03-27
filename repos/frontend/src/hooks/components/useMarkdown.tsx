@@ -5,9 +5,11 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import remarkHeaderId from 'remark-heading-id'
+import remarkMermaid from 'remark-mermaid-plugin'
 import markdownTOC from '@MG/services/MarkdownTOC'
 import { useMemo, useRef, useEffect } from 'react'
 import { useMGen } from '@MG/contexts/MGenContext'
+import { useTheme } from '@MG/contexts/ThemeContext'
 
 
 export type THMarkdown = {
@@ -25,7 +27,8 @@ export const useMarkdown = (props:THMarkdown) => {
     allowHtml=true,
   } = props
 
-  const {mg} = useMGen()
+  const { mg, site } = useMGen()
+  const { isDark } = useTheme()
 
   const tocRef = useRef<TTOC[]>()
   useEffect(() => {
@@ -48,12 +51,21 @@ export const useMarkdown = (props:THMarkdown) => {
     remarkPlugins.push(remarkGfm)
     latex && remarkPlugins.push(remarkMath)
     remarkPlugins.push(() => remarkHeaderId({ defaults: true }))
+    remarkPlugins.push([remarkMermaid, { theme: isDark ? `dark` : `default` }])
 
     markdownTOC
-      && remarkPlugins.push(markdownTOC({onToc: (toc:TTOC[]) => tocRef.current = toc}))
+      && !site?.toc?.disabled
+      && remarkPlugins.push(markdownTOC({
+          toc: site?.toc,
+          onToc: (toc:TTOC[]) => tocRef.current = toc}
+        ))
 
     return remarkPlugins
-  }, [latex])
+  }, [
+    site,
+    latex,
+    isDark,
+  ])
 
   return {
     rehypePlugins,

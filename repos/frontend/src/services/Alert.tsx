@@ -1,8 +1,8 @@
 import type { ToastT } from 'sonner'
 
 import { toast } from 'sonner'
-import { EAlertType, EAlertPos } from '@MG/types'
 import { isFunc } from '@keg-hub/jsutils'
+import { EAlertType, EAlertPos } from '@MG/types'
 
 
 type TAlertAction = ToastT[`action`]

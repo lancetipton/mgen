@@ -12,12 +12,10 @@ export type TLogoMeta = {
 
 export type TSiteConfig = Omit<TSConfig, `search`> & {
   search?:Search
-  steps?:Record<string, TSiteNav>
+  steps?:TSiteNav[]
 }
 
 export type TSitesConfig = Record<string, TSiteConfig> 
-
-export type TNavStep = {}
 
 
 export type TSearchSection = {
@@ -28,3 +26,12 @@ export type TSearchSection = {
 }
 
 export type TSearchSections = TSearchSection[]
+
+
+export type TItem = TSiteNav & {
+  id?:string
+  key?:string
+  active?:string
+  children?:Record<string|number, TItem>
+  onClick?:(event:any, id?:string, href?:string, text?:string) => void
+}

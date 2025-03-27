@@ -8,6 +8,7 @@ import { Header } from '@MG/components/Header'
 import { Footer } from '@MG/components/Footer'
 import { Sidebar } from '@MG/components/Sidebar'
 import { Outline } from '@MG/components/Outline'
+import { useMGen } from '@MG/contexts/MGenContext'
 import { MGContent } from '@MG/components/MGContent'
 import { useBreakpoint } from '@MG/hooks/theme/useBreakpoint'
 
@@ -26,20 +27,26 @@ const Content = (props:TLayout & TSidebar) => {
     children,
   } = props
 
+  const { site } = useMGen()
+
   return (
     <>
       <div className={cls(
         `mg-content`,
         `w-inherit`,
-        `max-w-[90rem]`,
+        `max-w-[100rem]`,
         `sm:max-xl:w-full`,
         `content-center-offset`,
         `nav-height-offset`,
         `flex`,
       )}
       >
-        <Sidebar mobile={mobile} open={open} setOpen={setOpen} />
-        <Outline />
+        <Sidebar
+          open={open}
+          mobile={mobile}
+          setOpen={setOpen}
+        />
+        {!site?.toc?.disabled && (<Outline />) || null}
         {children || (<MGContent />)}
       </div>
     </>

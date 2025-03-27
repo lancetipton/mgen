@@ -1,5 +1,14 @@
+import type { TSiteToc } from '@MGS/types'
+
+export type TMDTocOpts = {
+  toc?:TSiteToc
+  base?:string
+  onToc?:(toc:TTOC[]) => any
+}
+
 export type TTOC = {
   url?:string
+  id?:string
   type?:string
   value?:string
   children?:TTOC[]
@@ -21,4 +30,8 @@ export type TNode = {
   url?:string
   lang?:string
   title?:string
+  data?:{
+    id?:string
+    hProperties?: Record<string, any>
+  }
 }

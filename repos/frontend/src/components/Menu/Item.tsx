@@ -1,19 +1,23 @@
-import type { TSiteNav } from '@MG/types'
+import type { TItem } from '@MG/types'
+import type { MutableRefObject } from 'react'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Link } from '@MG/components/Link/Link'
 import { stopEvt } from '@MG/utils/dom/stopEvt'
+import { useMGenDir } from '@MG/hooks/components/useMGenDir'
 
-export type TItem = TSiteNav & {
-  id?:string
-  key?:string
-  active?:string
-  children?:Record<string|number, TItem>
-  onClick?:(event:any, id?:string, href?:string, text?:string) => void
+export type TItemWithARef = TItem & {
+  activeRef: MutableRefObject<string>
 }
 
-const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}) => {
+export type TItemText = TItem & {
+  open?:boolean,
+  activeParent?:boolean
+  setOpen?:(stat:boolean) => void
+}
+
+const ItemText = (props:TItemText) => {
   const {
     id,
     text,
@@ -23,9 +27,10 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
     setOpen,
     onClick,
     children,
+    activeParent
   } = props
 
-  const isActive = active === url
+  const isActive = (active === url)
 
   return (
     <Link
@@ -44,7 +49,7 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
         `focus:!bg-base-200`,
         `focus:!text-primary`,
         isActive && `bg-base-200`,
-        isActive && `text-primary`,
+        (activeParent || isActive) && `text-primary`,
       )}
     >
       {text}
@@ -53,18 +58,42 @@ const ItemText = (props:TItem & {open?:boolean, setOpen?:(stat:boolean) => void}
 }
 
 
-export const Item = (props:TItem) => {
+export const Item = (props:TItemWithARef) => {
 
   const {
     id,
     dir,
+    url,
+    config,
     active,
     onClick,
     children,
+    activeRef,
   } = props
 
-  const isOpen = children && active?.includes?.(`/${dir}/`)
-  const [open, setOpen] = useState(isOpen)
+
+  const activeParent = children && active && active.startsWith(dir)
+
+  const [open, setOpen] = useState(activeParent)
+
+  const onSummaryClick = (evt:any) => {
+    url ? onClick?.(evt, id, url) : stopEvt(evt)
+    children && setOpen(!open)
+  }
+
+  const {
+    items
+  } = useMGenDir({ children, config })
+
+
+  useEffect(() => {
+    if(!children || !activeParent || open || (activeRef?.current === active))
+      return
+
+    activeRef.current = active
+    setOpen(true)
+
+  }, [dir, active, children, activeParent, open])
 
   return (
     <li id={id} className={cls(
@@ -75,11 +104,12 @@ export const Item = (props:TItem) => {
       `hover:text-primary`,
       `focus:text-primary`,
     )} >
-      {!children ? (
+      {!items?.length ? (
         <ItemText {...props} />
       ) : (
         <details open={open} >
           <summary
+            onClick={onSummaryClick}
             className={cls(
               `rounded-med`,
               `text-gray-400`,
@@ -87,23 +117,23 @@ export const Item = (props:TItem) => {
               `hover:bg-base-200`,
               `active:!bg-base-200`,
               `active:!text-primary`,
-              `focus:!bg-base-200`,
-              `focus:!text-current`,
             )}
           >
             <ItemText
               {...props}
               open={open}
               setOpen={setOpen}
+              activeParent={activeParent}
             />
           </summary>
           <ul className={cls(`mg-menu-item-list`)} >
-            {Object.entries(children).map(([key, child]) => {
+            {items.map(({key, ...child}) => {
               return (
                 <Item
                   active={active}
                   onClick={onClick}
-                  key={key || child?.key || child.id || child.text}
+                  activeRef={activeRef}
+                  key={key || child.id || child.text}
                   {...child}
                 />
               )

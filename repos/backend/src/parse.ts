@@ -14,7 +14,7 @@ type THSection = {
   title?:string
 }
 
-export const parseMD = (content:string, url) => {
+export const parseMD = (content:string, url:string) => {
   const sections:THSection[] = []
   let active: THSection = undefined
 

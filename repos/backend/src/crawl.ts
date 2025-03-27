@@ -1,18 +1,21 @@
-import type { TMGenCfg, TSiteConfig } from './types'
+import type { TMGenCfg, TSiteConfig, TDirConfig } from './types'
 
 import { fdir } from 'fdir'
 import path from 'node:path'
-import { locToTitle } from './utils.js'
-import { loadCfgFile } from './config.js'
-import { wordCaps } from '@keg-hub/jsutils/wordCaps'
+import { existsSync } from 'node:fs'
+import { loadCfgFile } from './config'
 import { deepMerge } from '@keg-hub/jsutils/deepMerge'
+import { locToTitle, cleanUrl, titleText } from './utils'
 import {
   MGIdxName,
   MGCfgName,
+  MGDirCfgName,
   DefSiteTheme,
   MGCfgFinalLoc,
   ServeFinalLoc,
-} from './constants.js'
+} from './constants'
+
+type TDirConfigs = Record<string, TDirConfig>
 
 type TParsed = path.ParsedPath & {
   siteDir:string
@@ -24,6 +27,12 @@ const configFiles = [
   MGCfgFinalLoc,
   ServeFinalLoc,
 ]
+const ignoreFiles = [
+  MGCfgName,
+  MGDirCfgName,
+  `site.webmanifest`,
+]
+
 
 const emptySite = ():Partial<TSiteConfig> => ({
   nav: {},
@@ -37,6 +46,10 @@ const rootSite = ():TSiteConfig => ({
   dir: ``,
   logo: {},
   pages: {},
+  toc: {
+    disabled:false,
+    exclude: [`heading1`],
+  },
   name: `MGen`,
   theme: {...DefSiteTheme},
   sitemap: {
@@ -57,12 +70,19 @@ const parse = (location:string) => {
   } as TParsed
 }
 
-const buildItem = (siteCfg, location:string, parsed:TParsed) => {
+const buildItem = (
+  siteCfg:Partial<TSiteConfig>,
+  dirCfg:TDirConfig,
+  location:string,
+  parsed:TParsed
+) => {
+
   if(parsed.name === `index` && parsed.siteRoot){
     siteCfg.nav = {
+      config: dirCfg,
       path: location,
-      url: parsed.dir,
-      text: wordCaps(parsed.siteDir),
+      url: cleanUrl(parsed.dir),
+      text: titleText(parsed.siteDir),
       ...siteCfg.nav,
     }
     return
@@ -74,10 +94,19 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
   let current = siteCfg.nav
   current.children = current.children || {}
 
+
+  const toExclude = [
+    ...(dirCfg?.exclude || []),
+    ...ignoreFiles
+  ]
+
   split.forEach((part, idx) => {
     // Nav starts at the site root directory, so skip it
     // Check the idx incase a sub-folder is same name as site dir
     if(!idx && part === parsed.siteDir) return
+
+    // Don't add config files
+    if(toExclude.includes(parsed.name)) return
 
     // If on the last item, add it to the currents children
     if(idx === split.length - 1){
@@ -91,10 +120,10 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
       current.children = {
         ...current.children,
         [parsed.name]: {
-          path: location,
           dir: parsed.dir,
-          text: wordCaps(parsed.name),
-          url: `${parsed.dir}/${parsed.name}`,
+          path: location,
+          text: titleText(parsed.name),
+          url: `${cleanUrl(parsed.dir)}/${cleanUrl(parsed.name)}`,
         }
       }
 
@@ -106,17 +135,27 @@ const buildItem = (siteCfg, location:string, parsed:TParsed) => {
     
     // If the part does not exist, then create it
     current.children[part] = {
-      dir: part,
       children: {},
-      text: wordCaps(part),
+      config: dirCfg,
+      dir: parsed.dir,
+      text: titleText(part),
     }
     current = current.children[part]
 
   })
 }
 
+const getDirConfig = (parent:string, dir:string):TDirConfig => {
+  const mjson = path.join(parent, dir, `${MGDirCfgName}.json`)
+  const myaml = path.join(parent, dir, `${MGDirCfgName}.yaml`)
 
-const buildPaths = (dir:string) => (acc:TMGenCfg, file:string) => {
+  if(existsSync(mjson)) return loadCfgFile(mjson)
+  else if(existsSync(myaml)) return loadCfgFile(myaml)
+  else return {} as TDirConfig
+
+}
+
+const buildPaths = (dir:string, dirCfgs:TDirConfigs) => (acc:TMGenCfg, file:string) => {
 
   if(configFiles.find(cfg => file.endsWith(cfg))) return acc
 
@@ -141,16 +180,24 @@ const buildPaths = (dir:string) => (acc:TMGenCfg, file:string) => {
 
   const siteCfg = acc.sites?.[parsed.siteDir] || emptySite()
 
+  const cleanDir = cleanUrl(parsed.dir)
   siteCfg.sitemap[clean] = clean
-  siteCfg.sitemap[`${parsed.dir}/${parsed.name}`] = clean
+  siteCfg.sitemap[`${cleanDir}/${cleanUrl(parsed.name)}`] = clean
 
 
   if(parsed.name === `index`){
-    siteCfg.sitemap[parsed.dir] = clean
-    siteCfg.sitemap[`${parsed.dir}/`] = clean
+    siteCfg.sitemap[cleanDir] = clean
+    siteCfg.sitemap[`${cleanDir}/`] = clean
   }
 
-  buildItem(siteCfg, clean, parsed)
+  dirCfgs[parsed.dir] = dirCfgs[parsed.dir] || getDirConfig(dir, parsed.dir)
+
+  buildItem(
+    siteCfg,
+    dirCfgs[parsed.dir],
+    clean,
+    parsed
+  )
 
   acc.sites[parsed.siteDir] = siteCfg as TSiteConfig
 
@@ -163,7 +210,7 @@ export const crawl = (dir:string) => {
     .withFullPaths()
     .crawl(dir)
     .sync()
-    .reduce(buildPaths(dir), {
+    .reduce(buildPaths(dir, {} as TDirConfigs), {
       sitesType: undefined,
       sites: { __default: rootSite() }
     })

@@ -1,13 +1,17 @@
 import type { ReactNode } from 'react'
-import type { TItem } from '@MG/components/Menu/Item'
+import type { TItem } from '@MG/types'
+import type { TSiteNav } from '@MG/types'
 
+import { useRef } from 'react'
 import { cls } from '@keg-hub/jsutils/cls'
 import { Item as MItem } from '@MG/components/Menu/Item'
+import { useMGenDir } from '@MG/hooks/components/useMGenDir'
 
 
 export type TMenu = {
   Item?:any
   path?:string
+  nav:TSiteNav
   Header?:ReactNode
   HeaderIcon?:ReactNode
   headerText?:ReactNode
@@ -18,14 +22,17 @@ export type TMenu = {
 export const Menu = (props:TMenu) => {
   
   const {
+    nav,
     path,
-    items,
     Header,
     onClick,
     Item=MItem,
     HeaderIcon,
     headerText,
   } = props
+
+  const { items } = useMGenDir(nav)
+  const activeRef = useRef(path)
 
   return (
     <div
@@ -69,8 +76,9 @@ export const Menu = (props:TMenu) => {
                 <Item
                   active={path}
                   onClick={onClick}
-                  key={item.key || item.id || item.text || key}
+                  activeRef={activeRef}
                   {...item}
+                  key={item.key || item.id || item.text || key}
                 />
               )
             })}

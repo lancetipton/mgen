@@ -15,3 +15,12 @@ export enum EMGenEvts {
   onSearchError=`onSearchError`,
   onSearchLoaded=`onSearchLoaded`,
 }
+
+export enum ECodeIgnore {
+  code=`code`,
+  react=`react`,
+  chart=`chart`,
+  graph=`graph`,
+  schema=`schema`,
+  mermaid=`mermaid`,
+}

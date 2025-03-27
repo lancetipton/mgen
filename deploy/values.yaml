@@ -3,3 +3,8 @@ env:
   MG_BASE_PATH: /
   MG_API_PORT: 8080
   MG_API_URL: http://localhost
+  # If set will build a static version of mgen and include all site markdown files
+  MG_STATIC_BUILD: 1
+
+  # Path to folder containing sites to be built for both static and backend rendering
+  MG_SITES_DIR:

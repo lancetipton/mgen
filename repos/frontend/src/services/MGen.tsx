@@ -7,13 +7,12 @@ import type {
 } from '@MG/types'
 
 import Route from 'route-event'
-import {micromark} from 'micromark'
 import { EMGenEvts } from '@MG/types'
+import { api } from '@MG/services/Api'
 import { Alert }  from '@MG/services/Alert'
 import { Events } from '@MG/services/Events'
 import { Search } from '@MG/services/Search'
 import { limbo } from '@keg-hub/jsutils/limbo'
-import {gfm, gfmHtml} from 'micromark-extension-gfm'
 import { parseJSON } from '@keg-hub/jsutils/parseJSON'
 import { buildSteps } from '@MG/utils/sites/buildSteps'
 import { buildApiUrl } from '@MG/utils/api/buildApiUrl'
@@ -23,11 +22,8 @@ import { MConfigDir, MConfigFile } from '@MG/constants/constants'
 
 type TMGenOpts = {
   selector?:string
-  mdToHtml?:boolean
   autoStart?:boolean
-  renderToDom?:boolean
   sitesConfig?:TSitesConfig
-  micromark?:Record<any, any>
   sitemap?:Record<string, string>
   getPath?:(loc?:string) => string
   onSite?:(site?:TSiteConfig) => any
@@ -52,8 +48,6 @@ export class MGen extends Events {
   #hash?:string
   #opts:TMGenOpts
   #stopRouter:() => void
-  #mdToHtml:boolean=true
-  #renderToDom:boolean=false
   #router:ReturnType<typeof Route>
   #clearCssVars?:() => void
   #clearDefCssVars?:() => void
@@ -76,8 +70,6 @@ export class MGen extends Events {
     this.baseUrl = buildApiUrl()
     this.#events(opts)
     if(opts?.getPath) this.getPath = opts?.getPath
-    if(opts?.mdToHtml === false) this.#mdToHtml = false
-    if(opts?.renderToDom === false) this.#renderToDom = false
     if(opts?.sitemap) this.sitemap = {...this.sitemap, ...opts?.sitemap}
 
     ;(opts?.autoStart !== false) && this.start()
@@ -116,7 +108,7 @@ export class MGen extends Events {
     this.dispatch(this.events.onError, err, loc)
     const msg = `Failed to load <b>${loc}</b><br/>${err.message}`
     this.#alert.error({text: msg})
-    this.render(`<code class="error">${msg}</code>`)
+    this.render(`<code class="error">${msg}</code>`, undefined, undefined, err.message || `404 Error - Not found`)
   }
 
 
@@ -199,6 +191,10 @@ export class MGen extends Events {
     // If no site name in the path then ignore loading the site config
     if(!site) return
 
+    // If the current site matches the default site, then use default config
+    if(this.config?.sites?.__default?.dir === site)
+      return this.config?.sites?.__default
+
     // Load the site config
     const file = `${MConfigDir}/${site}.json`
     const {path, full=path} = this.#path(file, this.baseUrl)
@@ -226,6 +222,7 @@ export class MGen extends Events {
     if(force || !this.config){
       const {path, full=path} = this.#path(MConfigFile, this.baseUrl)
       const [err, content] = await limbo(this.#request(full, {headers: {[`Accept`]: `text/json`}}))
+
       if(err) return this.#error(err, path)
       this.config = parseJSON(content)
       this.#site = getSiteName(undefined, this.config.sitesType)
@@ -252,8 +249,7 @@ export class MGen extends Events {
    */
   #request = async (loc:string, opts?:RequestInit) => {
     opts = opts || {headers: {[`Accept`]: `text/markdown`}}
-
-    const res = await fetch(loc, opts)
+    const res = await api.fetch(loc, opts, true)
     if (!res.ok) throw new Error(`${res.statusText} (${res.status})`)
     return res.text()
   }
@@ -279,12 +275,15 @@ export class MGen extends Events {
     const config = this.config?.sites?.__default
     this.#clearDefCssVars = siteColors(config.theme)
 
-    return {
+    const built = {
       dir: `/`,
       nav: {},
       pages: {},
       ...config,
     } as TSiteConfig
+
+    if(built?.search) built.search = new Search(this, built)
+    return built
   }
 
 
@@ -323,7 +322,11 @@ export class MGen extends Events {
    * Navigates to the specified location by setting the route.
    * @param {string} location - The location to navigate to.
    */
-  navigate = (location:string) => this.#router.setRoute(location)
+  navigate = (location:string, newTab?:boolean) => {
+    newTab
+      ? window.open(`${window.location.origin}${location}`, `_blank`)
+      : this.#router.setRoute(location)
+  }
 
 
   /**
@@ -333,15 +336,7 @@ export class MGen extends Events {
    * @param {string} [path] - Optional path for the content.
    */
   onMarkdown = (content:string, selector?:string, path?:string) => {
-    const html = this.#mdToHtml
-      ? micromark(content, {
-          extensions: [gfm()],
-          allowDangerousHtml: true,
-          htmlExtensions: [gfmHtml()]
-        })
-      : content
-
-    this.render(html, selector, path)
+    this.render(content, selector, path)
   }
 
 
@@ -351,15 +346,10 @@ export class MGen extends Events {
    * @param {string} content - The content to render.
    * @param {string} [selector] - Optional DOM selector to render the content to.
    * @param {string} [path] - Optional path for the content.
+   * @param {string} [error] - Optional error text.
    */
-  render = (content:string, selector?:string, path?:string) => {
-    this.dispatch(this.events.onRender, content, selector, path)
-
-    if(this.#renderToDom){
-      const sel = selector || this.selector
-      const el = sel && document.querySelector(sel)
-      el && (el.innerHTML = content)
-    }
+  render = (content:string, selector?:string, path?:string, error?:string) => {
+    this.dispatch(this.events.onRender, content, selector, path, error)
 
     // Check if the #hash was set and attempt to scroll to it after render
     if(!this.#hash) return

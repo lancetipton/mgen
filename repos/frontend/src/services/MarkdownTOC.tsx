@@ -1,29 +1,50 @@
-import type { TTOC, TNode } from '@MG/types'
+import type { TNode, TMDTocOpts } from '@MG/types'
+
 import { trainCase } from '@keg-hub/jsutils/trainCase'
 
-export type TMarkdownTOC = {
-  base?:string
-  onToc?:(toc:TTOC[]) => any
+
+const buildUrl = (
+  base:string,
+  text?:string,
+  existing?:string,
+  id?:string
+) => {
+  return existing
+    ? {url: existing}
+    : text || id
+      ? {url: `${base}#${id || trainCase(text)}`}
+      : {}
 }
 
-const buildUrl = (base:string, text?:string, existing?:string) => {
-  return existing ? {url: existing} : text ? {url: `${base}#${trainCase(text)}`} : {}
-}
 
-const getText = (base:string, children:TNode[]) => {
+const getText = (
+  base:string,
+  children:TNode[],
+  id:string
+) => {
 
   let text:string = ``
   const built = children.reduce((acc, child) => {
-    if(child.type === `text`)
-      text = `${text} ${child.value}`.trim()
+    if(child.type === `text`) text = `${text} ${child.value}`.trim()
 
     else {
-      const { text, children:childs } = getText(base, child.children)
+
+      const {
+        id,
+        text,
+        children:childs
+      } = getText(
+        base,
+        child.children,
+        child?.data?.id || child?.data?.hProperties.id
+      )
+
       acc.push({
+        id,
         value: text,
-        ...buildUrl(base, text, child.url),
         type: child.type,
-        children: childs
+        children: childs,
+        ...buildUrl(base, text, child.url, id),
       })
     }
 
@@ -32,20 +53,50 @@ const getText = (base:string, children:TNode[]) => {
 
   return {
     text,
-    children: built
+    children: built,
+    id: id || trainCase(text),
   }
 
 }
 
-const loopChildren = (base:string, children:TNode[]) => {
+const isAllowed = (child:TNode, opts:TMDTocOpts) => {
+  const { toc } = opts
+  if(!toc || (!toc.exclude?.length && !toc.include?.length)) return true
+  
+  const current = `${child?.type}${child?.depth}`
+  
+  const isExcluded = toc?.exclude
+    ? Boolean(toc.exclude.find(item => item === current))
+    : false
+  
+  const isIncluded = toc?.include
+    ? Boolean(toc.include.find(item => item === current))
+    : true
+  
+  return isExcluded ? false : isIncluded ? true : false
+}
+
+
+const loopChildren = (base:string, children:TNode[], opts:TMDTocOpts) => {
+  const { toc } = opts
+  if(toc?.disabled) return []
+
+
   return children.reduce((acc, child) => {
     if(child?.type !== `heading`) return acc
 
-    const { text, children:childs } = getText(base, child.children)
+    if(!isAllowed(child, opts)) return acc 
+
+    const {
+      id,
+      text,
+      children:childs
+    } = getText(base, child.children, child?.data?.id || child?.data?.hProperties.id)
     acc.push({
+      id,
       value: text,
-      ...buildUrl(base, text),
       children: childs,
+      ...buildUrl(base, text, undefined, id),
       type: `h${child.depth}`,
     })
 
@@ -54,7 +105,7 @@ const loopChildren = (base:string, children:TNode[]) => {
 }
 
 
-const MarkdownTOC = (opts:TMarkdownTOC={}) => {
+const MarkdownTOC = (opts:TMDTocOpts={}) => {
   const { onToc } = opts
 
   return function () {
@@ -64,7 +115,7 @@ const MarkdownTOC = (opts:TMarkdownTOC={}) => {
       const base = opts.base || window.location.pathname
 
       const toc = tree?.children?.length
-        && loopChildren(base, tree?.children)
+        && loopChildren(base, tree?.children, opts)
 
       toc && onToc(toc)
     }

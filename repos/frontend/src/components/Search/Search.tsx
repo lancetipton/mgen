@@ -58,9 +58,8 @@ export const Search = (props:TSearch) => {
 
   useEffect(() => {
     if(!site?.dir || !site?.search || index) return
-    
     ife(async () => {
-      const idx = await site.search.load()
+      const idx = await site?.search?.load?.()
       idx && setIndex(idx)
     })
 

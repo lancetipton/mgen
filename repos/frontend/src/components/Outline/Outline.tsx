@@ -70,8 +70,8 @@ export const Outline = (props:TOutline) => {
             </h4>
           </div>
           <ul className='list-none pl-0 mt-1' >
-            {toc?.map?.(item => {
-              const { type, url, value } = item
+            {toc?.map?.((item, idx) => {
+              const { type, url, value, id } = item
               const num = toInt(type)
 
               return (
@@ -80,7 +80,7 @@ export const Outline = (props:TOutline) => {
                     `mt-1 mb-0`,
                     num > 2 ? `pl-${num + 1}` : `pl-0`,
                   )}
-                  key={`${type}-${url}-${value}`}
+                  key={`${type}-${url}-${value}-${idx}`}
                 >
                   <Link
                     href={item.url || `#`}
@@ -93,7 +93,7 @@ export const Outline = (props:TOutline) => {
                       `hover:opacity-100`,
                       isDark ? `hover:text-gray-300` : `hover:text-gray-600`,
                       `text-gray-500`,
-                      active === getHash(value) && `text-primary`,
+                      active === id && `text-primary`,
                     )}
                   >
                     {value}

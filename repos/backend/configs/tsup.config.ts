@@ -11,7 +11,7 @@ const outdir = path.join(rootDir, `dist`)
 
 const fileIO = [
   `index`,
-  `serve`,
+  `server`,
   `setup`,
 ]
 
@@ -27,11 +27,11 @@ export default defineConfig(async () => {
   await cleanup()
 
   return {
-    sourcemap: true,
-    splitting: false,
+    name: `mgen`,
     outDir: outdir,
     format: [`esm`],
-    name: `mgen`,
+    sourcemap: true,
+    splitting: false,
     entry: fileIO.map(name => path.join(rootDir, `src/${name}.ts`)),
     esbuildOptions:(options, context) => {
       options && (
