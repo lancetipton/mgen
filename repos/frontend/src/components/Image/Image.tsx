@@ -30,6 +30,7 @@ export const Image = (props:TImage) => {
         {...rest}
         className={cls(
           className,
+          `cursor-pointer`,
           fill && `object-fill`,
           cover && `object-cover`,
           contain && `object-contain`,

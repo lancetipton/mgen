@@ -8,6 +8,7 @@ export type TLightbox = {
   backdrop?:boolean
   className?:string
   children?:ReactNode
+  containerClass?:string
 }
 
 export const Lightbox = (props:TLightbox) => {
@@ -16,6 +17,7 @@ export const Lightbox = (props:TLightbox) => {
     className,
     manual=false,
     backdrop=true,
+    containerClass,
   } = props
   
   const [opened, setOpened] = useState(false)
@@ -64,31 +66,39 @@ export const Lightbox = (props:TLightbox) => {
             `inset-0`,
             `bg-base-100`,
             `target:block`,
-            `overflow-auto`
+            `overflow-auto`,
+            !manual && `cursor-pointer`,
           )}
         >
-          {children}
-          {manual && (
-            <div
-              onClick={onClick}
-              className={cls(
-                `mgen-lightbox-manual`,
-                `fixed`,
-                `size-10`,
-                `text-error`,
-                `top-[10px]`,
-                `right-[10px]`,
-                `cursor-pointer`,
-                `hover:text-red-500`,
-              )}
-            >
-              <CloseIcon
-                fill={`currentColor`}
-                stroke={`currentColor`}
-                className={`size-10 hover:text-red-300`}
-              />
-            </div>
-          )}
+          <div
+            className={cls(
+              `mgen-lightbox-content`,
+              containerClass,
+            )}
+          >
+            {children}
+            {manual && (
+              <div
+                onClick={onClick}
+                className={cls(
+                  `mgen-lightbox-manual`,
+                  `fixed`,
+                  `size-10`,
+                  `text-error`,
+                  `top-[10px]`,
+                  `right-[10px]`,
+                  `cursor-pointer`,
+                  `hover:text-red-500`,
+                )}
+              >
+                <CloseIcon
+                  fill={`currentColor`}
+                  stroke={`currentColor`}
+                  className={`size-10 hover:text-red-300`}
+                />
+              </div>
+            )}
+          </div>
         </div>
       )}
     </>
